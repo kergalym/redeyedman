@@ -1,0 +1,219 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+@media only screen and (min-width : 240px) and (orientation: portrait){
+    .carousel {
+        position: relative;
+        height: 170px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 170px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 12px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 10px;
+    }
+}
+@media only screen and (min-width : 320px) and (orientation: portrait){
+    .carousel {
+        position: relative;
+        height: 200px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 200px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 14px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 13px;
+    }
+}
+@media only screen and (min-width : 480px) and (orientation: portrait){
+    .carousel {
+        position: relative;
+        height: 200px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 200px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 14px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 13px;
+    }
+}
+@media only screen and (min-width : 320px) and (orientation: landscape){
+    .carousel {
+        position: relative;
+        height: 200px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 200px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 14px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 13px;
+    }
+}
+@media only screen and (min-width : 586px) and (orientation: landscape){
+    .carousel {
+        position: relative;
+        height: 200px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 200px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 14px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 13px;
+    }
+}
+@media only screen and (min-width : 736px) and (orientation: landscape){
+    .carousel {
+        position: relative;
+        height: 200px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 200px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 14px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 13px;
+    }
+}
+@media only screen and (min-width : 768px){
+    .carousel {
+        position: relative;
+        height: 400px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 400px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    h1, .h2 {
+        font-size: 36px;
+    }
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 16px;
+    }
+}
+.img-responsive, .carousel-inner > .item > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background: transparent;
+    background-size: cover;
+    background-position: center center;
+    font-size: 0.8em;
+}
+.carousel-inner > .active {
+    position: relative;
+    background: #4F6988;
+    transition: left 0.6s ease-in-out 0s;
+}
+.carousel-control:focus, .carousel-control:hover {
+    color: #4F6988;
+    text-decoration: none;
+    outline: 0px none;
+    opacity: 0.9;
+}
+.center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media only screen and (min-width : 1920px){
+    .carousel {
+        position: relative;
+        height: 800px;
+        margin-top: 90px;
+        margin-bottom: 10px;
+
+    }
+    /* Declare heights because of positioning of img element */
+    .carousel .item {
+        height: 800px;
+    }
+    /* Since positioning the image, we need to help out the caption */
+    .carousel-caption {
+        z-index: 9;
+        text-shadow: 0.2em 0.2em 0.3em #000;
+        font-size: 16px;
+    }
+    .img-responsive, .carousel-inner > .item > img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        height: auto;
+        background: transparent;
+        background-size: cover;
+        background-position: center center;
+        font-size: 0.8em;
+    }
+}

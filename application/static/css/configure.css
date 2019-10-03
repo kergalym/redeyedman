@@ -1,0 +1,138 @@
+/*
+ * Copyright: Galym Kerimbekov
+ * License: GNU GPLv2
+*/
+
+body {
+    background: #4F6988;
+    margin: 0 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.42857;
+    margin-top: 170px;
+}
+
+.madesimple-logo-white {
+    height: 110px; 
+    background: url(../images/madesimple_logo2.png) no-repeat center;
+    image-rendering: optimizeSpeed;
+    background-size: 10%;;
+    margin-top: 40%;
+}
+#l-bar {
+    margin-left: 30%;
+    margin-top: 70px;
+}
+#r-bar {
+    margin-right: 30%;
+    margin-top: 70px;
+}
+.configure-form {
+    float: left;
+    text-align: left;
+}
+
+.adduser {
+    float: right;
+    text-align: left;
+}
+
+h2 {
+    text-align: center;
+    color: #FFF !important;
+    font-weight: 300;
+}
+
+p {
+    margin: 0 0 10px;
+    color: #FFF;
+    font-size: inherit;
+}
+
+.configure-form, .adduser {
+    display: block;
+    display: -moz-box;
+}
+
+input[type=button], input[type=reset], input[type=submit] {
+    -webkit-appearance: button;
+    cursor: pointer;
+    display: -webkit-box;
+    display: block;
+    margin-top: 10px;
+}
+
+button, input, select {
+    margin-bottom: 10px;
+    font: inherit;
+    color: inherit;
+    background: #EEE; 
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+}
+
+#user_submit {
+    margin-top: 10px;
+    padding: 10px 20px 10px 20px;
+    font: inherit;
+    color: #FFF;
+    background-color: #1d9d74;
+    border-color: #198764;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+#user_submit:hover {
+    margin-top: 10px;
+    padding: 10px 20px 10px 20px;
+    font: inherit;
+    color: #FFF;
+    background-color: #921111;
+    border-color: #921111;
+    border-radius: 4px;
+}
+
+#configure-submit {
+    margin-top: 10px;
+    padding: 10px 20px 10px 20px;
+    font: inherit;
+    color: #FFF;
+    background-color: #1d9d74;
+    border-color: #198764;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+#configure-submit:hover {
+    margin-top: 10px;
+    padding: 10px 20px 10px 20px;
+    font: inherit;
+    color: #FFF;
+    background-color: #921111;
+    border-color: #921111;
+    border-radius: 4px;
+}
+
+/*---------------------------------------------------------------
+       FONT AWESOME ICONS CUSTOM 
+-----------------------------------------------------------------*/
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-size: 50%;
+}
+
+.fa-5x {
+    font-size: 5em;
+    padding: 15px;
+    margin: 19px 10px 10px 10px;
+}
+
+.fa-2x {
+    padding: 5px;
+}

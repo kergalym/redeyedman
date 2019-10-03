@@ -1,0 +1,8 @@
+
+# Change dir by Ajax
+1. Send POST with addressbar value
+2. Handle in the backend
+3. Get json array with string and array
+4. Map it to selectors respectively: addressbar, table-responsive
+
+
