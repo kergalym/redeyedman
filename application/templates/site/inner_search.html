@@ -85,11 +85,16 @@
                                         {% for menu in menus %}
                                         <h2 class="line" style="text-align: left;">{{ menu.article_title }}</h2>
 
-                                        {{ menu.article_text | safe }}
+                                        {{ menu.article_text | ctxt | safe }}
 
                                         <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
                                         {% endfor %}
+
+                                        <div class="pagination">
+                                        {{ pagination.links }}
+                                        </div>
+
                                     </div> 
                                     {% endblock %}
                                 </div>
@@ -132,53 +137,7 @@
                         </div>
                         {% endblock %}
 
-                        {% block content_block_b %}
-                        <div id="content_bottom_b">
-                            <h2 class="line">How To</h2>
-                            <div class="row-one">
-                                <div class="col-sm-4">
-
-                                    {% for game in c_games %}
-
-                                    <h2 class="line" style="text-align: left;"> {{ game.article_title | safe }} </h2>
-
-                                    <div id="column-text">{{ game.article_text | safe  + "..."}}</div>
-
-                                    <a class="readmore-button-alt" href="/inner/{{ game.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
-
-                                    {% endfor %}       
-
-
-                                </div>
-
-                                <div class="col-sm-4">
-                                    {% for howto in c_howto %}
-
-                                    <h2 class="line" style="text-align: left;"> {{ howto.article_title | safe }} </h2>
-
-                                    <div id="column-text">{{ howto.article_text | safe  + "..."}}</div>
-
-                                    <a class="readmore-button-alt" href="/inner/{{ howto.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
-
-                                    {% endfor %}      
-
-                                </div>
-
-                                <div class="col-sm-4">
-                                    {% for misc in c_misc %}
-                                    <h2 class="line" style="text-align: left;"> {{ misc.article_title | safe }} </h2>
-
-                                    <div id="column-text">{{ misc.article_text | safe  + "..."}}</div>
-
-                                    <a class="readmore-button-alt" href="/inner/{{ misc.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
-
-                                    {% endfor %}     
-
-                                </div>
-
-                            </div>
-                        </div>{% endblock %}
-                    </div>    
+                    </div>
                 </div>
             </div>
         </div>
