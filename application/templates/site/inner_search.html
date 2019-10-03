@@ -36,9 +36,9 @@
                                 <li><a class="nav_item1" href="/index">ГЛАВНАЯ</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="nav_item2" data-toggle="dropdown" role="button" aria-expanded="false">СТАТЬИ<span class="caret"></span></a>
-                                <li><a class="nav_item3" href="#content_bottom_a">Wiki</a></li>
-                                <li><a class="nav_item4" href="#content_bottom_b">HowTo</a></li>
-                                <li><a class="nav_item5" href="#content_bottom_c">GameLab</a></li>
+                                <li><a class="nav_item1" href="#content_bottom_a">Wiki</a></li>
+                                <li><a class="nav_item2" href="#content_bottom_b">HowTo</a></li>
+                                <li><a class="nav_item3" href="#content_bottom_c">GameLab</a></li>
                             </ul>
                             <!-- socialbar begin -->
                             <div class="socialbar">
@@ -156,7 +156,7 @@
                     <p>&copy; 2019 Designed & developed by:<br> Galym Kerimbekov </p>
                 </div>
             </div>
-        </div>        
+        </div>
         {% endblock %}
         <!--  Core JavaScript ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
@@ -177,32 +177,74 @@
             });
 
 		</script>
-		<script>
+	<script>
             $(document).ready(function () {
-                $(".nav_item5").on("mouseenter", function () {
-                    $("#video-container").show(500);
-                    $("#content-container").hide(500);
-                    console.log(show);
-                });
-                $("#video-container").on("mouseleave", function () {
-                    $("#video-container").hide(500);
-                    $("#content-container").show(500);
+                $("#content-container").css('display', 'none')
+                $(".nav_item5").on("click", function (e) {
+                    e.preventDefault();
+                    $("#video-container").toggle(300, function () {
+
+                        if ($('#article-container').css('display') == 'block') {
+                            $("#article-container").hide(300);
+                            $("#content-container").hide(300);
+                            $("#video-container").show(300);
+
+                        } else {
+
+                            $("#article-container").show(300);
+                            $("#content-container").hide(300);
+                            $("#video-container").hide(300);
+
+                        }
+
+                    });
                 });
             });
 		</script>
 		<script>
             $(document).ready(function () {
-                $(".nav_item2").on("mouseenter", function () {
-                    $("#menu").show(500);
-                    $("#article-container").hide(500);
-                    console.log(show);
-                });
-                $("#content-container").on("mouseout", function () {
-                    $("#menu").hide(500);
-                    $("#article-container").show(500);
+                $("#content-container").css('display', 'none')
+                $(".nav_item4").on("click", function (e) {
+                    e.preventDefault();
+                    $("#content-container").toggle(300, function () {
+
+                        if ($('#article-container').css('display') == 'block') {
+                            $("#article-container").hide(300);
+                            $("#video-container").hide(300);
+                            $("#content-container").show(300);
+
+                        } else {
+
+                            $("#article-container").show(300);
+                            $("#video-container").hide(300);
+                            $("#content-container").hide(300);
+                        }
+
+                    });
                 });
             });
-		</script>
+        </script>
+		<script>
+            $(document).ready(function () {
+                $("#content-container").css('display', 'none')
+                $(".nav_item2").on("click", function (e) {
+                    e.preventDefault();
+                    $("#menu").toggle(300, function () {
+
+                        if ($('#menu').css('display') == 'block') {
+                            $("#article-container").hide(300);
+                            $("#content-container").show(300);
+
+                        } else {
+
+                            $("#article-container").show(300);
+                            $("#content-container").hide(300);
+                        }
+
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
 
