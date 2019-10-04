@@ -305,7 +305,6 @@ class ViewDash:
         per_page = 9
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        files = []
         form = dashboard_filesform.DashboardFilesForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -314,6 +313,7 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
+        offset = 0
 
         if not users and pages is None:
             abort(404)
@@ -325,7 +325,46 @@ class ViewDash:
             get_relpath = "/static/images/"
             files = browser.show_files(get_relpath)
             files = files[offset * per_page:len(files) - per_page]
-            #filert
+            pagination = paginator.paginate(files, pages, per_page)
+            return render_template('adminboard/adminboard_media.html',
+                                   servername=servername,
+                                   approot=approot[-2],
+                                   freespace=freespace,
+                                   users=users, ltime=ltime,
+                                   atime=atime,
+                                   files=files,
+                                   get_relpath=get_relpath,
+                                   form=form,
+                                   pagination=pagination
+                                   )
+
+    @app.route('/adminboard/adminboard_media/')
+    @login_required
+    def gfx_converter():
+        browser = FileBrowser()
+        per_page = 9
+        pages = request.args.get('page', type=int, default=1)
+        paginator = Paginator()
+        form = dashboard_filesform.DashboardFilesForm()
+        servername = socket.gethostname()
+        approot = os.path.split(app.root_path)
+        users = g.user
+        instance = SysInfo()
+        freespace = instance.diskspace()
+        ltime = instance.systime()
+        atime = instance.altertime()
+        offset = 0
+
+        if not users and pages is None:
+            abort(404)
+        else:
+            if pages is None:
+                offset + 1
+            else:
+                offset = pages - 1
+            get_relpath = "/static/images/"
+            files = browser.show_files(get_relpath)
+            files = files[offset * per_page:len(files) - per_page]
             pagination = paginator.paginate(files, pages, per_page)
             return render_template('adminboard/adminboard_media.html',
                                    servername=servername,
@@ -346,7 +385,6 @@ class ViewDash:
         per_page = 9
         paginator = Paginator()
         fileserving = FileBrowser()
-        users_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)

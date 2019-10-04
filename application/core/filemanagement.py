@@ -167,7 +167,6 @@ class FileBrowser:
                 per_file = files
                 per_path = getcwd(self.get_path)
                 if isinstance(per_file, str) and isinstance(per_path, str):
-                    continue
                     file_array = "{}/{}".format(per_path, per_file)
                     chmod(file_array)
                 else:

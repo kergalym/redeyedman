@@ -312,7 +312,7 @@ $(document).ready(function () {
                     var btnAct = $(this).attr('id');
                   
                     gfxConv('warn_msg', '#9A2F2F', 'POST', '#gfxconv', 
-                            '../../Helpers/Helper_fileManager_gfxconv', 
+                            '/adminboard/adminboard_media',
                             btnAct, chkBtn, qrangeField, qrange, 
                             imgpathField, imgpath, pict
                             );

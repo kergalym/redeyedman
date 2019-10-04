@@ -71,10 +71,12 @@ def show_index():
 
 
 @app.route('/inner/', defaults={'id': 1})
-@app.route('/inner/<int:id>')
+@app.route('/inner/<int:id>', methods=['GET', 'POST'])
 def show_inner(id):
     per_page = 7
+    search_limit = 4
     pages = request.args.get('page', type=int, default=1)
+    form = searchform.SearchForm()
     articles = Articles.query.filter_by(id=id).first()
     articles_loop = Articles.query.filter_by(article_category='Blender3D').all()
     contents = Content.query.filter_by(content_author='admin').all()
@@ -90,10 +92,23 @@ def show_inner(id):
     app.jinja_env.filters['ctxt'] = dlogics.textcutn
 
     pagination = paginator.paginate(Articles, pages, per_page)
+
+    if request.method == 'POST' and form.validate_on_submit():
+
+        s_menus = sql.session.query(Articles).filter(Articles.article_text.like(
+            "%{}%".format(form.query.data))).limit(search_limit).offset(
+            (pages - 1) * search_limit).all()
+
+        return render_template('site/inner_search.html',
+                               articles_loop=articles_loop, contents=contents,
+                               c_howto=c_howto, c_games=c_games, c_misc=c_misc,
+                               menus=menus, s_menus=s_menus,
+                               pagination=pagination, form=form
+                               )
     return render_template('site/inner.html', articles=articles,
                            articles_loop=articles_loop, contents=contents,
                            c_howto=c_howto, c_games=c_games, c_misc=c_misc,
-                           menus=menus, pagination=pagination
+                           menus=menus, pagination=pagination, form=form
                            )
 
 
