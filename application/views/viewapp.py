@@ -28,10 +28,12 @@ from flask import render_template
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index', methods=['GET', 'POST'])
 def show_index():
     per_page = 7
+    search_limit = 4
     pages = request.args.get('page', type=int, default=1)
+    form = searchform.SearchForm()
     articles = Articles.query.filter_by(article_author='admin').first()
     articles_loop = Articles.query.filter_by(article_category='Blender3D').all()
     contents = Content.query.filter_by(content_author='admin').all()
@@ -47,10 +49,24 @@ def show_index():
     app.jinja_env.filters['ctxt'] = dlogics.textcutn
 
     pagination = paginator.paginate(Articles, pages, per_page)
+
+    if request.method == 'POST' and form.validate_on_submit():
+
+        s_menus = sql.session.query(Articles).filter(Articles.article_text.like(
+            "%{}%".format(form.query.data))).limit(search_limit).offset(
+            (pages - 1) * search_limit).all()
+
+        return render_template('site/inner_search.html',
+                               articles_loop=articles_loop, contents=contents,
+                               c_howto=c_howto, c_games=c_games, c_misc=c_misc,
+                               menus=menus, s_menus=s_menus,
+                               pagination=pagination, form=form
+                               )
+
     return render_template('site/index.html', articles=articles,
                            articles_loop=articles_loop, contents=contents,
                            c_howto=c_howto, c_games=c_games, c_misc=c_misc,
-                           menu=menu, pagination=pagination
+                           menu=menu, pagination=pagination, form=form
                            )
 
 
@@ -66,9 +82,13 @@ def show_inner(id):
     c_games = Articles.query.filter_by(article_category='Игры').all()
     c_misc = Articles.query.filter_by(article_category='разное').all()
     paginator = Paginator()
+    dlogics = Dlogics()
     menus = sql.session.query(Articles).limit(
         (per_page)).offset(
         (pages - 1) * per_page).all()
+
+    app.jinja_env.filters['ctxt'] = dlogics.textcutn
+
     pagination = paginator.paginate(Articles, pages, per_page)
     return render_template('site/inner.html', articles=articles,
                            articles_loop=articles_loop, contents=contents,
@@ -87,9 +107,13 @@ def show_imenu(id):
     c_games = Articles.query.filter_by(article_category='Игры').all()
     c_misc = Articles.query.filter_by(article_category='разн�е').all()
     paginator = Paginator()
+    dlogics = Dlogics()
     menus = sql.session.query(Articles).limit(
         (per_page)).offset(
         (id - 1) * per_page).all()
+
+    app.jinja_env.filters['ctxt'] = dlogics.textcutn
+
     pagination = paginator.paginate(Articles, id, per_page)
     return render_template('site/imenu.html',
                            articles_loop=articles_loop, contents=contents,
@@ -110,16 +134,19 @@ def show_inner_search():
     c_games = Articles.query.filter_by(article_category='Игры').all()
     c_misc = Articles.query.filter_by(article_category='разное').all()
     paginator = Paginator()
+    dlogics = Dlogics()
     menus = sql.session.query(Articles).limit(
         (per_page)).offset(
         (pages - 1) * per_page).all()
+
+    app.jinja_env.filters['ctxt'] = dlogics.textcutn
+
     pagination = paginator.paginate(Articles, pages, per_page)
 
     if request.method == 'POST' and form.validate_on_submit():
 
-        s_menus = sql.session.query(Articles).filter_by(
-            article_text=form.query.data).limit(
-            search_limit).offset(
+        s_menus = sql.session.query(Articles).filter(Articles.article_text.like(
+            "%{}%".format(form.query.data))).limit(search_limit).offset(
             (pages - 1) * search_limit).all()
 
         return render_template('site/inner_search.html',
