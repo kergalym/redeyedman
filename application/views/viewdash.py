@@ -130,7 +130,6 @@ class ViewDash:
         per_page = 9
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        articles_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -139,11 +138,11 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
-        if not users and pages == None:
+        if not users and pages is None:
             abort(404)
         else:
             articles_loop = sql.session.query(Articles).limit(
-                (per_page)).offset(
+                per_page).offset(
                 (pages - 1) * per_page).all()
             pagination = paginator.paginate(Articles, pages, per_page)
             return render_template('adminboard/adminboard_main.html',
@@ -314,17 +313,21 @@ class ViewDash:
         ltime = instance.systime()
         atime = instance.altertime()
         offset = 0
+        f = None
 
         if not users and pages is None:
             abort(404)
         else:
-            if pages is None:
-                offset + 1
-            else:
-                offset = pages - 1
+            limit = per_page
             get_relpath = "/static/images/"
             files = browser.show_files(get_relpath)
-            files = files[offset * per_page:len(files) - per_page]
+            offset = ((pages - 1) * per_page)
+            if pages == 0 or pages == 1:
+                f = files[:limit]
+            elif len(files)-offset > offset:
+                f = files[offset:-offset]
+            elif len(files)-offset < offset:
+                f = files[offset:]
             pagination = paginator.paginate(files, pages, per_page)
             return render_template('adminboard/adminboard_media.html',
                                    servername=servername,
@@ -332,7 +335,7 @@ class ViewDash:
                                    freespace=freespace,
                                    users=users, ltime=ltime,
                                    atime=atime,
-                                   files=files,
+                                   files=f,
                                    get_relpath=get_relpath,
                                    form=form,
                                    pagination=pagination

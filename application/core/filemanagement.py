@@ -39,6 +39,7 @@ class FileBrowser:
         self.obj = None
         self.attr = None
         self.get_path = None
+        self.sbytes = None
 
     def allowed_file(self, filename):
         self.filename = filename
@@ -94,6 +95,7 @@ class FileBrowser:
     def hsize(self, sbytes):
         suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
         i = 0
+        # import pdb; pdb.set_trace()
         self.sbytes = sbytes
 
         while self.sbytes >= 1024 and i < len(suffixes)-1:
@@ -119,9 +121,7 @@ class FileBrowser:
 
     def show_files(self, get_path):
         self.get_path = get_path
-        f_list = []
         files = []
-        inner = []
         if isinstance(self.get_path, str):
             # Delete first slash for join
             self.get_path = self.get_path.lstrip('/')
