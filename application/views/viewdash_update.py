@@ -292,7 +292,7 @@ class ViewUpdate(ViewDash):
         form_mkdir = dashboard_filesform.DashboardFilesForm()
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if request.method == 'POST' and form_files.validate_on_submit():
             if request.files['f_upload']:
                 file = request.files['f_upload']
@@ -335,7 +335,7 @@ class ViewUpdate(ViewDash):
                     return redirect(url_for('show_dashboard_media'))
 
             if form_files.rename.data and form_files.validate_on_submit():
-                # TODO: using zip() compare request.form['item_chb'] to request.form['delid'] and get the difference
+
                 for i, d in zip(request.form.getlist('item_chb'), request.form.getlist('delid')):
 
                     if request.form.get(i) == 'on' and request.form.get(d):

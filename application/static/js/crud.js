@@ -39,7 +39,7 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
 
 }
 
-function ajaxPost(query_type, form, urlname, renameBtn, deleteBtn, addressBar) {
+function ajaxPost(query_type, form, urlname, renameBtn, deleteBtn, addressBar, csrf_token) {
 
          if (form != null
              && urlname != null
@@ -51,10 +51,8 @@ function ajaxPost(query_type, form, urlname, renameBtn, deleteBtn, addressBar) {
              var renameBtn = renameBtn + '=' + renameBtn + '&';
              var deleteBtn = deleteBtn + '=' + deleteBtn + '&';
              var addressBar = 'addressbar=' + addressBar + '&';
-             var formID = renameBtn + deleteBtn + addressBar + form;
-
-             console.log(formID);
-             console.log(addressBar);
+             var csrf_token = 'csrf_token=' + csrf_token + '&';
+             var formID = renameBtn + deleteBtn + addressBar + form + csrf_token;
 
              $.ajax({
                  type: query_type,
@@ -128,7 +126,23 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
 function formElemIdentify(urlname, event) {
 
             var multiple = null;
-            var btnAct = $(event).attr('id');
+
+            var renameBtn = null;
+            var deleteBtn = null;
+
+            if ($(event).attr('id') === 'rename') {
+                renameBtn = $(event).attr('id');
+                deleteBtn = $('input[name="delete"]').attr('id');
+            }
+
+            if ($(event).attr('id') === 'delete') {
+                deleteBtn = $(event).attr('id');
+                renameBtn = $('input[name="rename"]').attr('id');
+            }
+
+            var addressBar = $('input[name="addressbar"]').attr('value');
+            var csrf_token = $('input[name="csrf_token"]').attr('value');
+
             var id = null;
             var i_num = null;
             var d_num = null;
@@ -159,7 +173,7 @@ function formElemIdentify(urlname, event) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
                         form = i_str + d_str;
-                        ajaxPost('POST', form, urlname, btnAct);
+                        ajaxPost('POST', form, urlname, renameBtn, deleteBtn, addressBar, csrf_token);
                     }
                 });
 
@@ -191,7 +205,7 @@ function formElemIdentify(urlname, event) {
                            i_str = 'item_chb=' + ch.value + '&';
                            d_str = 'delid=' + d.value + '&';
                            form = i_str + d_str;
-                           ajaxPost('POST', form, urlname, btnAct);
+                           ajaxPost('POST', form, urlname, renameBtn, deleteBtn, addressBar, csrf_token);
                        }
 
                    });

@@ -22,8 +22,9 @@ from wtforms.validators import DataRequired
 
 
 class DashboardItemsForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
     delid = TextField('delid', validators=[DataRequired()])
+
     rename = SubmitField('rename')
     delete = SubmitField('delete')
-
