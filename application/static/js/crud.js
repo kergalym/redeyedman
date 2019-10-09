@@ -52,6 +52,7 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
              var addressBar = 'addressbar=' + addressBar + '&';
              var csrf_token = 'csrf_token=' + csrf_token + '&';
              var formID = addressBar + form + actBtn + csrf_token;
+             var cls_warn = null;
 
              $.ajax({
                  type: query_type,
@@ -61,9 +62,10 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
   	             encode: true,
                  statusCode: {
                      200: function (data) {
-                     //$('#warn_msg').addClass('alert alert-warning warn_msg').css({"background-color": '#9A2F2F', "color": "white"});
-                     $('#warn_msg').html(data.responseText);
-                     console.log(data);
+                     $('body').html(data.responseText);
+                     };
+                     304: function (data) {
+                     $('body').html(data.responseText);
                      }
                  }
 

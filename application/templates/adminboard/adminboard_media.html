@@ -100,8 +100,8 @@
 					<h3 class="page-header">Управление файлами</h3>
                     
 					<h4 class="sub-header">Файлы и каталоги</h4>
-						<div id="warn_msg" align="left"></div>
-					<div class="addressbar">	
+
+					<div class="addressbar">
 						<input type='text' id='text' name='addressbar' value='{{ get_relpath }}' size='1' style="width: 50%"  required placeholder="Путь файлового менеджера"/>
 						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/> 
 					</div>
@@ -110,7 +110,7 @@
                         {% if messages %}
                         {% for category, message in messages %}
                         {% if category == 'info' %}
-                        <div class="warn_msg" role="alert">
+                        <div class="warn_msg" role="alert" id="warn_msg">
                             {% else %}
                             <div class="err_msg alert-{{ category }}" role="alert">
                                 {% endif %}
