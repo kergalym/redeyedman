@@ -25,6 +25,7 @@ from wtforms.validators import DataRequired
 class DashboardMkdirForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     newdirname = TextField('newdirname', validators=[DataRequired()])
+
     f_upload = SubmitField('f_upload')
 
     cddir = SubmitField('cddir')
@@ -35,6 +36,11 @@ class DashboardFilesForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
     delid = TextField('delid', validators=[DataRequired()])
+
+    f_upload = SubmitField('f_upload')
+
+    cddir = SubmitField('cddir')
+    mkdir = SubmitField('mkdir')
 
     rename = SubmitField('rename')
     delete = SubmitField('delete')

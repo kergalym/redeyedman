@@ -293,83 +293,84 @@ class ViewUpdate(ViewDash):
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
 
-        if request.method == 'POST' and form_files.validate_on_submit():
+        if (form_files.rename.data and request.method == 'POST'
+                and form_files.validate_on_submit()):
 
-            if request.files['f_upload']:
-                file = request.files['f_upload']
-                # check if the post request has the file part
-                if 'file' not in request.files:
-                    flash('No file part')
-                    return redirect(request.url)
-                file = request.files['f_upload']
-                # if user does not select file, browser also
-                # submit a empty part without filename
-                if file.filename == '':
-                    flash('No selected file')
-                    return redirect(request.url)
+            if (len(request.form.getlist('item_chb')) == 1
+                    and len(request.form.getlist('delid')) == 1):
+                old_object = "{}/static/images/{}".format(app.root_path, request.form.get('item_chb'))
+                new_object = "{}/static/images/{}".format(app.root_path, form_files.delid.data)
 
-                if file and fileserving.allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'],
-                                           filename))
-                    return redirect(url_for('uploaded_file',
-                                            filename=filename))
-
-            if form_files.cddir.data:
-                get_path = form_files.cddir.data
-                if exists(get_path):
-                    fileserving.show_files(get_path)
-                    flash("Location is changed to {} ".format(get_path), 'info')
-
+                if isfile(old_object) and exists(old_object):
+                    fileserving.rename_file_dir(old_object, new_object)
+                    flash("{} is renamed to {}".format(old_object,
+                                                       new_object), 'info')
                 else:
-                    flash("Location is not changed to {} ".format(get_path), 'error')
+                    flash("{} is not renamed to {}".format(old_object,
+                                                           new_object), 'error')
+                return redirect(url_for('show_dashboard_media'))
 
-            if form_files.delete.data:
-                get_object = "{}/static/images/{}".format(app.root_path,
-                                                          request.form['delid'])
-                if isfile(get_object) and exists(get_object):
-                    fileserving.del_file_dir(get_object)
-                    flash("{} is deleted".format(get_object), 'info')
-                    return redirect(url_for('show_dashboard_media'))
-                else:
-                    flash("{} was not deleted".format(get_object), 'error')
-                    return redirect(url_for('show_dashboard_media'))
+        elif (form_files.cddir.data
+                and request.method == 'POST'
+                and form_files.validate_on_submit()):
+            get_path = form_files.cddir.data
+            if exists(get_path):
+                fileserving.show_files(get_path)
+                flash("Location is changed to {} ".format(get_path), 'info')
+                return redirect(url_for('show_dashboard_media'))
 
-            if form_files.rename.data:
-
-                for i, d in zip(request.form.getlist('item_chb'), request.form.getlist('delid')):
-
-                    if request.form.get(i) == 'on' and request.form.get(d):
-                        old_object = "{}/static/images/{}".format(app.root_path, d)
-                        new_object = "{}/static/images/{}".format(app.root_path, i)
-
-                        if isfile(old_object) and exists(old_object):
-                            fileserving.rename_file_dir(old_object, new_object)
-                            flash("{} is renamed to {}".format(old_object,
-                                                               new_object), 'info')
-                            return redirect(url_for('show_dashboard_media'))
-                        else:
-                            flash("{} is not renamed to {}".format(old_object,
-                                                                   new_object), 'error')
-                            return redirect(url_for('show_dashboard_media'))
             else:
-                flash("No button is pressed", 'error')
+                flash("Location is not changed to {} ".format(get_path), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
-            if form_mkdir.mkdir.data:
-                get_dirname = form_files.cdir.data
-                fileserving.make_dir(get_dirname)
-                flash("{} is created".format(get_dirname), 'info')
-                return redirect(url_for('show_dashboard_media'))
+        elif (form_files.delete.data
+                and request.method == 'POST'
+                and form_files.validate_on_submit()):
+            get_object = "{}/static/images/{}".format(app.root_path,
+                                                      request.form['delid'])
+            if isfile(get_object) and exists(get_object):
+                fileserving.del_file_dir(get_object)
+                flash("{} is deleted".format(get_object), 'info')
+            else:
+                flash("{} was not deleted".format(get_object), 'error')
+            return redirect(url_for('show_dashboard_media'))
+
+        elif form_mkdir.mkdir.data:
+            get_dirname = form_files.cdir.data
+            fileserving.make_dir(get_dirname)
+            flash("{} is created".format(get_dirname), 'info')
+            return redirect(url_for('show_dashboard_media'))
+
+        elif (form_files.f_upload.data is not False
+                and request.method == 'POST'
+                and form_files.validate_on_submit()):
+            file = request.files['f_upload']
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['f_upload']
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+
+            if file and fileserving.allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'],
+                                       filename))
+                return redirect(url_for('uploaded_file',
+                                        filename=filename))
+
         else:
-            flash("Items are not processed!", 'error')
+            flash("Items are not updated or deleted!", 'error')
             return redirect(url_for('show_dashboard_media'))
 
         return render_template('adminboard/adminboard_media.html',
-                               form=form_files,
-                               form_mkdir=form_mkdir
+                               form=form_files
                                )
 
     @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
@@ -428,6 +429,7 @@ class ViewUpdate(ViewDash):
         else:
             flash("Items are not updated or deleted!", 'error')
             return redirect(url_for('show_dashboard_settings'))
+
         return render_template('adminboard/adminboard_settings.html',
                                form=form
                                )

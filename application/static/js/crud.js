@@ -60,7 +60,11 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
           		 dataType: 'json',
   	             encode: true,
                  statusCode: {
-                     200: function (data) {}
+                     200: function (data) {
+                     //$('#warn_msg').addClass('alert alert-warning warn_msg').css({"background-color": '#9A2F2F', "color": "white"});
+                     $('#warn_msg').html(data.responseText);
+                     console.log(data);
+                     }
                  }
 
              })
@@ -273,7 +277,7 @@ $(document).ready(function () {
                     var btnAct = $(this).attr('id');
                   
                     pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
-                            '/adminboard/adminboard_main', 
+                            '/adminboard/adminboard_main/',
                             btnAct, chkBtn, content, radioField, radio
                             );
                 });
