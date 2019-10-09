@@ -39,13 +39,22 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
 
 }
 
-function ajaxPost(query_type, form, urlname, btnAct) {
+function ajaxPost(query_type, form, urlname, renameBtn, deleteBtn, addressBar) {
 
-         var btnName = btnAct + '=' + btnAct + '&';
-         var formID = btnName + form;
-         console.log(formID);
+         if (form != null
+             && urlname != null
+             && query_type != null
+             && renameBtn != null
+             && renameBtn != null
+             && addressBar != null) {
 
-         if (form != null && btnAct != null && urlname != null & query_type != null) {
+             var renameBtn = renameBtn + '=' + renameBtn + '&';
+             var deleteBtn = deleteBtn + '=' + deleteBtn + '&';
+             var addressBar = 'addressbar=' + addressBar + '&';
+             var formID = renameBtn + deleteBtn + addressBar + form;
+
+             console.log(formID);
+             console.log(addressBar);
 
              $.ajax({
                  type: query_type,
