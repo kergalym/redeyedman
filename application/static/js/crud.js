@@ -39,7 +39,7 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
 
 }
 
-function ajaxPost(warn_msg, colortype, query_type, form, urlname, btnAct) {
+function ajaxPost(query_type, form, urlname, btnAct) {
 
          var btnName = btnAct + '=' + btnAct + '&';
          var formID = btnName + form;
@@ -150,7 +150,7 @@ function formElemIdentify(urlname, event) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
                         form = i_str + d_str;
-                        ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
+                        ajaxPost('POST', form, urlname, btnAct);
                     }
                 });
 
@@ -182,7 +182,7 @@ function formElemIdentify(urlname, event) {
                            i_str = 'item_chb=' + ch.value + '&';
                            d_str = 'delid=' + d.value + '&';
                            form = i_str + d_str;
-                           ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
+                           ajaxPost('POST', form, urlname, btnAct);
                        }
 
                    });
