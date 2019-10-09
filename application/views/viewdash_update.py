@@ -292,8 +292,11 @@ class ViewUpdate(ViewDash):
         form_mkdir = dashboard_filesform.DashboardFilesForm()
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
-        # import pdb; pdb.set_trace()
+
+        import pdb; pdb.set_trace()
+
         if request.method == 'POST' and form_files.validate_on_submit():
+
             if request.files['f_upload']:
                 file = request.files['f_upload']
                 # check if the post request has the file part
@@ -314,7 +317,7 @@ class ViewUpdate(ViewDash):
                     return redirect(url_for('uploaded_file',
                                             filename=filename))
 
-            if form_files.cddir.data and form_files.validate_on_submit():
+            if form_files.cddir.data:
                 get_path = form_files.cddir.data
                 if exists(get_path):
                     fileserving.show_files(get_path)
@@ -323,7 +326,7 @@ class ViewUpdate(ViewDash):
                 else:
                     flash("Location is not changed to {} ".format(get_path), 'error')
 
-            if form_files.delete.data and form_files.validate_on_submit():
+            if form_files.delete.data:
                 get_object = "{}/static/images/{}".format(app.root_path,
                                                           request.form['delid'])
                 if isfile(get_object) and exists(get_object):
@@ -334,7 +337,7 @@ class ViewUpdate(ViewDash):
                     flash("{} was not deleted".format(get_object), 'error')
                     return redirect(url_for('show_dashboard_media'))
 
-            if form_files.rename.data and form_files.validate_on_submit():
+            if form_files.rename.data:
 
                 for i, d in zip(request.form.getlist('item_chb'), request.form.getlist('delid')):
 
@@ -355,7 +358,7 @@ class ViewUpdate(ViewDash):
                 flash("No button is pressed", 'error')
                 return redirect(url_for('show_dashboard_media'))
 
-            if form_mkdir.mkdir.data and form_mkdir.validate_on_submit():
+            if form_mkdir.mkdir.data:
                 get_dirname = form_files.cdir.data
                 fileserving.make_dir(get_dirname)
                 flash("{} is created".format(get_dirname), 'info')
