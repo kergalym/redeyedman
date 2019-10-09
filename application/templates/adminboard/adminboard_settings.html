@@ -120,8 +120,8 @@
                                     <td><a href="/adminboard/editpage_id_users/{{ user.id }}" title="Редактировать пользователя">{{ user.login }}</a></td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.regdate }}</td>
-                                    <td><input type='text' id='delid_{{ user.id }}' name='delid_{{ user.id }}' value='{{ user.id }}' size='1' /></td>
-                                    <td><input type='checkbox' id='checkbox' name='item_chb' value='{{ user.id }}' /></td>                        
+                                    <td><input type='text' id='delid_{{ user.id }}' name='delid' value='{{ user.id }}' size='1' /></td>
+                                    <td><input type='checkbox' id='checkbox_{{ user.id }}' name='item_chb' value='{{ user.id }}' /></td>
                                 </tr>
                                 {% endfor %}
                             </div>

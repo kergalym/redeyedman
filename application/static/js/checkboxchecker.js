@@ -11,7 +11,8 @@ $(document).ready(function () {
     var delid = $('input[name="delid"]').val();
     var item_chb = $("input[name*='item_chb']").val();
     var urlname = '/adminboard/adminboard_main/';
-    $.ajax({ 
+
+    $.ajax({
         type: "POST",
         url: urlname,
         data: { 
@@ -19,13 +20,10 @@ $(document).ready(function () {
             item_chb: item_chb
         },
         success: function(success) {
-        console.log(delid);
         },
         error: function(error) {
-        console.log(error);
         }
         });
         
-        //e.preventDefault();
     });
 });

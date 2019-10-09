@@ -17,18 +17,23 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import TextField, SubmitField
 from wtforms import BooleanField
-from wtforms import SubmitField
 from wtforms.validators import DataRequired
+
+
+class DashboardMkdirForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    newdirname = TextField('newdirname', validators=[DataRequired()])
+    mkdir = SubmitField('mkdir')
 
 
 class DashboardFilesForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    delid = TextField(validators=[DataRequired()])
-    newdirname = TextField('newdirname', validators=[DataRequired()])
-    mkdir = SubmitField('mkdir')
+    delid = TextField('delid', validators=[DataRequired()])
     rename = SubmitField('rename')
     delete = SubmitField('delete')
+    f_upload = SubmitField('f_upload')
     cddir = SubmitField('cddir')
+    mkdir = SubmitField('mkdir')

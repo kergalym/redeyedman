@@ -131,8 +131,8 @@
                                     <td>{{ content.content_author }}</td>
                                     <td>{{ content.content_category }}</td>
                                     <td>{{ content.content_date }} </td>
-                                    <td><input type='text' id='delid_{{ content.id }}' name='delid_{{ content.id }}' value='{{ content.id }}' size='1' /></td>
-                                    <td><input type='checkbox' id='checkbox' name='item_chb' value='{{ content.id }}' /></td>                        
+                                    <td><input type='text' id='delid_{{ content.id }}' name='delid' value='{{ content.id }}' size='1' /></td>
+                                    <td><input type='checkbox' id='checkbox_{{ content.id }}' name='item_chb' value='{{ content.id }}' /></td>
                                 </tr>
                                 {% endfor %}
                             </div>

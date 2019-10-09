@@ -42,9 +42,9 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
 function ajaxPost(warn_msg, colortype, query_type, form, urlname, btnAct) {
 
 	    var rawForm = $(form).serialize();
+	    console.log(form);
         var btnName = btnAct + '=' + btnAct + '&';
         var formID = btnName + rawForm;
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
 
             $.ajax({
                 type: query_type,
@@ -53,10 +53,7 @@ function ajaxPost(warn_msg, colortype, query_type, form, urlname, btnAct) {
          		dataType: 'json',
 		        encode: true,
                 statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
+                    200: function (data) {}
                 }
 
             })
@@ -117,6 +114,87 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
 
 }    
 
+function formElemIdentify(urlname, event) {
+
+            var multiple = null;
+            var btnAct = $(event).attr('id');
+            var id = null;
+            var i_num = null;
+            var d_num = null;
+            var form = null;
+            var d_array = $('input[name="delid"]');
+            var ch_array = $('input[name=item_chb]:checked');
+
+            if (ch_array.length === 1) {
+                multiple = 0;
+            } else if (ch_array.length > 1) {
+                multiple = 1;
+            }
+
+            if (multiple === 0) {
+
+                id = ch_array.attr('id');
+                d_num = d_array.attr( "id" );
+
+                i_num = id.replace( /^\D+/g, '');
+                d_num = d_num.replace( /^\D+/g, '');
+                i_str = $('input[name=item_chb]:checked').attr('value');
+
+                $.each(d_array, function(k, v) {
+                    d_num = v.id.replace( /^\D+/g, '')
+                    if (d_num === i_num) {
+                        i_str = 'item_chb=' + i_str + '&';
+                        d_str = 'delid=' + v.value + '&';
+                        form = i_str + d_str;
+                        //ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
+                        console.log(form);
+                        console.log(btnAct);
+                    }
+                });
+
+            } else if (multiple === 1) {
+
+                id = ch_array.attr('id');
+                d_num = d_array.attr( "id" );
+
+                var equal = 0;
+
+                if (d_array.length === ch_array.length) {
+                    equal = 1;
+                }
+
+                i_num = id.replace( /^\D+/g, '');
+                d_num = d_num.replace( /^\D+/g, '');
+                i_str = $(this).attr('value');
+
+
+                if (equal === 1) {
+
+                   var zip = (ch, d) => ch.map((x,i) => [x,d[i]]);
+
+                   $.each(zip(ch_array, d_array), function(d, ch) {
+                       i_num = ch.id.replace( /^\D+/g, '');
+                       d_num = d.id.replace( /^\D+/g, '');
+
+                       if (d_num === i_num) {
+                           i_str = 'item_chb=' + ch.value + '&';
+                           d_str = 'delid=' + d.value + '&';
+                           form = i_str + d_str;
+                           ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
+                       }
+
+                   });
+
+                   var zip = (ch, d) => ch.map((x,i) => [x,d[i]]);
+                   // for a, b in zip(list1, list2):
+                   for (let [ch, d] of zip(ch_array, d_array))
+                   //     print(a + b)
+                        console.log(d + ' : ' + ch);
+
+                }
+
+            }
+}
 
 $(document).ready(function () {
     
@@ -135,17 +213,16 @@ $(document).ready(function () {
 
     var currentpage = $(location).attr('pathname');
 
-    if (currentpage == '/adminboard/adminboard_main') {
+    if (currentpage == '/adminboard/adminboard_main/') {
 
         $('#rename').click(function (rev) {
             rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_main', btnAct);
+            formElemIdentify(currentpage, this);
         });
+
         $('#delete').click(function (dev) {
             dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_main', btnAct);
+            formElemIdentify(currentpage, this);
         });
 
 
@@ -179,27 +256,24 @@ $(document).ready(function () {
                             btnAct, chkBtn, content, radioField, radio
                             );
                 });
+
            } else {
 
                 $('#pubswitch_active').css('display', 'none');
                 $('#pubswitch').css('display', 'none');
            }    
 
-        });    
+        });
 
-
-
-    } else if (currentpage == '/adminboard/adminboard_inner') {
+    } else if (currentpage == '/adminboard/adminboard_inner/') {
 
         $('#rename').click(function (rev) {
             rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_inner', btnAct);
+            formElemIdentify(currentpage, this);
         });
         $('#delete').click(function (dev) {
             dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_inner', btnAct);
+            formElemIdentify(currentpage, this);
         });
 
 
@@ -230,7 +304,7 @@ $(document).ready(function () {
                     var btnAct = $(this).attr('id');
                   
                     pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
-                            '/adminboard/adminboard_inner', 
+                            '/adminboard/adminboard_inner/',
                             btnAct, chkBtn, content, radioField, radio
                             );
                 });
@@ -242,40 +316,39 @@ $(document).ready(function () {
 
         });    
 
-    } else if (currentpage == '/adminboard/adminboard_category') {
+    } else if (currentpage == '/adminboard/adminboard_category/') {
     
         $('#rename').click(function (rev) {
             rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_category', btnAct);
+            formElemIdentify(currentpage, this);
         });
+
         $('#delete').click(function (dev) {
             dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_category', btnAct);
+            formElemIdentify(currentpage, this);
         });
     
-    } else if (currentpage == '/adminboard/adminboard_media') {
+    } else if (currentpage == '/adminboard/adminboard_media/') {
 
         // ADMINBOARD FILE CRUD BLOCK
         $('#upload_submit').click(function (upev) {
             upev.preventDefault();
-            ajaxFiles('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media');
+            ajaxFiles('warn_msg', '#9A2F2F', 'POST', '#formnav', '/adminboard/adminboard_media/');
         });
+
         $('#mkdir-submit').click(function (mkev) {
             mkev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
+            formElemIdentify(currentpage, this);
         });
+
         $('#rename').click(function (rev) {
             rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
+            formElemIdentify(currentpage, this);
         });
+
         $('#delete').click(function (dev) {
             dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
+            formElemIdentify(currentpage, this);
         });
 
 
@@ -312,7 +385,7 @@ $(document).ready(function () {
                     var btnAct = $(this).attr('id');
                   
                     gfxConv('warn_msg', '#9A2F2F', 'POST', '#gfxconv', 
-                            '/adminboard/adminboard_media',
+                            '/adminboard/adminboard_media/',
                             btnAct, chkBtn, qrangeField, qrange, 
                             imgpathField, imgpath, pict
                             );
@@ -342,20 +415,19 @@ $(document).ready(function () {
         // ADMINBOARD SHOW BLOCK
 
 
-    } else if (currentpage == '/adminboard/adminboard_users') {
+    } else if (currentpage == '/adminboard/adminboard_users/') {
 
         $('#adduser_active').css('display', 'block');
         $('#adduser').css('display', 'block');
 
         $('#rename').click(function (rev) {
             rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_users', btnAct);
+            formElemIdentify(currentpage, this);
         });
+
         $('#delete').click(function (dev) {
             dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_users', btnAct);
+            formElemIdentify(currentpage, this);
         });
 
     } else {

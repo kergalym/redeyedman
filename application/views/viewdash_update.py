@@ -17,6 +17,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+from os.path import isfile, exists
+
 from werkzeug.utils import secure_filename
 from application import app
 from application import sql
@@ -27,7 +29,6 @@ from application.core.dbmodel import Articles
 from application.core.dbmodel import Categories
 from application.core.dbmodel import Content
 from application.core.dbmodel import Users
-from application.core.datalogics import Base, Dlogics
 from application.core.filemanagement import FileBrowser
 from application.views.viewdash import ViewDash
 from application.forms import dashboard_itemsform
@@ -47,24 +48,21 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_main/', methods=['GET', 'POST'])
     @login_required
-    def update_dashboard_main(self):
+    def update_dashboard_main():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
-        dlogics = Dlogics()
         author = g.user
-        items = []
-        values = []
         conn = engine.connect()
 
-        if request.method == 'POST' and request.form.get('rename', None) \
-                and form.validate_on_submit():
+        if (request.method == 'POST' and form.rename.data
+                and form.validate_on_submit()):
             values = request.form
             items = request.form.getlist('item_chb')
             if author is not None:
                 stmt = update(Articles).where(
                     Articles.id == request.form['item_chb']
                 ).values(
-                    id=request.form['delid_' + request.form['item_chb']]
+                    id=request.form['delid']
                 )
                 conn.execute(stmt)
                 flash("Item is updated!", 'info')
@@ -80,8 +78,8 @@ class ViewUpdate(ViewDash):
                     conn.execute(stmt)
                 flash("Items is updated!", 'info')
                 return redirect(url_for('show_dashboard_main'))
-        elif request.method == 'POST' and request.form.get('delete', None) \
-                and form.validate_on_submit():
+        elif (request.method == 'POST' and form.delete.data
+              and form.validate_on_submit()):
             items = request.form.getlist('items_chb')
             stmt = delete(Articles).where(
                 Articles.id == request.form['item_chb'])
@@ -111,22 +109,20 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_inner/', methods=['GET', 'POST'])
     @login_required
-    def update_dashboard_inner(self):
+    def update_dashboard_inner():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
-        items = []
-        values = []
         conn = engine.connect()
-        if request.method == 'POST' and request.form.get('rename', None) \
-                and form.validate_on_submit():
+        if (request.method == 'POST' and form.rename.data
+                and form.validate_on_submit()):
             values = request.form
             items = request.form.getlist('item_chb')
             if author is not None:
                 stmt = update(Content).where(
                     Content.id == request.form['item_chb']
                 ).values(
-                    id=request.form['delid_' + request.form['item_chb']]
+                    id=request.form['delid']
                 )
                 conn.execute(stmt)
                 flash("Item is updated!", 'info')
@@ -142,8 +138,8 @@ class ViewUpdate(ViewDash):
                     conn.execute(stmt)
                 flash("Items is updated!", 'info')
                 return redirect(url_for('show_dashboard_inner'))
-        elif request.method == 'POST' and request.form.get('delete', None) \
-                and form.validate_on_submit():
+        elif (request.method == 'POST' and form.delete.data
+              and form.validate_on_submit()):
             items = request.form.getlist('items_chb')
             stmt = delete(Content).where(
                 Content.id == request.form['item_chb'])
@@ -173,22 +169,20 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_category/', methods=['GET', 'POST'])
     @login_required
-    def update_dashboard_category(self):
+    def update_dashboard_category():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
-        items = []
-        values = []
         conn = engine.connect()
-        if request.method == 'POST' and request.form.get('rename', None) \
-                and form.validate_on_submit():
+        if (request.method == 'POST' and form.rename.data
+                and form.validate_on_submit()):
             values = request.form
             items = request.form.getlist('item_chb')
             if author is not None:
                 stmt = update(Categories).where(
                     Categories.id == request.form['item_chb']
                 ).values(
-                    id=request.form['delid_' + request.form['item_chb']]
+                    id=request.form['delid']
                 )
                 conn.execute(stmt)
                 flash("Item is updated!", 'info')
@@ -204,8 +198,8 @@ class ViewUpdate(ViewDash):
                     conn.execute(stmt)
                 flash("Items is updated!", 'info')
                 return redirect(url_for('show_dashboard_category'))
-        elif request.method == 'POST' and request.form.get('delete', None) \
-                and form.validate_on_submit():
+        elif (request.method == 'POST' and form.delete.data
+              and form.validate_on_submit()):
             items = request.form.getlist('items_chb')
             stmt = delete(Categories).where(
                 Categories.id == request.form['item_chb'])
@@ -233,15 +227,13 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
     @login_required
-    def update_dashboard_users(self):
+    def update_dashboard_users():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
-        items = []
-        values = []
         conn = engine.connect()
-        if request.method == 'POST' and request.form.get('rename', None) \
-                and form.validate_on_submit():
+        if (request.method == 'POST' and form.rename.data
+                and form.validate_on_submit()):
             values = request.form
             items = request.form.getlist('item_chb')
             if author is not None:
@@ -249,7 +241,7 @@ class ViewUpdate(ViewDash):
                 stmt = update(Users).where(
                     Users.id == request.form['item_chb']
                 ).values(
-                    id=request.form['delid_' + request.form['item_chb']]
+                    id=request.form['delid']
                 )
                 conn.execute(stmt)
                 flash("Item is updated!", 'info')
@@ -265,8 +257,8 @@ class ViewUpdate(ViewDash):
                     conn.execute(stmt)
                 flash("Items is updated!", 'info')
                 return redirect(url_for('show_dashboard_users'))
-        elif request.method == 'POST' and request.form.get('delete', None) \
-                and form.validate_on_submit():
+        elif (request.method == 'POST' and form.delete.data
+              and form.validate_on_submit()):
             items = request.form.getlist('items_chb')
             stmt = delete(Users).where(
                 Users.id == request.form['item_chb'])
@@ -295,19 +287,20 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_media/', methods=['GET', 'POST'])
     @login_required
-    def update_dashboard_media(self):
-        form = dashboard_filesform.DashboardFilesForm()
+    # TODO: add arg self to the decorator
+    def update_dashboard_media():
+        form_mkdir = dashboard_filesform.DashboardFilesForm()
+        form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
-        if request.method == 'POST' \
-                and form.validate_on_submit() \
-                and form_media.validate_on_submit():
-            if request.form['f-upload']:
-                file = request.files['file']
+        import pdb; pdb.set_trace()
+        if request.method == 'POST' and form_files.validate_on_submit():
+            if request.files['f_upload']:
+                file = request.files['f_upload']
                 # check if the post request has the file part
                 if 'file' not in request.files:
                     flash('No file part')
                     return redirect(request.url)
-                file = request.files['file']
+                file = request.files['f_upload']
                 # if user does not select file, browser also
                 # submit a empty part without filename
                 if file.filename == '':
@@ -321,46 +314,60 @@ class ViewUpdate(ViewDash):
                     return redirect(url_for('uploaded_file',
                                             filename=filename))
 
-            if request.form['cddir']:
-                get_path = form.cddir.data
-                fileserving.show_files(get_path)
-                return redirect(url_for('show_dashboard_media'))
+            if form_files.cddir.data and form_files.validate_on_submit():
+                get_path = form_files.cddir.data
+                if exists(get_path):
+                    fileserving.show_files(get_path)
+                    flash("Location is changed to {} ".format(get_path), 'info')
 
-            if request.form['delete']:
-                get_object = os.path + "/static" \
-                             + request.form['delid_' + request.form['item_chb']]
-                fileserving.del_file_dir(get_object)
-                return redirect(url_for('show_dashboard_media'))
+                else:
+                    flash("Location is not changed to {} ".format(get_path), 'error')
 
-            if request.form['rename']:
-                old_object = os.path + "/static" \
-                             + request.form['item_chb']
-                new_object = os.path + "/static" \
-                             + request.form['delid_' + request.form['item_chb']]
-                if fileserving.rename_file_dir(
-                        old_object,
-                        new_object) != 'Not str':
-                    return fileserving.rename_file_dir(old_object, new_object)
+            if form_files.delete.data and form_files.validate_on_submit():
+                get_object = "{}/static/images/{}".format(app.root_path,
+                                                          request.form['delid'])
+                if isfile(get_object) and exists(get_object):
+                    fileserving.del_file_dir(get_object)
+                    flash("{} is deleted".format(get_object), 'info')
                     return redirect(url_for('show_dashboard_media'))
                 else:
-                    flash(old_object + " is not renamed to " \
-                          + new_object, 'error')
+                    flash("{} was not deleted".format(get_object), 'error')
                     return redirect(url_for('show_dashboard_media'))
+
+            if form_files.rename.data and form_files.validate_on_submit():
+                # TODO: using zip() compare request.form['item_chb'] to request.form['delid'] and get the difference
+                for i, d in zip(request.form.getlist('item_chb'), request.form.getlist('delid')):
+
+                    if request.form.get(i) == 'on' and request.form.get(d):
+                        old_object = "{}/static/images/{}".format(app.root_path, d)
+                        new_object = "{}/static/images/{}".format(app.root_path, i)
+
+                        if isfile(old_object) and exists(old_object):
+                            fileserving.rename_file_dir(old_object, new_object)
+                            flash("{} is renamed to {}".format(old_object,
+                                                               new_object), 'info')
+                            return redirect(url_for('show_dashboard_media'))
+                        else:
+                            flash("{} is not renamed to {}".format(old_object,
+                                                                   new_object), 'error')
+                            return redirect(url_for('show_dashboard_media'))
             else:
                 flash("No button is pressed", 'error')
                 return redirect(url_for('show_dashboard_media'))
 
-            if request.form['mkdir']:
-                get_dirname = form.cdir.data
+            if form_mkdir.mkdir.data and form_mkdir.validate_on_submit():
+                get_dirname = form_files.cdir.data
                 fileserving.make_dir(get_dirname)
+                flash("{} is created".format(get_dirname), 'info')
                 return redirect(url_for('show_dashboard_media'))
         else:
             flash("Items are not processed!", 'error')
             return redirect(url_for('show_dashboard_media'))
 
-            return render_template('adminboard/adminboard_media.html',
-                                   form=form
-                                   )
+        return render_template('adminboard/adminboard_media.html',
+                               form=form_files,
+                               form_mkdir=form_mkdir
+                               )
 
     @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
     @login_required
@@ -368,11 +375,9 @@ class ViewUpdate(ViewDash):
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
-        items = []
-        values = []
         conn = engine.connect()
-        if request.method == 'POST' and request.form.get('rename', None) \
-                and form.validate_on_submit():
+        if (request.method == 'POST' and request.form.get('rename', None)
+                and form.validate_on_submit()):
             values = request.form
             items = request.form.getlist('item_chb')
             if author is not None:
@@ -380,7 +385,7 @@ class ViewUpdate(ViewDash):
                 stmt = update(Users).where(
                     Users.id == request.form['item_chb']
                 ).values(
-                    id=request.form['delid_' + request.form['item_chb']]
+                    id=request.form['delid']
                 )
                 conn.execute(stmt)
                 flash("Item is updated!", 'info')
@@ -396,8 +401,8 @@ class ViewUpdate(ViewDash):
                     conn.execute(stmt)
                 flash("Items is updated!", 'info')
                 return redirect(url_for('show_dashboard_settings'))
-        elif request.method == 'POST' and request.form.get('delete', None) \
-                and form.validate_on_submit():
+        elif (request.method == 'POST' and request.form.get('delete', None)
+              and form.validate_on_submit()):
             items = request.form.getlist('items_chb')
             stmt = delete(Users).where(
                 Users.id == request.form['item_chb'])
@@ -425,32 +430,44 @@ class ViewUpdate(ViewDash):
                                )
 
     @app.route('/adminboard/adminboard_filemanager/', methods=['GET', 'POST'])
-    def upload_file(self):
+    def upload_file():
         fileserving = FileBrowser()
-        if request.method == 'POST' and form.validate_on_submit():
+        form_mkdir = dashboard_filesform.DashboardMkdirForm()
+        form_files = dashboard_filesform.DashboardFilesForm()
+        if request.method == 'POST' and form_files.validate_on_submit():
             if request.form['delete']:
-                get_object = os.path + "/static" \
-                             + request.form['delid_' + request.form['item_chb']]
+                get_object = "{}/static/images/{}".format(app.root_path,
+                                                          request.form['delid'])
                 fileserving.del_file_dir(get_object)
 
-            if request.form['rename']:
-                old_object = os.path + "/static" \
-                             + request.form['item_chb']
-                new_object = os.path + "/static" \
-                             + request.form['delid_' + request.form['item_chb']]
-                if fileserving.rename_file_dir(
-                        old_object,
-                        new_object) != 'Not str':
-                    return fileserving.rename_file_dir(old_object, new_object)
+            if request.form['rename'] and form_files.validate_on_submit():
+                old_object = "{}/static/images/{}".format(app.root_path,
+                                                          request.form['item_chb'])
+                new_object = "{}/static/images/{}".format(app.root_path,
+                                                          request.form['delid'])
+                if isfile(old_object) and exists(old_object):
+                    fileserving.rename_file_dir(old_object, new_object)
+                    flash("{} is renamed to {}".format(old_object,
+                                                       new_object), 'info')
                 else:
-                    flash(old_object + " is not renamed to " \
-                          + new_object, 'error')
+                    flash("{} is not renamed to {}".format(old_object, new_object),
+                          'error')
             else:
                 flash("No button is pressed", 'error')
 
-            if request.form['cdir']:
-                get_dirname = form.cdir.data
+            if request.form['cddir'] and form_files.validate_on_submit():
+                get_path = form_files.cddir.data
+                if exists(get_path):
+                    fileserving.show_files(get_path)
+                    flash("Location is changed to {} ".format(get_path), 'info')
+
+                else:
+                    flash("Location is not changed to {} ".format(get_path), 'error')
+
+            if request.form['mkdir'] and form_mkdir.validate_on_submit():
+                get_dirname = form_files.cdir.data
                 fileserving.make_dir(get_dirname)
+                return redirect(url_for('show_dashboard_media'))
 
             # check if the post request has the file part
             if 'file' not in request.files:

@@ -348,7 +348,7 @@ class ViewDash:
         per_page = 9
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        form = dashboard_filesform.DashboardFilesForm()
+        form = dashboard_filesform.DashboardMkdirForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
         users = g.user

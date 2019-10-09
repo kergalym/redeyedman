@@ -40,7 +40,7 @@ class ViewdashFileManager(ViewDash):
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
         articles_loop = []
-        form = dashboard_filesform.DashboardFilesForm()
+        form = dashboard_filesform.DashboardMkdirForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
         users = g.user
@@ -66,7 +66,7 @@ class ViewdashFileManager(ViewDash):
                                    pagination=pagination
                                    )
 
-        form = dashboard_filesform.DashboardFilesForm()
+        form = dashboard_filesform.DashboardMkdirForm()
 
         if (request.method == 'POST' and request.form.get('rename', None)
                 and form.validate_on_submit()):
