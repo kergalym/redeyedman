@@ -48,7 +48,7 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
              && addressBar != null
              && csrf_token != null) {
 
-             var actBtn = deleteBtn + '=True' + '&';
+             var actBtn = actBtn + '=True' + '&';
              var addressBar = 'addressbar=' + addressBar + '&';
              var csrf_token = 'csrf_token=' + csrf_token + '&';
              var formID = addressBar + form + actBtn + csrf_token;
