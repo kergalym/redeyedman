@@ -41,22 +41,24 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
 
 function ajaxPost(warn_msg, colortype, query_type, form, urlname, btnAct) {
 
-	    var rawForm = $(form).serialize();
-	    console.log(form);
-        var btnName = btnAct + '=' + btnAct + '&';
-        var formID = btnName + rawForm;
+         var btnName = btnAct + '=' + btnAct + '&';
+         var formID = btnName + form;
+         console.log(formID);
 
-            $.ajax({
-                type: query_type,
-                url: urlname,
-                data: formID,
-         		dataType: 'json',
-		        encode: true,
-                statusCode: {
-                    200: function (data) {}
-                }
+         if (form != null && btnAct != null && urlname != null & query_type != null) {
 
-            })
+             $.ajax({
+                 type: query_type,
+                 url: urlname,
+                 data: formID,
+          		 dataType: 'json',
+  	             encode: true,
+                 statusCode: {
+                     200: function (data) {}
+                 }
+
+             })
+          }
 
 }
 
@@ -141,14 +143,14 @@ function formElemIdentify(urlname, event) {
                 i_str = $('input[name=item_chb]:checked').attr('value');
 
                 $.each(d_array, function(k, v) {
+
                     d_num = v.id.replace( /^\D+/g, '')
+
                     if (d_num === i_num) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
                         form = i_str + d_str;
-                        //ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
-                        console.log(form);
-                        console.log(btnAct);
+                        ajaxPost('warn_msg', '#9A2F2F', 'POST', form, urlname, btnAct);
                     }
                 });
 
