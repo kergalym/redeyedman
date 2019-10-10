@@ -60,13 +60,9 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
                  data: formID,
           		 dataType: 'json',
   	             encode: true,
-                 statusCode: {
-                     200: function (data) {
-                     $('body').html(data.responseText);
-                     };
-                     304: function (data) {
-                     $('body').html(data.responseText);
-                     }
+  	             cache: false,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
                  }
 
              })
@@ -243,13 +239,17 @@ $(document).ready(function () {
     if (currentpage == '/adminboard/adminboard_main/') {
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -295,12 +295,16 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_inner/') {
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -346,13 +350,17 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_category/') {
     
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
     
     } else if (currentpage == '/adminboard/adminboard_media/') {
@@ -369,13 +377,17 @@ $(document).ready(function () {
         });
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -448,13 +460,17 @@ $(document).ready(function () {
         $('#adduser').css('display', 'block');
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            formElemIdentify(currentpage, this);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
     } else {
