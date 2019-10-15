@@ -35,6 +35,7 @@ from application.forms import dashboard_itemsform
 from application.forms import dashboard_filesform
 from application.forms import dashboard_searchform
 from flask_login import login_required
+from flask import send_from_directory
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -285,11 +286,17 @@ class ViewUpdate(ViewDash):
                                form=form
                                )
 
+    @app.route('/application/static/images/<filename>')
+    def upldd_file(filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'],
+                                   filename)
+
     @app.route('/adminboard/adminboard_media/', methods=['GET', 'POST'])
     @login_required
     # TODO: add arg self to the decorator
     def update_dashboard_media():
-        form_mkdir = dashboard_filesform.DashboardFilesForm()
+        form_mkdir = dashboard_filesform.DashboardMkdirForm()
+        form_upload = dashboard_filesform.DashboardUploadForm()
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
 
@@ -312,9 +319,9 @@ class ViewUpdate(ViewDash):
                                                            new_object), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
-        elif (form_files.cddir.data
+        elif (form_mkdir.cddir.data
                 and request.method == 'POST'
-                and form_files.validate_on_submit()):
+                and form_mkdir.validate_on_submit()):
             get_path = form_files.cddir.data
             if exists(get_path):
                 fileserving.show_files(get_path)
@@ -338,32 +345,30 @@ class ViewUpdate(ViewDash):
             return redirect(url_for('show_dashboard_media'))
 
         elif form_mkdir.mkdir.data:
-            get_dirname = form_files.cdir.data
+            get_dirname = form_mkdir.cdir.data
             fileserving.make_dir(get_dirname)
             flash("{} is created".format(get_dirname), 'info')
             return redirect(url_for('show_dashboard_media'))
 
-        elif (form_files.f_upload.data is not False
+        elif (form_upload.f_upload.data is not False
                 and request.method == 'POST'
-                and form_files.validate_on_submit()):
+                and form_upload.validate_on_submit()):
             file = request.files['f_upload']
             # check if the post request has the file part
-            if 'file' not in request.files:
+            if 'f_upload' not in request.files:
                 flash('No file part')
                 return redirect(request.url)
-            file = request.files['f_upload']
             # if user does not select file, browser also
             # submit a empty part without filename
             if file.filename == '':
                 flash('No selected file')
                 return redirect(request.url)
 
-            if file and fileserving.allowed_file(file.filename):
+            if file and fileserving.allowed_file(file.filename) and "{}{}".format(app.root_path,
+                                                                                  app.config['UPLOAD_FOLDER']):
                 filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'],
-                                       filename))
-                return redirect(url_for('uploaded_file',
-                                        filename=filename))
+                file.save("{}{}{}".format(app.root_path, app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('upldd_file', filename=filename))
 
         else:
             flash("Items are not updated or deleted!", 'error')
@@ -493,5 +498,5 @@ class ViewUpdate(ViewDash):
                                         filename=filename))
 
         return render_template('adminboard/adminboard_filemanager.html',
-                               form=form
+                               form=form_files
                                )

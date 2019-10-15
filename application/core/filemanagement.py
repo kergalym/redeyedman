@@ -13,8 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+import shutil
 
-from application import app
+from application import app, ALLOWED_EXTENSIONS
 from os import stat
 from os import path
 from os import rename
@@ -44,7 +45,7 @@ class FileBrowser:
     def allowed_file(self, filename):
         self.filename = filename
         return '.' in self.filename and \
-            self.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+               self.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     def array_slice(self, array, offset, length=None):
         if isinstance(array, list) and not isinstance(array, dict):
@@ -59,33 +60,26 @@ class FileBrowser:
         if type(self.get_dirname) == str:
             return mkdir(self.get_dirname)
         else:
-            return "Not a string"
+            return False
 
     def rename_file_dir(self, old_object, new_object):
         self.old_object = old_object
         self.new_object = new_object
-        if isinstance(self.old_object, str) \
-           and isinstance(self.new_object, str):
+        if (isinstance(self.old_object, str)
+                and isinstance(self.new_object, str)):
             return rename(self.old_object, self.new_object)
         else:
-            return "Not a string"
+            return False
 
     def del_file_dir(self, get_path):
         self.get_dirname = get_path
-        if isinstance(self.get_path, (str, unicode)):
-            for files in listdir(self.get_path):
-                get_item = files
-                if isdir("{}/{}".format(self.get_dirname, get_item)):
-                    self.del_file_dir("{}/{}".format(self.get_dirname,
-                                                     get_item))
-                elif isfile("{}/{}".format(self.get_dirname, get_item)):
-                    remove("{}/{}".format(self.get_dirname, get_item))
-                    self.del_file_dir("{}/{}".format(self.get_dirname,
-                                                     get_item))
-
-            return rmdir(self.get_dirname)
+        if isinstance(self.get_dirname, str):
+            if isdir("{}".format(self.get_dirname)):
+                return shutil.rmtree(self.get_dirname)
+            elif isfile("{}".format(self.get_dirname)):
+                return remove("{}".format(self.get_dirname))
         else:
-            return "Not a string"
+            return False
 
     def move_file_dir(self, get_path):
         pass
@@ -98,7 +92,7 @@ class FileBrowser:
         # import pdb; pdb.set_trace()
         self.sbytes = sbytes
 
-        while self.sbytes >= 1024 and i < len(suffixes)-1:
+        while self.sbytes >= 1024 and i < len(suffixes) - 1:
             sbytes /= 1024.
             i += 1
         f = ('%.2f' % sbytes).rstrip('0').rstrip('.')
@@ -133,25 +127,25 @@ class FileBrowser:
                             num),
                             "relpath": "/{}{}".format(
                                 self.get_path, file_x
-                        ),
+                            ),
                             "name": "{}".format(
                                 file_x
-                        ),
+                            ),
                             "owner": self.polystat("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_uid'
-                        ),
+                            ),
                             "size": self.hsize(
                                 path.getsize("{}/{}/{}".format(
                                     app.root_path, self.get_path, file_x))),
                             "date": self.polystat("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_ctime'
-                        ),
+                            ),
                             "perm": self.polystat("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_mode'
-                        )}
+                            )}
                     ]
                     files += inner
                 return files
@@ -160,7 +154,7 @@ class FileBrowser:
 
     def change_own(self, get_path):
         self.get_path = get_path
-        if isinstance(self.get_path,  str):
+        if isinstance(self.get_path, str):
             return chmod(self.get_path)
         elif isinstance(self.get_path, list):
             for files in self.get_path:
