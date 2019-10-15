@@ -367,8 +367,12 @@ class ViewUpdate(ViewDash):
             if file and fileserving.allowed_file(file.filename) and "{}{}".format(app.root_path,
                                                                                   app.config['UPLOAD_FOLDER']):
                 filename = secure_filename(file.filename)
-                file.save("{}{}{}".format(app.root_path, app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('upldd_file', filename=filename))
+                if filename:
+                    file.save("{}{}{}".format(app.root_path, app.config['UPLOAD_FOLDER'], filename))
+                    flash("{}/{} is uploaded".format(app.config['UPLOAD_FOLDER'], filename), 'info')
+                else:
+                    flash("{}/{} is not uploaded".format(app.config['UPLOAD_FOLDER'], filename), 'error')
+                return redirect(url_for('show_dashboard_media'))
 
         else:
             flash("Items are not updated or deleted!", 'error')
