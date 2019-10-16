@@ -376,9 +376,9 @@ class ViewUpdate(ViewDash):
                 fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
                 if filename and fpath:
                     file.save(fpath)
-                    flash("{}/{} is uploaded".format(request.form['addressbar'], filename), 'info')
+                    flash("{}{} is uploaded".format(request.form['addressbar'], filename), 'info')
                 else:
-                    flash("{}/{} is not uploaded".format(request.form['addressbar'], filename), 'error')
+                    flash("{}{} is not uploaded".format(request.form['addressbar'], filename), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
         else:
