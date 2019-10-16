@@ -306,9 +306,14 @@ class ViewUpdate(ViewDash):
                 and form_files.validate_on_submit()):
 
             if (len(request.form.getlist('item_chb')) == 1
-                    and len(request.form.getlist('delid')) == 1):
-                old_object = "{}/static/images/{}".format(app.root_path, request.form.get('item_chb'))
-                new_object = "{}/static/images/{}".format(app.root_path, form_files.delid.data)
+                    and len(request.form.getlist('delid')) == 1
+                    and isinstance(request.form['addressbar'], str)):
+                old_object = "{}/{}/{}".format(app.root_path,
+                                               request.form['addressbar'],
+                                               request.form.get('item_chb'))
+                new_object = "{}/{}/{}".format(app.root_path,
+                                               request.form['addressbar'],
+                                               form_files.delid.data)
 
                 if isfile(old_object) and exists(old_object):
                     fileserving.rename_file_dir(old_object, new_object)
@@ -320,8 +325,8 @@ class ViewUpdate(ViewDash):
                 return redirect(url_for('show_dashboard_media'))
 
         elif (form_mkdir.cddir.data
-                and request.method == 'POST'
-                and form_mkdir.validate_on_submit()):
+              and request.method == 'POST'
+              and form_mkdir.validate_on_submit()):
             get_path = form_files.cddir.data
             if exists(get_path):
                 fileserving.show_files(get_path)
@@ -333,10 +338,11 @@ class ViewUpdate(ViewDash):
                 return redirect(url_for('show_dashboard_media'))
 
         elif (form_files.delete.data
-                and request.method == 'POST'
-                and form_files.validate_on_submit()):
-            get_object = "{}/static/images/{}".format(app.root_path,
-                                                      request.form['delid'])
+              and request.method == 'POST'
+              and form_files.validate_on_submit()):
+            get_object = "{}/{}/{}".format(app.root_path,
+                                           request.form['addressbar'],
+                                           request.form['delid'])
             if isfile(get_object) and exists(get_object):
                 fileserving.del_file_dir(get_object)
                 flash("{} is deleted".format(get_object), 'info')
@@ -351,8 +357,8 @@ class ViewUpdate(ViewDash):
             return redirect(url_for('show_dashboard_media'))
 
         elif (form_upload.f_upload.data is not False
-                and request.method == 'POST'
-                and form_upload.validate_on_submit()):
+              and request.method == 'POST'
+              and form_upload.validate_on_submit()):
             file = request.files['f_upload']
             # check if the post request has the file part
             if 'f_upload' not in request.files:
@@ -365,13 +371,13 @@ class ViewUpdate(ViewDash):
                 return redirect(request.url)
 
             if file and fileserving.allowed_file(file.filename) and "{}{}".format(app.root_path,
-                                                                                  app.config['UPLOAD_FOLDER']):
+                                                                                  request.form['addressbar']):
                 filename = secure_filename(file.filename)
                 if filename:
-                    file.save("{}{}{}".format(app.root_path, app.config['UPLOAD_FOLDER'], filename))
-                    flash("{}/{} is uploaded".format(app.config['UPLOAD_FOLDER'], filename), 'info')
+                    file.save("{}{}{}".format(app.root_path, request.form['addressbar'], filename))
+                    flash("{}/{} is uploaded".format(request.form['addressbar'], filename), 'info')
                 else:
-                    flash("{}/{} is not uploaded".format(app.config['UPLOAD_FOLDER'], filename), 'error')
+                    flash("{}/{} is not uploaded".format(request.form['addressbar'], filename), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
         else:
