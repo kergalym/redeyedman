@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
+function ajaxFiles(query_type, attach, urlname) {
 	    
 	    var form = $(attach)[0];
         var formID = new FormData(form);
@@ -28,11 +28,8 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
                 data: formID,
                 contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
                 processData: false, // NEEDED, DON'T OMIT THIS
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data, " ", redirect));
-                    }
+                complete: function (data) {
+                         $('body').html(data.responseText);
                 }
 
             })
@@ -368,7 +365,7 @@ $(document).ready(function () {
         // ADMINBOARD FILE CRUD BLOCK
         $('#upload_submit').click(function (upev) {
             upev.preventDefault();
-            ajaxFiles('warn_msg', '#9A2F2F', 'POST', '#formnav', '/adminboard/adminboard_media/');
+            ajaxFiles('POST', '#formnav', '/adminboard/adminboard_media/');
         });
 
         $('#mkdir-submit').click(function (mkev) {
