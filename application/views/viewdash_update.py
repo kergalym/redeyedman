@@ -308,12 +308,12 @@ class ViewUpdate(ViewDash):
             if (len(request.form.getlist('item_chb')) == 1
                     and len(request.form.getlist('delid')) == 1
                     and isinstance(request.form['addressbar'], str)):
-                old_object = "{}/{}/{}".format(app.root_path,
-                                               request.form['addressbar'],
-                                               request.form.get('item_chb'))
-                new_object = "{}/{}/{}".format(app.root_path,
-                                               request.form['addressbar'],
-                                               form_files.delid.data)
+                old_object = "{}{}{}".format(app.root_path,
+                                             request.form['addressbar'],
+                                             request.form.get('item_chb'))
+                new_object = "{}{}{}".format(app.root_path,
+                                             request.form['addressbar'],
+                                             form_files.delid.data)
 
                 if isfile(old_object) and exists(old_object):
                     fileserving.rename_file_dir(old_object, new_object)
@@ -340,9 +340,9 @@ class ViewUpdate(ViewDash):
         elif (form_files.delete.data
               and request.method == 'POST'
               and form_files.validate_on_submit()):
-            get_object = "{}/{}/{}".format(app.root_path,
-                                           request.form['addressbar'],
-                                           request.form['delid'])
+            get_object = "{}{}{}".format(app.root_path,
+                                         request.form['addressbar'],
+                                         request.form['delid'])
             if isfile(get_object) and exists(get_object):
                 fileserving.del_file_dir(get_object)
                 flash("{} is deleted".format(get_object), 'info')
@@ -373,8 +373,9 @@ class ViewUpdate(ViewDash):
             if file and fileserving.allowed_file(file.filename) and "{}{}".format(app.root_path,
                                                                                   request.form['addressbar']):
                 filename = secure_filename(file.filename)
-                if filename:
-                    file.save("{}{}{}".format(app.root_path, request.form['addressbar'], filename))
+                fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
+                if filename and fpath:
+                    file.save(fpath)
                     flash("{}/{} is uploaded".format(request.form['addressbar'], filename), 'info')
                 else:
                     flash("{}/{} is not uploaded".format(request.form['addressbar'], filename), 'error')
