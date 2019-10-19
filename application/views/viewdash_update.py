@@ -16,8 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os
-from os.path import isfile, exists
+import re
+from os.path import exists, isdir
 
 from werkzeug.utils import secure_filename
 from application import app
@@ -55,55 +55,94 @@ class ViewUpdate(ViewDash):
         author = g.user
         conn = engine.connect()
 
-        if (request.method == 'POST' and form.rename.data
-                and form.validate_on_submit()):
-            values = request.form
-            items = request.form.getlist('item_chb')
-            if author is not None:
-                stmt = update(Articles).where(
-                    Articles.id == request.form['item_chb']
-                ).values(
-                    id=request.form['delid']
-                )
-                conn.execute(stmt)
-                flash("Item is updated!", 'info')
-                return redirect(url_for('show_dashboard_main'))
-            elif author is not None:
-                mixed = items, values[:-2]
-                for index in mixed:
-                    stmt = update(Articles).where(
-                        Articles.id == index[0]
-                    ).values(
-                        id=index[1]
-                    )
-                    conn.execute(stmt)
-                flash("Items is updated!", 'info')
-                return redirect(url_for('show_dashboard_main'))
-        elif (request.method == 'POST' and form.delete.data
-              and form.validate_on_submit()):
-            items = request.form.getlist('items_chb')
-            stmt = delete(Articles).where(
-                Articles.id == request.form['item_chb'])
-            conn.execute(stmt)
-            flash("Item is deleted!", 'info')
-            return redirect(url_for('show_dashboard_main'))
-        elif request.method == 'POST' and form_next.validate_on_submit():
-            data = []
-            data_array = sql.session.query(Articles).filter(
-                Articles.article_title.match(request.form['query']
-                                             )).all()
-            for x in data_array:
-                data = x
+        if request.method == 'POST':
+            if form.rename.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
 
-            return jsonify(id=str(data.id),
-                           title=data.article_title,
-                           author=data.article_author,
-                           category=data.article_category,
-                           date=data.article_date
-                           )
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_main'))
+                # form.delid.data is the unicode list thing which
+                # we convert to integer using regexp
+                delid = int(re.search("\d+", str(form.delid.data)).group())
+
+                if author is not None:
+                    articles = Articles.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n and x != delid:
+                            stmt = update(Articles).where(
+                                Articles.id == x
+                            ).values(
+                                id=delid
+                            )
+                            conn.execute(stmt)
+                            flash("Item {} is changed to {}".format(x,
+                                                                    form.delid.data), 'info')
+                        elif x == delid:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not changed to {}".format(x,
+                                                                        form.delid.data), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_main'))
+
+            elif form.rename.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_main'))
+
+            elif form.delete.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                if author is not None:
+                    articles = Articles.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n:
+                            stmt = delete(Articles).where(
+                                Articles.id == x)
+                            conn.execute(stmt)
+                            flash("Item {} is deleted!".format(x), 'info')
+                        elif x == n:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not deleted!".format(x), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_main'))
+
+            elif form.delete.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_main'))
+
+            elif form_next.validate_on_submit():
+                data = []
+                data_array = sql.session.query(Articles).filter(
+                    Articles.article_title.match(form.query.data)).all()
+                for x in data_array:
+                    data = x
+
+                return jsonify(id=str(data.id),
+                               title=data.article_title,
+                               author=data.article_author,
+                               category=data.article_category,
+                               date=data.article_date
+                               )
+
         return render_template('adminboard/adminboard_main.html',
                                form=form
                                )
@@ -115,55 +154,94 @@ class ViewUpdate(ViewDash):
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
         conn = engine.connect()
-        if (request.method == 'POST' and form.rename.data
-                and form.validate_on_submit()):
-            values = request.form
-            items = request.form.getlist('item_chb')
-            if author is not None:
-                stmt = update(Content).where(
-                    Content.id == request.form['item_chb']
-                ).values(
-                    id=request.form['delid']
-                )
-                conn.execute(stmt)
-                flash("Item is updated!", 'info')
-                return redirect(url_for('show_dashboard_inner'))
-            elif author is not None:
-                mixed = items, values[:-2]
-                for index in mixed:
-                    stmt = update(Content).where(
-                        Content.id == index[0]
-                    ).values(
-                        id=index[1]
-                    )
-                    conn.execute(stmt)
-                flash("Items is updated!", 'info')
-                return redirect(url_for('show_dashboard_inner'))
-        elif (request.method == 'POST' and form.delete.data
-              and form.validate_on_submit()):
-            items = request.form.getlist('items_chb')
-            stmt = delete(Content).where(
-                Content.id == request.form['item_chb'])
-            conn.execute(stmt)
-            flash("Item is deleted!", 'info')
-            return redirect(url_for('show_dashboard_inner'))
-        elif request.method == 'POST' and form_next.validate_on_submit():
-            data = []
-            data_array = sql.session.query(Content).filter(
-                Content.content_title.match(request.form['query']
-                                            )).all()
-            for x in data_array:
-                data = x
 
-            return jsonify(id=str(data.id),
-                           title=data.content_title,
-                           author=data.content_author,
-                           category=data.content_category,
-                           date=data.content_date
-                           )
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_inner'))
+        if request.method == 'POST':
+            if form.rename.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                # form.delid.data is the unicode list thing which
+                # we convert to integer using regexp
+                delid = int(re.search("\d+", str(form.delid.data)).group())
+
+                if author is not None:
+                    articles = Content.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n and x != delid:
+                            stmt = update(Content).where(
+                                Content.id == x
+                            ).values(
+                                id=delid
+                            )
+                            conn.execute(stmt)
+                            flash("Item {} is changed to {}".format(x,
+                                                                    form.delid.data), 'info')
+                        elif x == delid:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not changed to {}".format(x,
+                                                                        form.delid.data), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_inner'))
+
+            elif form.rename.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_inner'))
+
+            elif form.delete.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                if author is not None:
+                    articles = Content.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n:
+                            stmt = delete(Content).where(
+                                Content.id == x)
+                            conn.execute(stmt)
+                            flash("Item {} is deleted!".format(x), 'info')
+                        elif x == n:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not deleted!".format(x), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_inner'))
+
+            elif form.delete.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_inner'))
+            elif form_next.validate_on_submit():
+                data = []
+                data_array = sql.session.query(Content).filter(
+                    Content.content_title.match(form.query.data)).all()
+                for x in data_array:
+                    data = x
+
+                return jsonify(id=str(data.id),
+                               title=data.content_title,
+                               author=data.content_author,
+                               category=data.content_category,
+                               date=data.content_date
+                               )
+
         return render_template('adminboard/adminboard_inner.html',
                                form=form
                                )
@@ -175,53 +253,93 @@ class ViewUpdate(ViewDash):
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
         conn = engine.connect()
-        if (request.method == 'POST' and form.rename.data
-                and form.validate_on_submit()):
-            values = request.form
-            items = request.form.getlist('item_chb')
-            if author is not None:
-                stmt = update(Categories).where(
-                    Categories.id == request.form['item_chb']
-                ).values(
-                    id=request.form['delid']
-                )
-                conn.execute(stmt)
-                flash("Item is updated!", 'info')
-                return redirect(url_for('show_dashboard_category'))
-            elif author is not None:
-                mixed = items, values[:-2]
-                for index in mixed:
-                    stmt = update(Categories).where(
-                        Categories.id == index[0]
-                    ).values(
-                        id=index[1]
-                    )
-                    conn.execute(stmt)
-                flash("Items is updated!", 'info')
-                return redirect(url_for('show_dashboard_category'))
-        elif (request.method == 'POST' and form.delete.data
-              and form.validate_on_submit()):
-            items = request.form.getlist('items_chb')
-            stmt = delete(Categories).where(
-                Categories.id == request.form['item_chb'])
-            conn.execute(stmt)
-            flash("Item is deleted!", 'info')
-            return redirect(url_for('show_dashboard_category'))
-        elif request.method == 'POST' and form_next.validate_on_submit():
-            data = []
-            data_array = sql.session.query(Categories).filter(
-                Categories.category_title.match(request.form['query']
-                                                )).all()
-            for x in data_array:
-                data = x
 
-            return jsonify(id=str(data.id),
-                           title=data.category_title,
-                           date=data.category_date
-                           )
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_category'))
+        if request.method == 'POST':
+            if form.rename.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                # form.delid.data is the unicode list thing which
+                # we convert to integer using regexp
+                delid = int(re.search("\d+", str(form.delid.data)).group())
+
+                if author is not None:
+                    articles = Categories.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n and x != delid:
+                            stmt = update(Categories).where(
+                                Categories.id == x
+                            ).values(
+                                id=delid
+                            )
+                            conn.execute(stmt)
+                            flash("Item {} is changed to {}".format(x,
+                                                                    form.delid.data), 'info')
+                        elif x == delid:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not changed to {}".format(x,
+                                                                        form.delid.data), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_category'))
+
+            elif form.rename.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_category'))
+
+            elif form.delete.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                if author is not None:
+                    articles = Categories.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n:
+                            stmt = delete(Categories).where(
+                                Categories.id == x)
+                            conn.execute(stmt)
+                            flash("Item {} is deleted!".format(x), 'info')
+                        elif x == n:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not deleted!".format(x), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_category'))
+
+            elif form.delete.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_category'))
+
+            elif form_next.validate_on_submit():
+                data = []
+                data_array = sql.session.query(Categories).filter(
+                    Categories.category_title.match(form.query.data)).all()
+                for x in data_array:
+                    data = x
+
+                return jsonify(id=str(data.id),
+                               title=data.category_title,
+                               date=data.category_date
+                               )
+
         return render_template('adminboard/adminboard_category.html',
                                form=form
                                )
@@ -233,44 +351,85 @@ class ViewUpdate(ViewDash):
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
         conn = engine.connect()
-        if (request.method == 'POST' and form.rename.data
-                and form.validate_on_submit()):
-            values = request.form
-            items = request.form.getlist('item_chb')
-            if author is not None:
-                conn = engine.connect()
-                stmt = update(Users).where(
-                    Users.id == request.form['item_chb']
-                ).values(
-                    id=request.form['delid']
-                )
-                conn.execute(stmt)
-                flash("Item is updated!", 'info')
+
+        if request.method == 'POST':
+            if form.rename.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                # form.delid.data is the unicode list thing which
+                # we convert to integer using regexp
+                delid = int(re.search("\d+", str(form.delid.data)).group())
+
+                if author is not None:
+                    articles = Users.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n and x != delid:
+                            stmt = update(Users).where(
+                                Users.id == x
+                            ).values(
+                                id=delid
+                            )
+                            conn.execute(stmt)
+                            flash("Item {} is changed to {}".format(x,
+                                                                    form.delid.data), 'info')
+                        elif x == delid:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not changed to {}".format(x,
+                                                                        form.delid.data), 'error')
+                else:
+                    return redirect(url_for('show_login'))
                 return redirect(url_for('show_dashboard_users'))
-            elif author is not None:
-                mixed = items, values[:-2]
-                for index in mixed:
-                    stmt = update(Users).where(
-                        Users.id == index[0]
-                    ).values(
-                        id=index[1]
-                    )
-                    conn.execute(stmt)
-                flash("Items is updated!", 'info')
+
+            elif form.rename.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
                 return redirect(url_for('show_dashboard_users'))
-        elif (request.method == 'POST' and form.delete.data
-              and form.validate_on_submit()):
-            items = request.form.getlist('items_chb')
-            stmt = delete(Users).where(
-                Users.id == request.form['item_chb'])
-            conn.execute(stmt)
-            flash("Item is deleted!", 'info')
-            return redirect(url_for('show_dashboard_users'))
-        elif request.method == 'POST' and form_next.validate_on_submit():
+
+            elif form.delete.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                if author is not None:
+                    articles = Users.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n:
+                            stmt = delete(Users).where(
+                                Users.id == x)
+                            conn.execute(stmt)
+                            flash("Item {} is deleted!".format(x), 'info')
+                        elif x == n:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not deleted!".format(x), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_users'))
+
+            elif form.delete.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_users'))
+
+        elif form_next.validate_on_submit():
             data = []
             data_array = sql.session.query(Users).filter(
-                Users.login.match(request.form['query']
-                                  )).all()
+                Users.login.match(form.query.data)).all()
             for x in data_array:
                 data = x
 
@@ -279,9 +438,7 @@ class ViewUpdate(ViewDash):
                            email=data.email,
                            date=data.regdate
                            )
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_users'))
+
         return render_template('adminboard/adminboard_users.html',
                                form=form
                                )
@@ -296,97 +453,154 @@ class ViewUpdate(ViewDash):
     # TODO: add arg self to the decorator
     def update_dashboard_media():
         form_mkdir = dashboard_filesform.DashboardMkdirForm()
+        form_cddir = dashboard_filesform.DashboardCddirForm()
         form_upload = dashboard_filesform.DashboardUploadForm()
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
 
-        # import pdb; pdb.set_trace()
-
-        if (form_files.rename.data and request.method == 'POST'
-                and form_files.validate_on_submit()):
-
-            if (len(request.form.getlist('item_chb')) == 1
-                    and len(request.form.getlist('delid')) == 1
-                    and isinstance(request.form['addressbar'], str)):
-                old_object = "{}{}{}".format(app.root_path,
-                                             request.form['addressbar'],
-                                             request.form.get('item_chb'))
-                new_object = "{}{}{}".format(app.root_path,
-                                             request.form['addressbar'],
-                                             form_files.delid.data)
-
-                if isfile(old_object) and exists(old_object):
-                    fileserving.rename_file_dir(old_object, new_object)
-                    flash("{} is renamed to {}".format(old_object,
-                                                       new_object), 'info')
-                else:
-                    flash("{} is not renamed to {}".format(old_object,
-                                                           new_object), 'error')
-                return redirect(url_for('show_dashboard_media'))
-
-        elif (form_mkdir.cddir.data
-              and request.method == 'POST'
-              and form_mkdir.validate_on_submit()):
-            get_path = form_files.cddir.data
-            if exists(get_path):
-                fileserving.show_files(get_path)
-                flash("Location is changed to {} ".format(get_path), 'info')
-                return redirect(url_for('show_dashboard_media'))
-
-            else:
-                flash("Location is not changed to {} ".format(get_path), 'error')
-                return redirect(url_for('show_dashboard_media'))
-
-        elif (form_files.delete.data
-              and request.method == 'POST'
-              and form_files.validate_on_submit()):
-            get_object = "{}{}{}".format(app.root_path,
-                                         request.form['addressbar'],
-                                         request.form['delid'])
-            if isfile(get_object) and exists(get_object):
-                fileserving.del_file_dir(get_object)
-                flash("{} is deleted".format(get_object), 'info')
-            else:
-                flash("{} was not deleted".format(get_object), 'error')
-            return redirect(url_for('show_dashboard_media'))
-
-        elif form_mkdir.mkdir.data:
-            get_dirname = form_mkdir.cdir.data
-            fileserving.make_dir(get_dirname)
-            flash("{} is created".format(get_dirname), 'info')
-            return redirect(url_for('show_dashboard_media'))
-
-        elif (form_upload.f_upload.data is not False
-              and request.method == 'POST'
-              and form_upload.validate_on_submit()):
+        if request.method == 'POST':
             file = request.files['f_upload']
+
+            # when working in upload context check if unwanted buttons are not pressed
+            if (file.filename == ''
+                    and form_cddir.cddir.data is False
+                    and form_mkdir.mkdir.data is False
+                    and form_files.rename.data is False
+                    and form_files.delete.data is False
+                    and form_upload.validate_on_submit()):
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
             # check if the post request has the file part
-            if 'f_upload' not in request.files:
+            elif 'f_upload' not in request.files:
                 flash('No file part')
                 return redirect(request.url)
-            # if user does not select file, browser also
-            # submit a empty part without filename
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
 
-            if file and fileserving.allowed_file(file.filename) and "{}{}".format(app.root_path,
-                                                                                  request.form['addressbar']):
-                filename = secure_filename(file.filename)
-                fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
-                if filename and fpath:
-                    file.save(fpath)
-                    flash("{}{} is uploaded".format(request.form['addressbar'], filename), 'info')
-                else:
-                    flash("{}{} is not uploaded".format(request.form['addressbar'], filename), 'error')
+            # when working in upload context check if unwanted buttons are not pressed
+            elif (file.filename
+                  and form_cddir.cddir.data is False
+                  and form_mkdir.mkdir.data is False
+                  and form_files.rename.data is False
+                  and form_files.delete.data is False
+                  and form_upload.validate_on_submit()):
+
+                # when working in upload context check if unwanted buttons are not pressed
+                if (file.filename
+                        and form_cddir.cddir.data is False
+                        and form_mkdir.mkdir.data is False
+                        and form_files.rename.data is False
+                        and form_files.delete.data is False
+                        and fileserving.allowed_file(file.filename)
+                        and exists("{}{}".format(app.root_path,
+                                                 request.form['addressbar']))):
+                    filename = secure_filename(file.filename)
+                    fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
+                    if filename and exists(fpath) is False:
+                        file.save(fpath)
+                        flash("{}{} is uploaded".format(request.form['addressbar'], filename), 'info')
+                    elif exists(fpath):
+                        flash("{}{} is exists".format(request.form['addressbar'], filename), 'error')
+                    else:
+                        flash("{}{} is not uploaded".format(request.form['addressbar'], filename), 'error')
+
                 return redirect(url_for('show_dashboard_media'))
 
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_media'))
+            # TODO: check mkdir and cddir
+            elif (form_cddir.cddir.data
+                  and form_cddir.validate_on_submit()):
 
+                get_path = str(form_cddir.addressbar.data)
+
+                if (exists("{}{}".format(app.root_path, get_path))
+                        and isdir("{}{}".format(app.root_path, get_path))):
+
+                    """with open("{}/static/get_path.tmp".format(app.root_path), 'w') as f:
+                        f.write(get_path)"""
+
+                    f = open("{}/static/get_path.tmp".format(app.root_path), 'w')
+                    f.write(get_path)
+                    f.close()
+
+                    fileserving.show_files(get_path)
+                    flash("Location is changed to {} ".format(get_path), 'info')
+                else:
+                    flash("Location is not changed to {} ".format(get_path), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_cddir.cddir.data is True and form_cddir.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_mkdir.mkdir.data
+                  and form_mkdir.validate_on_submit()):
+
+                get_root_dirname = "{}{}".format(app.root_path, form_mkdir.addressbar.data)
+                newdirname = form_mkdir.newdirname.data
+
+                if exists(get_root_dirname) is True:
+                    if exists("{}{}".format(get_root_dirname, newdirname)) is False and newdirname is not None:
+                        fileserving.make_dir("{}{}".format(get_root_dirname, newdirname))
+                        flash("Directory {}{} is created".format(get_root_dirname, newdirname), 'info')
+                    elif exists("{}{}".format(get_root_dirname, newdirname)) is True and newdirname is not None:
+                        flash("Directory {}{} is exists".format(get_root_dirname, newdirname), 'error')
+                else:
+                    flash("Directory {} is not exist. Please check the path".format(get_root_dirname), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_mkdir.mkdir.data is True and form_mkdir.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_files.rename.data
+                  and form_files.validate_on_submit()):
+
+                if (len(request.form.getlist('item_chb')) == 1
+                        and len(request.form.getlist('delid')) == 1
+                        and isinstance(request.form['addressbar'], unicode)):
+                    old_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 request.form.get('item_chb'))
+                    new_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 form_files.delid.data)
+
+                    if exists(old_object):
+                        fileserving.rename_file_dir(old_object, new_object)
+                        flash("{} is renamed to {}".format(old_object,
+                                                           new_object), 'info')
+                    else:
+                        flash("{} is not renamed to {}".format(old_object,
+                                                               new_object), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_files.rename.data is True and form_files.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_files.delete.data
+                  and form_files.validate_on_submit()):
+
+                if (len(request.form.getlist('item_chb')) == 1
+                        and isinstance(request.form['addressbar'], unicode)):
+                    get_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 request.form['item_chb'])
+                    if exists(get_object):
+                        fileserving.del_file_dir(get_object)
+                        flash("{} is deleted".format(get_object), 'info')
+                    else:
+                        flash("{} was not deleted".format(get_object), 'error')
+                    return redirect(url_for('show_dashboard_media'))
+
+            elif form_files.delete.data is True and form_files.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            return render_template('adminboard/adminboard_media.html',
+                                   form=form_mkdir
+                                   )
         return render_template('adminboard/adminboard_media.html',
-                               form=form_files
+                               form=form_mkdir
                                )
 
     @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
@@ -396,44 +610,85 @@ class ViewUpdate(ViewDash):
         form_next = dashboard_searchform.DashboardSearchForm()
         author = g.user
         conn = engine.connect()
-        if (request.method == 'POST' and request.form.get('rename', None)
-                and form.validate_on_submit()):
-            values = request.form
-            items = request.form.getlist('item_chb')
-            if author is not None:
-                conn = engine.connect()
-                stmt = update(Users).where(
-                    Users.id == request.form['item_chb']
-                ).values(
-                    id=request.form['delid']
-                )
-                conn.execute(stmt)
-                flash("Item is updated!", 'info')
+
+        if request.method == 'POST':
+            if form.rename.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                # form.delid.data is the unicode list thing which
+                # we convert to integer using regexp
+                delid = int(re.search("\d+", str(form.delid.data)).group())
+
+                if author is not None:
+                    articles = Users.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n and x != delid:
+                            stmt = update(Users).where(
+                                Users.id == x
+                            ).values(
+                                id=delid
+                            )
+                            conn.execute(stmt)
+                            flash("Item {} is changed to {}".format(x,
+                                                                    form.delid.data), 'info')
+                        elif x == delid:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not changed to {}".format(x,
+                                                                        form.delid.data), 'error')
+                else:
+                    return redirect(url_for('show_login'))
                 return redirect(url_for('show_dashboard_settings'))
-            elif author is not None:
-                mixed = items, values[:-2]
-                for index in mixed:
-                    stmt = update(Users).where(
-                        Users.id == index[0]
-                    ).values(
-                        id=index[1]
-                    )
-                    conn.execute(stmt)
-                flash("Items is updated!", 'info')
+
+            elif form.rename.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
                 return redirect(url_for('show_dashboard_settings'))
-        elif (request.method == 'POST' and request.form.get('delete', None)
-              and form.validate_on_submit()):
-            items = request.form.getlist('items_chb')
-            stmt = delete(Users).where(
-                Users.id == request.form['item_chb'])
-            conn.execute(stmt)
-            flash("Item is deleted!", 'info')
-            return redirect(url_for('show_dashboard_settings'))
-        elif request.method == 'POST' and form_next.validate_on_submit():
+
+            elif form.delete.data and form.validate_on_submit():
+                checkboxes = request.form.getlist('item_chb')
+
+                if author is not None:
+                    articles = Users.query.all()
+                    n = None
+                    for x in checkboxes:
+
+                        # x is the unicode list thing which
+                        # we convert to integer using regexp
+                        x = int(re.search("\d+", str(x)).group())
+
+                        for art_id in articles:
+                            if art_id.id == x:
+                                n = art_id.id
+                        if x == n:
+                            stmt = delete(Users).where(
+                                Users.id == x)
+                            conn.execute(stmt)
+                            flash("Item {} is deleted!".format(x), 'info')
+                        elif x == n:
+                            flash("Item {} is exists".format(x), 'error')
+                        else:
+                            flash("Item {} is not deleted!".format(x), 'error')
+                else:
+                    return redirect(url_for('show_login'))
+                return redirect(url_for('show_dashboard_settings'))
+
+            elif form.delete.data is True and form.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_settings'))
+
+        elif form_next.validate_on_submit():
             data = []
             data_array = sql.session.query(Users).filter(
-                Users.login.match(request.form['query']
-                                  )).all()
+                Users.login.match(form.query.data)).all()
             for x in data_array:
                 data = x
 
@@ -442,9 +697,6 @@ class ViewUpdate(ViewDash):
                            email=data.email,
                            date=data.regdate
                            )
-        else:
-            flash("Items are not updated or deleted!", 'error')
-            return redirect(url_for('show_dashboard_settings'))
 
         return render_template('adminboard/adminboard_settings.html',
                                form=form
@@ -452,61 +704,118 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_filemanager/', methods=['GET', 'POST'])
     def upload_file():
-        fileserving = FileBrowser()
         form_mkdir = dashboard_filesform.DashboardMkdirForm()
+        form_upload = dashboard_filesform.DashboardUploadForm()
         form_files = dashboard_filesform.DashboardFilesForm()
-        if request.method == 'POST' and form_files.validate_on_submit():
-            if request.form['delete']:
-                get_object = "{}/static/images/{}".format(app.root_path,
-                                                          request.form['delid'])
-                fileserving.del_file_dir(get_object)
+        fileserving = FileBrowser()
 
-            if request.form['rename'] and form_files.validate_on_submit():
-                old_object = "{}/static/images/{}".format(app.root_path,
-                                                          request.form['item_chb'])
-                new_object = "{}/static/images/{}".format(app.root_path,
-                                                          request.form['delid'])
-                if isfile(old_object) and exists(old_object):
-                    fileserving.rename_file_dir(old_object, new_object)
-                    flash("{} is renamed to {}".format(old_object,
-                                                       new_object), 'info')
-                else:
-                    flash("{} is not renamed to {}".format(old_object, new_object),
-                          'error')
-            else:
-                flash("No button is pressed", 'error')
+        if request.method == 'POST':
 
-            if request.form['cddir'] and form_files.validate_on_submit():
-                get_path = form_files.cddir.data
-                if exists(get_path):
-                    fileserving.show_files(get_path)
-                    flash("Location is changed to {} ".format(get_path), 'info')
+            if (form_upload.f_upload.data
+                    and form_upload.validate_on_submit()):
+                file = request.files['f_upload']
+                # check if the post request has the file part
+                if 'f_upload' not in request.files:
+                    flash('No file part')
+                    return redirect(request.url)
 
-                else:
-                    flash("Location is not changed to {} ".format(get_path), 'error')
+                elif (file.filename
+                      and fileserving.allowed_file(file.filename)
+                      and exists("{}{}".format(app.root_path,
+                                               request.form['addressbar']))):
+                    filename = secure_filename(file.filename)
+                    fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
+                    if filename and exists(fpath) is False:
+                        file.save(fpath)
+                        flash("{}{} is uploaded".format(request.form['addressbar'], filename), 'info')
+                    elif exists(fpath):
+                        flash("{}{} is exists".format(request.form['addressbar'], filename), 'error')
+                    else:
+                        flash("{}{} is not uploaded".format(request.form['addressbar'], filename), 'error')
 
-            if request.form['mkdir'] and form_mkdir.validate_on_submit():
-                get_dirname = form_files.cdir.data
-                fileserving.make_dir(get_dirname)
                 return redirect(url_for('show_dashboard_media'))
 
-            # check if the post request has the file part
-            if 'file' not in request.files:
-                flash('No file part')
-                return redirect(request.url)
-            file = request.files['file']
+            # TODO: check mkdir && cddir
+            elif (form_mkdir.cddir.data
+                  and form_mkdir.validate_on_submit()):
 
-            # if user does not select file, browser also
-            # submit a empty part without filename
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(request.url)
+                get_path = form_mkdir.addressbar.data
 
-            if file and fileserving.allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('uploaded_file',
-                                        filename=filename))
+                if exists("{}{}".format(app.root_path, get_path)):
+                    fileserving.show_files(get_path)
+                    flash("Location is changed to {} ".format(get_path), 'info')
+                else:
+                    flash("Location is not changed to {} ".format(get_path), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_mkdir.cddir.data is True and form_mkdir.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_mkdir.mkdir.data
+                  and form_mkdir.validate_on_submit()):
+
+                get_root_dirname = "{}{}".format(app.root_path, form_mkdir.addressbar.data)
+                newdirname = form_mkdir.newdirname.data
+
+                if exists(get_root_dirname) is True:
+                    if exists("{}{}".format(get_root_dirname, newdirname)) is False and newdirname is not None:
+                        fileserving.make_dir("{}{}".format(get_root_dirname, newdirname))
+                        flash("Directory {}{} is created".format(get_root_dirname, newdirname), 'info')
+                    elif exists("{}{}".format(get_root_dirname, newdirname)) is True and newdirname is not None:
+                        flash("Directory {}{} is exists".format(get_root_dirname, newdirname), 'error')
+                else:
+                    flash("Directory {} is not exist. Please check the path".format(get_root_dirname), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_mkdir.mkdir.data is True and form_mkdir.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_files.rename.data
+                  and form_files.validate_on_submit()):
+
+                if (len(request.form.getlist('item_chb')) == 1
+                        and len(request.form.getlist('delid')) == 1
+                        and isinstance(request.form['addressbar'], unicode)):
+                    old_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 request.form.get('item_chb'))
+                    new_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 form_files.delid.data)
+
+                    if exists(old_object):
+                        fileserving.rename_file_dir(old_object, new_object)
+                        flash("{} is renamed to {}".format(old_object,
+                                                           new_object), 'info')
+                    else:
+                        flash("{} is not renamed to {}".format(old_object,
+                                                               new_object), 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif form_files.rename.data is True and form_files.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            elif (form_files.delete.data
+                  and form_files.validate_on_submit()):
+
+                if (len(request.form.getlist('item_chb')) == 1
+                        and isinstance(request.form['addressbar'], unicode)):
+                    get_object = "{}{}{}".format(app.root_path,
+                                                 request.form['addressbar'],
+                                                 request.form['item_chb'])
+                    if exists(get_object):
+                        fileserving.del_file_dir(get_object)
+                        flash("{} is deleted".format(get_object), 'info')
+                    else:
+                        flash("{} was not deleted".format(get_object), 'error')
+                    return redirect(url_for('show_dashboard_media'))
+
+            elif form_files.delete.data is True and form_files.validate_on_submit() is False:
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
 
         return render_template('adminboard/adminboard_filemanager.html',
                                form=form_files

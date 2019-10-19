@@ -17,10 +17,14 @@
  */
 
 function ajaxFiles(query_type, attach, urlname) {
-	    
-	    var form = $(attach)[0];
-        var formID = new FormData(form);
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
+
+
+         if (attach != null
+             && query_type != null
+             && urlname != null) {
+
+	         var form = $(attach)[0];
+             var formID = new FormData(form);
 
             $.ajax({
                 type: query_type,
@@ -33,7 +37,7 @@ function ajaxFiles(query_type, attach, urlname) {
                 }
 
             })
-
+        }
 }
 
 function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
@@ -63,8 +67,8 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
                  }
 
              })
-          }
 
+          }
 }
 
 function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict) {
@@ -82,14 +86,11 @@ function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn,
                 data: formID,
                 dataType: 'json',
                 encode: true,
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
-            }
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
 
-        })
+            })
 
 }    
 
@@ -110,14 +111,11 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
                 data: formID,
                 dataType: 'json',
                 encode: true,
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
-            }
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
 
-        })
+            })
 
 }    
 
@@ -363,15 +361,10 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_media/') {
 
         // ADMINBOARD FILE CRUD BLOCK
-        $('#upload_submit').click(function (upev) {
+        /*$('#upload_submit').click(function (upev) {
             upev.preventDefault();
-            ajaxFiles('POST', '#formnav', '/adminboard/adminboard_media/');
-        });
-
-        $('#mkdir-submit').click(function (mkev) {
-            mkev.preventDefault();
-            formElemIdentify(currentpage, this);
-        });
+            ajaxFiles('POST', '#formnav', currentpage);
+        });*/
 
         $('#rename').click(function (rev) {
             if ($('input[name=item_chb]:checked').length === 1) {

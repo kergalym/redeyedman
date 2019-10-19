@@ -26,13 +26,19 @@ class DashboardMkdirForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     newdirname = TextField('newdirname', validators=[DataRequired()])
 
-    cddir = SubmitField('cddir')
     mkdir = SubmitField('mkdir')
+
+
+class DashboardCddirForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+
+    cddir = SubmitField('cddir')
 
 
 class DashboardUploadForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
-    f_upload = SubmitField('f_upload')
+    # f_upload = BooleanField('f_upload')
+    # upload = SubmitField('upload')
 
 
 class DashboardFilesForm(Form):

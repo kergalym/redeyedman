@@ -75,11 +75,11 @@
 							<form id="formnav" name="formnav" class="form_class" method="post" enctype="multipart/form-data" action="{{ request.path }}">
                                 {{ form.csrf_token }}
 								<li> <label class="button f-upload" style="cursor: pointer;">Выбрать файл<input type="file" name="f_upload" value="Обзор" id="f_upload" multiple /></label></li>
-								<li><input type="submit" name="submit" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
+								<li><input type="submit" name="upload" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
 								<li><input type="submit" name="cddir" value="Перейти в каталог" class="button"  id="cd-submit" enabled=""/></li>		
 								<li><input type="submit" name="mkdir" value="Создать каталог" class="button" id="mkdir-submit" enabled=""/></li>		
-								<li><input type="submit"  id="rename" name="rename" value="Переименовать файл" class="button" enabled=""/></li>
-								<li><input type="submit" id="delete" name="delete" value="Удалить файл" class="button" enabled=""/></li>
+								<li><input type="submit" name="rename" value="Переименовать файл" class="button" id="rename" enabled=""/></li>
+								<li><input type="submit" name="delete" value="Удалить файл" class="button" enabled=""/></li>
 								<li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
 
 						</ul>
@@ -103,7 +103,7 @@
 
 					<div class="addressbar">
 						<input type='text' id='text' name='addressbar' value='{{ get_relpath }}' size='1' style="width: 50%"  required placeholder="Путь файлового менеджера"/>
-						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/> 
+						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/>
 					</div>
 					<div class="table-responsive">                       
                         {% with messages = get_flashed_messages(with_categories=true) %}

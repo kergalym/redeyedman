@@ -26,7 +26,6 @@ from os import listdir
 from os import chmod
 from os.path import isdir
 from os.path import isfile
-from os.path import join
 from datetime import datetime
 
 
@@ -114,18 +113,17 @@ class FileBrowser:
             return False
 
     def show_files(self, get_path):
-        self.get_path = get_path
+        # get_path is unicode string, make it simple tring
+        self.get_path = str(get_path)
         files = []
-        if isinstance(self.get_path, str):
-            # Delete first slash for join
-            self.get_path = self.get_path.lstrip('/')
-            if isdir(join(app.root_path, self.get_path)):
-                f_list = listdir(join(app.root_path, self.get_path))
+        if (isinstance(self.get_path, str)
+                and isdir("{}{}".format(app.root_path, self.get_path))):
+                f_list = listdir("{}{}".format(app.root_path, self.get_path))
                 for num, file_x, in enumerate(f_list, 1):
                     inner = [
                         {"id": "{}".format(
                             num),
-                            "relpath": "/{}{}".format(
+                            "relpath": "{}{}".format(
                                 self.get_path, file_x
                             ),
                             "name": "{}".format(
@@ -150,7 +148,7 @@ class FileBrowser:
                     files += inner
                 return files
         else:
-            return "{} is not a directory".format(self.get_path)
+            return "{}{} is not a directory".format(app.root_path, self.get_path)
 
     def change_own(self, get_path):
         self.get_path = get_path

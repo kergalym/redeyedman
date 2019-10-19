@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+from os.path import exists
 
 from application import app
 from application import sql
@@ -312,14 +313,24 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
-        offset = 0
         f = None
+        get_relpath = None
 
         if not users and pages is None:
             abort(404)
         else:
+
+            if exists("{}/static/get_path.tmp".format(app.root_path)) is False:
+                get_relpath = "/static/images/"
+            elif exists("{}/static/get_path.tmp".format(app.root_path)):
+                with open("{}/static/get_path.tmp".format(app.root_path), 'r') as f:
+                    get_relpath = f.read()
+
             limit = per_page
-            get_relpath = "/static/images/"
+
+            if get_relpath == '':
+                get_relpath = "/static/images/"
+
             files = browser.show_files(get_relpath)
             offset = ((pages - 1) * per_page)
             if pages == 0 or pages == 1:
