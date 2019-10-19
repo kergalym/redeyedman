@@ -78,20 +78,3 @@ $(document).ready(function() {
         } 
     });
 });
-
-
-// First, checks if it isn't implemented yet.
-if (!String.prototype.format) {
-    String.prototype.format = function () {
-        var args = arguments;
-        var sprintfRegex = /\{(\d+)\}/g;
-
-        var sprintf = function (match, number) {
-            return number in args ? args[number] : match;
-        };
-
-        return this.replace(sprintfRegex, sprintf);
-    };
-}
-
-document.getElementById("msg").innerHTML = "{1} {2} -{0}".format(Date(), "Hello", "World");

@@ -13,13 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-import shutil
 
 from application import app, ALLOWED_EXTENSIONS
 from os import stat
 from os import path
 from os import rename
-from os import remove, rmdir
+from os import remove
 from os import mkdir
 from os import getcwd
 from os import listdir
@@ -27,6 +26,7 @@ from os import chmod
 from os.path import isdir
 from os.path import isfile
 from datetime import datetime
+import shutil
 
 
 class FileBrowser:
