@@ -505,7 +505,6 @@ class ViewUpdate(ViewDash):
 
                 return redirect(url_for('show_dashboard_media'))
 
-            # TODO: check mkdir and cddir
             elif (form_cddir.cddir.data
                   and form_cddir.validate_on_submit()):
 
@@ -514,12 +513,8 @@ class ViewUpdate(ViewDash):
                 if (exists("{}{}".format(app.root_path, get_path))
                         and isdir("{}{}".format(app.root_path, get_path))):
 
-                    """with open("{}/static/get_path.tmp".format(app.root_path), 'w') as f:
-                        f.write(get_path)"""
-
-                    f = open("{}/static/get_path.tmp".format(app.root_path), 'w')
-                    f.write(get_path)
-                    f.close()
+                    with open("{}/static/get_path.tmp".format(app.root_path), 'w') as f:
+                        f.write(get_path)
 
                     fileserving.show_files(get_path)
                     flash("Location is changed to {} ".format(get_path), 'info')
