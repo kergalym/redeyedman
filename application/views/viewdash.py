@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-from os.path import exists
+from os import remove
+from os.path import exists, isfile
 
 from application import app
 from application import sql
@@ -103,6 +104,9 @@ class ViewDash:
     def user_logout():
         logout_user()
         session.clear()
+        if (exists(("{}/static/get_path.tmp".format(app.root_path)))
+                and isfile(("{}/static/get_path.tmp".format(app.root_path)))):
+            remove("{}/static/get_path.tmp".format(app.root_path))
         return redirect(url_for('show_login'))
 
     @app.route('/adminboard/')

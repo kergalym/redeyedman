@@ -44,6 +44,5 @@ class Backup:
                 tar.add(site_path[-2],
                         arcname=os.path.basename(backup_path))
         else:
-            # print "No tool for export the database or destination isn't exist. " \
-            # + "Please, contact to administrator"
-            return "IOEror"
+            return "No tool for export the database or destination isn't exist. " \
+                   "Please, contact to administrator".format()

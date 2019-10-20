@@ -13,9 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-import pwd
 
 from application import app, ALLOWED_EXTENSIONS
+from application.core.datalogics import SysInfo
 from os import stat
 from os import rename
 from os import remove
@@ -41,6 +41,7 @@ class FileBrowser:
         self.attr = None
         self.get_path = None
         self.sbytes = None
+        self.sysinfo = SysInfo()
 
     def allowed_file(self, filename):
         self.filename = filename
@@ -77,22 +78,13 @@ class FileBrowser:
         pass
         # TODO: shutil.copytree and shutil.move
 
-    def conv_bytes(self, num):
-        """
-        Convert bytes to MB.... GB... etc
-        """
-        for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-            if num < 1024.0:
-                return "{} {}".format(round(float(num), 1), x)
-            num /= 1024.0
-
     def file_size(self, file_path):
         """
         Return the file size
         """
         if isfile(file_path):
             file_info = stat(file_path)
-            return self.conv_bytes(file_info.st_size)
+            return self.sysinfo.conv_bytes(file_info.st_size)
 
     def file_attr(self, object, attribute):
         """
