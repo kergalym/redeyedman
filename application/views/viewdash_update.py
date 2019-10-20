@@ -700,24 +700,46 @@ class ViewUpdate(ViewDash):
     @app.route('/adminboard/adminboard_filemanager/', methods=['GET', 'POST'])
     def upload_file():
         form_mkdir = dashboard_filesform.DashboardMkdirForm()
+        form_cddir = dashboard_filesform.DashboardCddirForm()
         form_upload = dashboard_filesform.DashboardUploadForm()
         form_files = dashboard_filesform.DashboardFilesForm()
         fileserving = FileBrowser()
 
         if request.method == 'POST':
+            file = request.files['f_upload']
 
-            if (form_upload.f_upload.data
+            # when working in upload context check if unwanted buttons are not pressed
+            if (file.filename == ''
+                    and form_cddir.cddir.data is False
+                    and form_mkdir.mkdir.data is False
+                    and form_files.rename.data is False
+                    and form_files.delete.data is False
                     and form_upload.validate_on_submit()):
-                file = request.files['f_upload']
-                # check if the post request has the file part
-                if 'f_upload' not in request.files:
-                    flash('No file part')
-                    return redirect(request.url)
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
 
-                elif (file.filename
-                      and fileserving.allowed_file(file.filename)
-                      and exists("{}{}".format(app.root_path,
-                                               request.form['addressbar']))):
+            # check if the post request has the file part
+            elif 'f_upload' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+
+            # when working in upload context check if unwanted buttons are not pressed
+            elif (file.filename
+                  and form_cddir.cddir.data is False
+                  and form_mkdir.mkdir.data is False
+                  and form_files.rename.data is False
+                  and form_files.delete.data is False
+                  and form_upload.validate_on_submit()):
+
+                # when working in upload context check if unwanted buttons are not pressed
+                if (file.filename
+                        and form_cddir.cddir.data is False
+                        and form_mkdir.mkdir.data is False
+                        and form_files.rename.data is False
+                        and form_files.delete.data is False
+                        and fileserving.allowed_file(file.filename)
+                        and exists("{}{}".format(app.root_path,
+                                                 request.form['addressbar']))):
                     filename = secure_filename(file.filename)
                     fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
                     if filename and exists(fpath) is False:
@@ -730,20 +752,24 @@ class ViewUpdate(ViewDash):
 
                 return redirect(url_for('show_dashboard_media'))
 
-            # TODO: check mkdir && cddir
-            elif (form_mkdir.cddir.data
-                  and form_mkdir.validate_on_submit()):
+            elif (form_cddir.cddir.data
+                  and form_cddir.validate_on_submit()):
 
-                get_path = form_mkdir.addressbar.data
+                get_path = str(form_cddir.addressbar.data)
 
-                if exists("{}{}".format(app.root_path, get_path)):
+                if (exists("{}{}".format(app.root_path, get_path))
+                        and isdir("{}{}".format(app.root_path, get_path))):
+
+                    with open("{}/static/get_path.tmp".format(app.root_path), 'w') as f:
+                        f.write(get_path)
+
                     fileserving.show_files(get_path)
                     flash("Location is changed to {} ".format(get_path), 'info')
                 else:
                     flash("Location is not changed to {} ".format(get_path), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
-            elif form_mkdir.cddir.data is True and form_mkdir.validate_on_submit() is False:
+            elif form_cddir.cddir.data is True and form_cddir.validate_on_submit() is False:
                 flash("No item selected", 'error')
                 return redirect(url_for('show_dashboard_media'))
 
@@ -811,6 +837,10 @@ class ViewUpdate(ViewDash):
             elif form_files.delete.data is True and form_files.validate_on_submit() is False:
                 flash("No item selected", 'error')
                 return redirect(url_for('show_dashboard_media'))
+
+            return render_template('adminboard/adminboard_media.html',
+                                   form=form_mkdir
+                                   )
 
         return render_template('adminboard/adminboard_filemanager.html',
                                form=form_files
