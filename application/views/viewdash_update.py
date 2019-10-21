@@ -866,7 +866,7 @@ class ViewUpdate(ViewDash):
             if form.conv_submit.data and form.validate_on_submit():
                 utils = Utils()
                 file_name = request.form['item_chb']
-                file_ext = request.form['item_chb']
+                file_ext = file_name[len(file_name)-3:]
                 if (file_name != ''
                         and file_ext != ''
                         and form.addressbar.data != ''
@@ -892,7 +892,7 @@ class ViewUpdate(ViewDash):
             elif form.measure_submit.data and form.validate_on_submit():
                 utils = Utils()
                 file_name = request.form['item_chb']
-                file_ext = request.form['item_chb']
+                file_ext = file_name[len(file_name)-3:]
                 if (file_name != ''
                         and file_ext != ''
                         and form.addressbar.data != ''):
