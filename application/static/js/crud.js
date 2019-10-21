@@ -113,31 +113,8 @@ function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qran
                 dataType: 'json',
                 encode: true,
                 complete: function (data) {
-                         $('#gfxconv#width').html(data['width']);
-                         $('#gfxconv#height').html(data['height']);
-                 }
-
-            })
-
-}
-
-
-function getSelectedFile(query_type, urlname, chkBtn, imgpathField, imgpath, csrf_token) {
-
-        var btnChBox = 'item_chb=' + chkBtn + '&';
-        var addressBar = imgpathField + '=' + imgpath + '&';
-        var csrf_token = 'csrf_token=' + csrf_token + '&';
-        var formID = addressBar + btnChBox + csrf_token;
-
-            $.ajax({
-                type: query_type,
-                url: urlname,
-                data: formID,
-                dataType: 'json',
-                encode: true,
-                 complete: function (data) {
-                         $('body').html(data.responseText);
-                         console.log(data.responseText);
+                         $('#width').html(data['width']);
+                         $('#height').html(data['height']);
                  }
 
             })

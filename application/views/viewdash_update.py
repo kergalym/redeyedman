@@ -860,7 +860,7 @@ class ViewUpdate(ViewDash):
         form = dashboard_filesform.GfxConvForm()
 
         import pdb;
-        pdb.set_trace()
+        #pdb.set_trace()
 
         if request.method == 'POST':
             if form.conv_submit.data and form.validate_on_submit():

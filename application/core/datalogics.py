@@ -201,6 +201,10 @@ class Utils(Base):
                         return {'status': "ERROR",
                                 'message': "Original file is not found"
                                 }
+                else:
+                    return {'status': "ERROR",
+                            'message': "Original file is not supported: {}".format(img_file[len(img_file)-3:])
+                            }
 
 
 class SysInfo(Base):
