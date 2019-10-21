@@ -71,14 +71,16 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
           }
 }
 
-function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict) {
+function gfxConv(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict, csrf_token) {
 
         var rawForm = $(form).serialize();
-        var btnSubmit = btnAct + '=' + btnAct + '&';
+        var btnSubmit = btnAct + '=True' + '&';
         var btnChBox = chkBtn + '=' + pict + '&';
         var addressBar = imgpathField + '=' + imgpath + '&';
         var qrange = qrangeField + '=' + qrange + '&';
-        var formID = addressBar + qrange + btnChBox + btnSubmit + rawForm;
+        var csrf_token = 'csrf_token=' + csrf_token + '&';
+        var formID = addressBar + qrange + btnChBox + btnSubmit + csrf_token + rawForm;
+        //console.log(formID);
 
             $.ajax({
                 type: query_type,
@@ -94,6 +96,54 @@ function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn,
 
 }    
 
+function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict, csrf_token) {
+
+        var rawForm = $(form).serialize();
+        var btnSubmit = btnAct + '=True' + '&';
+        var btnChBox = chkBtn + '=' + pict + '&';
+        var addressBar = imgpathField + '=' + imgpath + '&';
+        var qrange = qrangeField + '=' + qrange + '&';
+        var csrf_token = 'csrf_token=' + csrf_token + '&';
+        var formID = addressBar + qrange + btnChBox + btnSubmit + csrf_token + rawForm;
+
+            $.ajax({
+                type: query_type,
+                url: urlname,
+                data: formID,
+                dataType: 'json',
+                encode: true,
+                complete: function (data) {
+                         $('#gfxconv#width').html(data['width']);
+                         $('#gfxconv#height').html(data['height']);
+                 }
+
+            })
+
+}
+
+
+function getSelectedFile(query_type, urlname, chkBtn, imgpathField, imgpath, csrf_token) {
+
+        var btnChBox = 'item_chb=' + chkBtn + '&';
+        var addressBar = imgpathField + '=' + imgpath + '&';
+        var csrf_token = 'csrf_token=' + csrf_token + '&';
+        var formID = addressBar + btnChBox + csrf_token;
+
+            $.ajax({
+                type: query_type,
+                url: urlname,
+                data: formID,
+                dataType: 'json',
+                encode: true,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                         console.log(data.responseText);
+                 }
+
+            })
+
+}
+
 function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, content, radioField, radio) {
 
         var rawForm = $(form).serialize();
@@ -103,7 +153,6 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
         var content = contentField + '=' + content + '&';
         var radio = radioField + '=' + radio + '&';
         var formID = content + radio + btnChBox + btnSubmit + rawForm;
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
 
             $.ajax({
                 type: query_type,
@@ -273,7 +322,7 @@ $(document).ready(function () {
                     pub.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
+                    pubSwitch('POST', '#pubswitch',
                             '/adminboard/adminboard_main/',
                             btnAct, chkBtn, content, radioField, radio
                             );
@@ -329,7 +378,7 @@ $(document).ready(function () {
                     pub.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
+                    pubSwitch('POST', '#pubswitch',
                             '/adminboard/adminboard_inner/',
                             btnAct, chkBtn, content, radioField, radio
                             );
@@ -361,11 +410,6 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_media/') {
 
         // ADMINBOARD FILE CRUD BLOCK
-        /*$('#upload_submit').click(function (upev) {
-            upev.preventDefault();
-            ajaxFiles('POST', '#formnav', currentpage);
-        });*/
-
         $('#rename').click(function (rev) {
             if ($('input[name=item_chb]:checked').length === 1) {
                 rev.preventDefault();
@@ -391,13 +435,17 @@ $(document).ready(function () {
            var qrangeField = 'qrange';
            var qrange = '50';
            var isChecked = 0;
-            
+           var csrf_token = null;
+           var dict = null;
+
            if (this.checked) {
 
                 imgpathField = $("input[name*=addressbar]").attr("name");
                 imgpath = $("input[name*=addressbar]").attr("value");
+                csrf_token = $('input[name="csrf_token"]').attr("value");
                 pict = $(this).attr("value");
                 chkBtn = 'item_chb';
+                chkBtnValue = $(this).attr('value');
                 isChecked = 1;
 
                 $('#gfxconv_active').css('display', 'block');
@@ -406,19 +454,30 @@ $(document).ready(function () {
                 $("input[id*=qrange]").on('change', function () {
                     qrange = $(this).val();
                     $('#qval').text(qrange + "%");
-
                 });    
 
                 $('#conv_submit').click(function (conv) {
                     conv.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    gfxConv('warn_msg', '#9A2F2F', 'POST', '#gfxconv', 
-                            '/adminboard/adminboard_media/',
+                    gfxConv('POST', '#gfxconv',
+                            '/adminboard/gfx_converter',
                             btnAct, chkBtn, qrangeField, qrange, 
-                            imgpathField, imgpath, pict
+                            imgpathField, imgpath, pict, csrf_token
                             );
                 });
+
+                $('#measure_submit').click(function (meas) {
+                    meas.preventDefault();
+                    var btnAct = $(this).attr('id');
+
+                    getImgSize('POST', '#gfxconv',
+                               '/adminboard/gfx_converter',
+                               btnAct, chkBtn, qrangeField, qrange,
+                               imgpathField, imgpath, pict, csrf_token
+                               );
+                });
+
            } else {
 
                 $('#gfxconv_active').css('display', 'none');
@@ -428,6 +487,38 @@ $(document).ready(function () {
         });    
 
 
+
+        // ADMINBOARD IMAGEVIEW BLOCK
+        $('#table-striped [href]').click(function (item) {
+            $(this).data('clicked', true);
+            item.preventDefault();
+            var str = $(this).attr("href");
+            var pattern = /.png|.jpg|.jpe|.jpe|.gif|.svg|.json|.ico/;
+            if (pattern.test(str) == false) {
+               // We have directory then
+               $("input[name='addressbar']").val(str);
+            }
+        });
+
+        // ADMINBOARD SHOW BLOCK
+
+
+    } else if (currentpage == '/adminboard/adminboard_filemanager/') {
+
+        // ADMINBOARD FILE CRUD BLOCK
+        $('#rename').click(function (rev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
+
+        $('#delete').click(function (dev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
 
         // ADMINBOARD IMAGEVIEW BLOCK
         $('#table-striped [href]').click(function (item) {

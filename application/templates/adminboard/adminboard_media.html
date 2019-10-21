@@ -44,12 +44,14 @@
                 <a enabled="" href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();">Бэкап сайта</a>	
 
         <li id="gfxconv_active" class="active"><a>Конвертер графических файлов <span class="sr-only">(current)</span></a></li>
-            <form action="" method="post" enctype="multipart/form-data" id="gfxconv">
-
+            <form action="{{ url_for('gfx_converter') }}" method="post" id="gfxconv">
+                {{ form.csrf_token }}
                 <p> Формат файла: </p><select name="fileformat" id="fileformat"><option>PNG</option><option>JPG</option></select>
                 <p> Ширина (px): </p><input type="text" name="width" value="1920" id="width"/>
                 <p> Высота (px): </p><input type="text" name="height" value="1080" id="height"/>
-                <p> Сжатие (Хуже качество при большем значении): <div id="qval">50%</div> </p><input type="range" min="0" max="100" id="qrange"/>
+                <p> Сжатие (Хуже качество при большем значении): <div id="qval">50%</div> </p>
+                <input type="range" min="0" max="100" id="qrange"/>
+                <input type="submit" value="Вычислить" id="measure_submit" form="gfxconv" class="btn btn danger" />
                 <input type="submit" value="Конвертировать" id="conv_submit" form="gfxconv" class="btn btn danger" />
             </form>
         

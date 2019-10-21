@@ -25,6 +25,8 @@ from application import sql
 from application import engine
 from sqlalchemy import update
 from sqlalchemy import delete
+
+from application.core.datalogics import Utils
 from application.core.dbmodel import Articles
 from application.core.dbmodel import Categories
 from application.core.dbmodel import Content
@@ -149,6 +151,7 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_inner/', methods=['GET', 'POST'])
     @login_required
+    # TODO: check update_dashboard_inner
     def update_dashboard_inner():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -248,6 +251,7 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_category/', methods=['GET', 'POST'])
     @login_required
+    # TODO: check update_dashboard_category
     def update_dashboard_category():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -346,6 +350,7 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
     @login_required
+    # TODO: check update_dashboard_users
     def update_dashboard_users():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -600,6 +605,7 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
     @login_required
+    # TODO: check update_dashboard_settings
     def update_dashboard_settings():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -845,3 +851,91 @@ class ViewUpdate(ViewDash):
         return render_template('adminboard/adminboard_filemanager.html',
                                form=form_files
                                )
+
+    @app.route('/adminboard/gfx_converter', methods=['GET', 'POST'])
+    @login_required
+    # TODO: add arg self to the decorator
+    # TODO: gfx_converter() viewpooint
+    def gfx_converter():
+        form = dashboard_filesform.GfxConvForm()
+
+        import pdb;
+        pdb.set_trace()
+
+        if request.method == 'POST':
+            if form.conv_submit.data and form.validate_on_submit():
+                utils = Utils()
+                file_name = request.form['item_chb']
+                file_ext = request.form['item_chb']
+                if (file_name != ''
+                        and file_ext != ''
+                        and form.addressbar.data != ''
+                        and form.fileformat.data != ''
+                        and form.width.data != ''
+                        and form.height.data != ''
+                ):
+                    data = {'name': file_name,
+                            'path': '{}{}'.format(app.root_path,
+                                                  form.addressbar.data),
+                            'extension': file_ext,
+                            'format': form.fileformat.data,
+                            'width': form.width.data,
+                            'height': form.height.data
+                            }
+                    msg = utils.conv_image(data)
+                    if msg['status'] is 'OK':
+                        flash(msg['message'], 'info')
+                    elif msg['status'] is 'ERROR':
+                        flash(msg['message'], 'error')
+                    return redirect(url_for('show_dashboard_media'))
+
+            elif form.measure_submit.data and form.validate_on_submit():
+                utils = Utils()
+                file_name = request.form['item_chb']
+                file_ext = request.form['item_chb']
+                if (file_name != ''
+                        and file_ext != ''
+                        and form.addressbar.data != ''):
+                    data = {'name': file_name,
+                            'path': '{}{}'.format(app.root_path,
+                                                  form.addressbar.data),
+                            'extension': file_ext
+                            }
+                    msg = utils.get_image_size(data)
+                    if msg['status'] is 'OK':
+                        return jsonify(msg['width'], msg['height'])
+                    elif msg['status'] is 'ERROR':
+                        flash(msg['message'], 'error')
+                    return redirect(url_for('show_dashboard_media'))
+
+        return render_template('adminboard/adminboard_media.html')
+
+    @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
+    @login_required
+    # TODO: add arg self to the decorator
+    # TODO: add_user() viewpooint
+    def add_user():
+        pass
+
+        """return render_template('adminboard/adminboard_users.html',
+                                   form=form
+                                   )
+
+        return render_template('adminboard/adminboard_users.html',
+                               form=form
+                               )"""
+
+    @app.route('/login/', methods=['GET', 'POST'])
+    @login_required
+    # TODO: add arg self to the decorator
+    # TODO: forgot_password() viewpooint
+    def forgot_password():
+        pass
+
+        """return render_template('adminboard/login.html',
+                                   form=form
+                                   )
+
+        return render_template('adminboard/login.html',
+                               form=form
+                               )"""

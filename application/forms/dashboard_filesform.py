@@ -48,3 +48,20 @@ class DashboardFilesForm(Form):
 
     rename = SubmitField('rename')
     delete = SubmitField('delete')
+
+
+class GfxConvForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    width = TextField('width', validators=[DataRequired()])
+    height = TextField('height', validators=[DataRequired()])
+    fileformat = TextField('fileformat', validators=[DataRequired()])
+    qrange = TextField('qrange', validators=[DataRequired()])
+    item_chb = BooleanField('item_chb', validators=[DataRequired()])
+
+    conv_submit = SubmitField('conv_submit')
+    measure_submit = SubmitField('measure_submit')
+
+
+class GetSelectedFileForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    item_chb = BooleanField('item_chb', validators=[DataRequired()])

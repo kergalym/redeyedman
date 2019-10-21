@@ -19,8 +19,13 @@
 import os
 import time
 import re
+from os.path import exists
+from os.path import isfile
 from random import randrange
 from datetime import datetime
+
+from PilLite import Image
+
 from application import app
 from application.core.dbmodel import Users
 from application import login_manager
@@ -135,7 +140,7 @@ class Utils(Base):
         try:
             passlength < 1
         except Warning:
-            print "Keyspace must be long"
+            return "Keyspace must be long"
 
         for i in range(self.passlength):
             pwstring = pwstring + keyspace[randrange(maxlen)]
@@ -143,8 +148,59 @@ class Utils(Base):
         return pwstring
 
     @login_required
-    def gfx_converter(self, string):
-        pass
+    def conv_image(self, data):
+        if isinstance(data, dict):
+            img_file = data['name']
+            img_path = data['path']
+            file_ext = data['extension']
+            new_format = data['format']
+            new_width = data['width']
+            new_height = data['height']
+            size = new_width, new_height
+            outfile = "{}{}{}".format(img_path, new_format, file_ext)
+            img = None
+            if (isinstance(data, str)
+                    and exists(img_file)
+                    and isfile(img_file)
+                    and exists("{}{}".format(img_path, img_file))
+                    and isfile("{}{}".format(img_path, img_file))):
+                try:
+                    img = Image.open("{}{}".format(img_path, img_file))
+                    img.thumbnail(size)
+                    img.save(outfile, new_format)
+                    return {'status': "OK",
+                            'message': "Original file is converted to {}{}{}".format(
+                                img_path, img_file, new_format)}
+                except IOError:
+                    return {'status': "ERROR",
+                            'message': "{}{} is not changed: has {} size".format(
+                                img_path, img_file, file_ext, img.size)}
+
+    @login_required
+    def get_image_size(self, data):
+        if isinstance(data, dict):
+            img_file = data['name']
+            img_path = data['path']
+            # import pdb; pdb.set_trace()
+            if (exists("{}{}".format(img_path, img_file))
+                    and isfile("{}{}".format(img_path, img_file))):
+                if img_file[len(img_file)-3:] == 'png' or 'jpg' or 'jpeg':
+                    try:
+                        img = Image.open("{}{}".format(img_path, img_file))
+                        size = img.size
+                        width = int(re.search("\d+", str(size[0])).group())
+                        height = int(re.search("\d+", str(size[1])).group())
+
+                        return {'status': "OK",
+                                'message': "Original file is found",
+                                'width': width,
+                                'height': height
+                                }
+
+                    except IOError:
+                        return {'status': "ERROR",
+                                'message': "Original file is not found"
+                                }
 
 
 class SysInfo(Base):

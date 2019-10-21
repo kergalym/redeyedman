@@ -22,12 +22,10 @@ from application import app
 from application.core.datalogics import Paginator, SysInfo
 from application.core.dbmodel import Articles
 from application.core.filemanagement import FileBrowser
-from flask_login import login_required
 from application.views.viewdash import ViewDash
 from application.forms import dashboard_filesform
 from flask_login import login_required
 from flask import request, g, render_template
-from flask import jsonify
 
 
 class ViewdashFileManager(ViewDash):

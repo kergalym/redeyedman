@@ -63,7 +63,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <div id="toolbar">
                         <ul class="minibar-nav" >
-                            <form class="form_class" method="POST" action="" >
+                            <form class="form_class" method="POST" action="{{ request.path }}" >
                                   <li><input type="submit" name="rename" value="Переименовать" class="button" enabled=""/></li>			
                                 <li><input type="submit" id="delete" name="delete" value="Удалить пользователя" class="button" enabled=""/></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
