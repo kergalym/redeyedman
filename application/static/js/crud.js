@@ -80,7 +80,6 @@ function gfxConv(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange,
         var qrange = qrangeField + '=' + qrange + '&';
         var csrf_token = 'csrf_token=' + csrf_token + '&';
         var formID = addressBar + qrange + btnChBox + btnSubmit + csrf_token + rawForm;
-        //console.log(formID);
 
             $.ajax({
                 type: query_type,
@@ -110,11 +109,11 @@ function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qran
                 type: query_type,
                 url: urlname,
                 data: formID,
-                dataType: 'json',
-                encode: true,
                 complete: function (data) {
-                         $('#width').html(data['width']);
-                         $('#height').html(data['height']);
+                         var data_array = JSON.parse(data.responseText);
+                         console.log(data_array['width']);
+                         $('#width').attr('value', data_array['width']);
+                         $('#height').attr('value', data_array['height']);
                  }
 
             })

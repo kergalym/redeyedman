@@ -860,10 +860,12 @@ class ViewUpdate(ViewDash):
         form = dashboard_filesform.GfxConvForm()
 
         import pdb;
-        #pdb.set_trace()
+        # pdb.set_trace()
 
         if request.method == 'POST':
-            if form.conv_submit.data and form.validate_on_submit():
+            if (form.conv_submit.data is True
+                    and form.validate_on_submit() is True
+                    and form.measure_submit.data is False):
                 utils = Utils()
                 file_name = request.form['item_chb']
                 file_ext = file_name[len(file_name)-3:]
@@ -889,7 +891,9 @@ class ViewUpdate(ViewDash):
                         flash(msg['message'], 'error')
                     return redirect(url_for('show_dashboard_media'))
 
-            elif form.measure_submit.data and form.validate_on_submit():
+            elif (form.measure_submit.data is True
+                    and form.validate_on_submit() is True
+                    and form.conv_submit.data is False):
                 utils = Utils()
                 file_name = request.form['item_chb']
                 file_ext = file_name[len(file_name)-3:]
@@ -903,12 +907,12 @@ class ViewUpdate(ViewDash):
                             }
                     msg = utils.get_image_size(data)
                     if msg['status'] is 'OK':
-                        return jsonify(msg['width'], msg['height'])
+                        return jsonify(msg)
                     elif msg['status'] is 'ERROR':
                         flash(msg['message'], 'error')
-                    return redirect(url_for('show_dashboard_media'))
+            return redirect(url_for('show_dashboard_media'))
 
-        return render_template('adminboard/adminboard_media.html')
+        return render_template('adminboard/adminboard_media.html', form=form)
 
     @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
     @login_required
