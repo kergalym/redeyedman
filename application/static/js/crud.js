@@ -111,7 +111,6 @@ function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qran
                 data: formID,
                 complete: function (data) {
                          var data_array = JSON.parse(data.responseText);
-                         console.log(data_array['width']);
                          $('#width').attr('value', data_array['width']);
                          $('#height').attr('value', data_array['height']);
                  }
