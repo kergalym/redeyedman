@@ -110,9 +110,12 @@ function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qran
                 url: urlname,
                 data: formID,
                 complete: function (data) {
-                         var data_array = JSON.parse(data.responseText);
-                         $('#width').attr('value', data_array['width']);
-                         $('#height').attr('value', data_array['height']);
+                        if (pict.slice((pict.length)-3, ) != 'svg') {
+                            var data_array = JSON.parse(data.responseText);
+                            $('#width').attr('value', data_array['width']);
+                            $('#height').attr('value', data_array['height']);
+                        }
+
                  }
 
             })

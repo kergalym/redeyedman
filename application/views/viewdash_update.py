@@ -859,9 +859,6 @@ class ViewUpdate(ViewDash):
     def gfx_converter():
         form = dashboard_filesform.GfxConvForm()
 
-        import pdb;
-        # pdb.set_trace()
-
         if request.method == 'POST':
             if (form.conv_submit.data is True
                     and form.validate_on_submit() is True
@@ -884,12 +881,13 @@ class ViewUpdate(ViewDash):
                             'width': form.width.data,
                             'height': form.height.data
                             }
+
                     msg = utils.conv_image(data)
                     if msg['status'] is 'OK':
                         flash(msg['message'], 'info')
                     elif msg['status'] is 'ERROR':
                         flash(msg['message'], 'error')
-                    return redirect(url_for('show_dashboard_media'))
+                return redirect(url_for('show_dashboard_media'))
 
             elif (form.measure_submit.data is True
                     and form.validate_on_submit() is True
@@ -905,6 +903,7 @@ class ViewUpdate(ViewDash):
                                                   form.addressbar.data),
                             'extension': file_ext
                             }
+
                     msg = utils.get_image_size(data)
                     if msg['status'] is 'OK':
                         return jsonify(msg)

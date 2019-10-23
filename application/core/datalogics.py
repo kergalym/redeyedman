@@ -152,36 +152,34 @@ class Utils(Base):
         if isinstance(data, dict):
             img_file = data['name']
             img_path = data['path']
-            file_ext = data['extension']
             new_format = data['format']
             new_width = data['width']
             new_height = data['height']
             size = new_width, new_height
-            outfile = "{}{}{}".format(img_path, new_format, file_ext)
-            img = None
-            if (isinstance(data, str)
-                    and exists(img_file)
-                    and isfile(img_file)
-                    and exists("{}{}".format(img_path, img_file))
-                    and isfile("{}{}".format(img_path, img_file))):
+            outfile = "{}{}{}".format(img_path, str(img_file[:len(img_file)-3]), str(new_format.lower()))
+            origfile = "{}{}".format(img_path, str(img_file))
+
+            if (isinstance(data, dict)
+                    and exists("{}{}".format(img_path, img_file)) is True
+                    and isfile("{}{}".format(img_path, img_file)) is True
+                    and outfile is not origfile):
                 try:
-                    img = Image.open("{}{}".format(img_path, img_file))
-                    img.thumbnail(size)
-                    img.save(outfile, new_format)
-                    return {'status': "OK",
-                            'message': "Original file is converted to {}{}{}".format(
-                                img_path, img_file, new_format)}
+                    if img_file[len(img_file) - 3:] == 'png' or 'jpg' or 'jpeg':
+                        img = Image.open("{}{}".format(img_path, img_file))
+                        img.thumbnail(size)
+                        img.save(outfile, new_format)
+                        return {'status': "OK",
+                                'message': "Original file is converted to {}".format(
+                                    outfile)}
                 except IOError:
                     return {'status': "ERROR",
-                            'message': "{}{} is not changed: has {} size".format(
-                                img_path, img_file, file_ext, img.size)}
+                            'message': "Original file is not changed"}
 
     @login_required
     def get_image_size(self, data):
         if isinstance(data, dict):
             img_file = data['name']
             img_path = data['path']
-            # import pdb; pdb.set_trace()
             if (exists("{}{}".format(img_path, img_file))
                     and isfile("{}{}".format(img_path, img_file))):
                 if img_file[len(img_file)-3:] == 'png' or 'jpg' or 'jpeg':
