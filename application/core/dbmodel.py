@@ -131,8 +131,8 @@ class Users(UserMixin, sql.Model):
     email = sql.Column(String, nullable=False)
     regdate = sql.Column(String, nullable=False)
     usr_level = sql.Column(String, nullable=False)
-    #roles = sql.relationship('Role', secondary='user_roles',
-            #backref=sql.backref('users', lazy='dynamic'))
+    # roles = sql.relationship('Role', secondary='user_roles',
+                             # backref=sql.backref('users', lazy='dynamic'))
     
     def __init__(self, id, login, password, email, regdate, usr_level, roles):
         self.id = id

@@ -30,23 +30,17 @@ from flask import url_for
 from flask import g
 
 
-#
-#   USER ADD MENU
-#
-
-@app.route('/adminboard/', methods=['GET', 'POST'])
-# @app.route('/adminboard/adminboard_main/', methods=['GET', 'POST'])
-# @app.route('/adminboard/adminboard_inner/', methods=['GET', 'POST'])
-# @app.route('/adminboard/adminboard_category/', methods=['GET', 'POST'])
-# @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
-# @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
+@app.route('/adminboard/useradd', methods=['GET', 'POST'])
 @login_required
 def useradd():
     form = useraddform.UserAddForm()
     utils = Utils()
     author = g.user
+
+    import pdb; pdb.set_trace()
+
     if (request.method == 'POST' and author is not None
-            and request.form['user_submit']
+            and form.user_submit.data
             and form.validate_on_submit()):
         rows = sql.session.query(Users).count()
         if type(rows) == int:
@@ -54,17 +48,17 @@ def useradd():
             login = form.login.data
             usr_lvl = form.usr_lvl.data
             email = form.email.data
-            regdate = form.regdate.data
+            regdate = request.form['regdate']
             password = utils.hash_password(form.password.data)
             userdata = Users(id, login, password,
                              email, regdate, usr_lvl)
+
             sql.session.add(userdata)
             sql.session.commit()
-            flash("User" + login + "is added", 'info')
-        return redirect(url_for('show_dashboard'))
-    else:
-        flash("User" + form.login.data + "is not added", 'error')
-        return redirect(url_for('show_dashboard'))
-    return render_template('adminboard/adminboard.html',
+            flash("User {} is added".format(login), 'info')
+        else:
+            flash("User {} is not added. {}".format(form.login.data, form.errors), 'error')
+        return redirect(url_for('show_dashboard_users'))
+    return render_template('adminboard/adminboard_users.html',
                            form=form
                            )

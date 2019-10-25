@@ -46,9 +46,24 @@
                 <a  href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();">Бэкап сайта</a>	
 
                 <li class="active"><a>Добавить пользователя <span class="sr-only">(current)</span></a></li>
-            </ul>     
+            </ul>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        {% if category == 'info' %}
+                        <div class="warn_msg" role="alert" id="warn_msg">
+                            {% else %}
+                            <div class="err_msg alert-{{ category }}" role="alert">
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                        </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
 
-            <form action="{{ request.path }}" method="post" enctype="multipart/form-data" id="adduser">
+            <form action="{{ url_for('useradd') }}" method="post" enctype="multipart/form-data" id="adduser">
+                {{ form.csrf_token }}
                 <p><i class="fa fa-user-plus" aria-hidden="true"></i> * </p><input type="text" name="login" value="" id="text" required placeholder="Логин пользователя"/>
                 <p><i class="fa fa-envelope" aria-hidden="true"></i> * </p><input type="email" name="email" value="" id="text" placeholder=" Ваш@email"/>
                 <p><i class="fa fa-key" aria-hidden="true"></i> * </p><input type="password" name="password" value="" id="text" required placeholder=" Пароль пользователя"/>

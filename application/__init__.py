@@ -88,3 +88,4 @@ from application.views import vieweditcontent_id
 from application.views import vieweditcategory_id
 from application.views import vieweditusers_id
 from application.views import viewbackup
+from application.views import viewuseradd

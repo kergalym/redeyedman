@@ -71,6 +71,37 @@ function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
           }
 }
 
+function addUser(query_type, form, urlname, actBtn, csrf_token) {
+
+         if (form != null
+             && urlname != null
+             && query_type != null
+             && actBtn != null
+             && csrf_token != null) {
+
+             var actBtn = actBtn + '=True' + '&';
+             var form = new FormData($(form)[0]);
+             var csrf_token = 'csrf_token=' + csrf_token + '&';
+             var formID = form + actBtn + csrf_token;
+             console.log(formID);
+
+             $.ajax({
+                 type: query_type,
+                 url: urlname,
+                 data: formID,
+          		 dataType: 'json',
+  	             encode: true,
+  	             cache: false,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
+
+             })
+
+          }
+}
+
+
 function gfxConv(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict, csrf_token) {
 
         var rawForm = $(form).serialize();
@@ -149,7 +180,6 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
 function formElemIdentify(urlname, event) {
 
             var multiple = null;
-
             var actBtn = null;
 
             if ($(event).attr('id') === 'rename') {
@@ -158,6 +188,12 @@ function formElemIdentify(urlname, event) {
 
             if ($(event).attr('id') === 'delete') {
                 actBtn = $(event).attr('id');
+            }
+
+            if ($(event).attr('id') === 'user_submit') {
+                actBtn = $(event).attr('id');
+                var csrf_token = $('input[name="csrf_token"]').attr('value');
+                addUser('POST', '#adduser', urlname, actBtn, csrf_token);
             }
 
             var addressBar = $('input[name="addressbar"]').attr('value');
@@ -514,6 +550,12 @@ $(document).ready(function () {
 
 
     } else if (currentpage == '/adminboard/adminboard_users/') {
+
+        // ADMINBOARD ADDUSER BLOCK
+        $('#user_submit').click(function (dev) {
+           dev.preventDefault();
+           formElemIdentify(currentpage, this);
+        });
 
         $('#adduser_active').css('display', 'block');
         $('#adduser').css('display', 'block');

@@ -605,7 +605,6 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_settings/', methods=['GET', 'POST'])
     @login_required
-    # TODO: check update_dashboard_settings
     def update_dashboard_settings():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -855,7 +854,6 @@ class ViewUpdate(ViewDash):
     @app.route('/adminboard/gfx_converter', methods=['GET', 'POST'])
     @login_required
     # TODO: add arg self to the decorator
-    # TODO: gfx_converter() viewpooint
     def gfx_converter():
         form = dashboard_filesform.GfxConvForm()
 
@@ -912,21 +910,6 @@ class ViewUpdate(ViewDash):
             return redirect(url_for('show_dashboard_media'))
 
         return render_template('adminboard/adminboard_media.html', form=form)
-
-    @app.route('/adminboard/adminboard_users/', methods=['GET', 'POST'])
-    @login_required
-    # TODO: add arg self to the decorator
-    # TODO: add_user() viewpooint
-    def add_user():
-        pass
-
-        """return render_template('adminboard/adminboard_users.html',
-                                   form=form
-                                   )
-
-        return render_template('adminboard/adminboard_users.html',
-                               form=form
-                               )"""
 
     @app.route('/login/', methods=['GET', 'POST'])
     @login_required
