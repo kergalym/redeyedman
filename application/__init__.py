@@ -28,9 +28,8 @@ from datetime import timedelta
 import sys
 
 # Set encoding to UTF-8 hack
-if "{}.{}".format(sys.version_info[0], sys.version_info[0]) == '2.7':
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # Define the app object and load the config from the file
 app = Flask(__name__)
