@@ -35,7 +35,7 @@ sys.setdefaultencoding('utf-8')
 app = Flask(__name__)
 app.secret_key = 'unique_GtwAhENew8ghtsgWK'
 app.config.from_object('configuration')
-app.debug = True
+app.debug = False
 
 # Read database settings from the configuration file
 dbhost = app.config['DBHOST']
