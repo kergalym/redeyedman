@@ -6,7 +6,7 @@ redeyedman blog source repo
 
 cat /etc/apache2/vhosts.d/01_redeyedman-flask.ru.conf
 
-'<VirtualHost *:80>'
+ &lt; VirtualHost *:80 &gt;
     
     ServerName redeyedman-flask.ru
     ServerAlias www.redeyedman-flask.ru
@@ -22,4 +22,5 @@ cat /etc/apache2/vhosts.d/01_redeyedman-flask.ru.conf
         Require all granted
     </Directory>
     
-'</VirtualHost>'
+ &lt;/VirtualHost &gt;
+
