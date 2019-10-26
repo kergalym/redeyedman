@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# SECRET_KEY = 'unique_GtwAhENew8ghtsgWK'
-
 DBHOST = 'localhost'
-DBNAME = 'redeyed'
+DBNAME = 'redeyedman'
 DBUSERNAME = 'galym'
 DBPASSWORD = 'Z64sftyzer2316d5d' 
 
