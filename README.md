@@ -1,12 +1,12 @@
-# my blog
+# My blog
 redeyedman blog source repo
 
 
-# working Apache virtualhost configuration file for Gentoo
+# Working Apache virtualhost configuration file for Gentoo
 
 cat /etc/apache2/vhosts.d/01_redeyedman-flask.ru.conf
 
- &lt; VirtualHost *:80 &gt;
+ &lt;VirtualHost *:80&gt;
     
     ServerName redeyedman-flask.ru
     ServerAlias www.redeyedman-flask.ru
@@ -22,5 +22,5 @@ cat /etc/apache2/vhosts.d/01_redeyedman-flask.ru.conf
         Require all granted
     </Directory>
     
- &lt;/VirtualHost &gt;
+ &lt;/VirtualHost&gt;
 
