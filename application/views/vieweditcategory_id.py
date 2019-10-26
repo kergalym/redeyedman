@@ -28,44 +28,46 @@ from flask import request
 from flask import session
 from flask import url_for
 
+
 #
 #   ARTICLES EDITPAGE ADD
 #
 
 
 @app.route('/adminboard/editpage_id_category/<int:id>', methods=['GET', 'POST'])
-#@login_required
+# @login_required
 def show_categorypageid(id):
     form = categorypage_idform.CategorypageidForm()
     editpage_output_loop = Categories.query.filter_by(id=id).first()
     instance = SysInfo()
-    atime = instance.altertime() 
+    atime = instance.altertime()
     author = session['login']
     if editpage_output_loop \
-        and atime and author is not None:
+            and atime and author is not None:
         return render_template(
-                                'adminboard/editpage_id_category.html', 
-                                author=author, atime=atime, 
-                                editpage_output_loop=editpage_output_loop,
-                                form=form)
+            'adminboard/editpage_id_category.html',
+            author=author, atime=atime,
+            editpage_output_loop=editpage_output_loop,
+            form=form)
     else:
         return redirect(url_for('show_login'))
-    
+
+
 @app.route('/adminboard/editpage_id_category/', methods=['GET', 'POST'])
-#@login_required
+# @login_required
 def update_categorypageid():
     error = None
     form = categorypage_idform.CategorypageidForm()
     author = session['login']
     if request.method == 'POST' and form.validate_on_submit():
         if author is not None:
-            category_id = request.form['category_id']                
+            category_id = request.form['category_id']
             category_title = request.form['category_title']
             category_author = request.form['category_author']
             category_date = request.form['category_date']
             category_desc = request.form['category_desc']
-            categories = Categories(category_id, category_title, 
-            category_author, category_date, category_desc)
+            categories = Categories(category_id, category_title,
+                                    category_author, category_date, category_desc)
             sql.session.add(categories)
             sql.session.commit()
             error = "Category is changed"
@@ -73,7 +75,6 @@ def update_categorypageid():
     else:
         error = "Category is not changed"
         return redirect(url_for('show_categorypageid'))
-    return render_template('adminboard/editpage_id_category.html', 
-                            form=form, error=error
-                            ) 
-                       
+    return render_template('adminboard/editpage_id_category.html',
+                           form=form, error=error
+                           )

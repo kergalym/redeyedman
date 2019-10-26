@@ -23,6 +23,7 @@ from wtforms.validators import DataRequired
 
 class DashboardItemsForm(Form):
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    delid = TextField()
+    delid = TextField('delid', validators=[DataRequired()])
+
     rename = SubmitField('rename')
     delete = SubmitField('delete')

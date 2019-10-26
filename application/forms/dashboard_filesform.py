@@ -17,18 +17,51 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import TextField, SubmitField
 from wtforms import BooleanField
-from wtforms import SubmitField
 from wtforms.validators import DataRequired
+
+
+class DashboardMkdirForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    newdirname = TextField('newdirname', validators=[DataRequired()])
+
+    mkdir = SubmitField('mkdir')
+
+
+class DashboardCddirForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+
+    cddir = SubmitField('cddir')
+
+
+class DashboardUploadForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    # f_upload = BooleanField('f_upload')
+    # upload = SubmitField('upload')
 
 
 class DashboardFilesForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    delid = TextField(validators=[DataRequired()])
-    newdirname = TextField('newdirname', validators=[DataRequired()])
-    mkdir = SubmitField('mkdir')
+    delid = TextField('delid', validators=[DataRequired()])
+
     rename = SubmitField('rename')
     delete = SubmitField('delete')
-    cddir = SubmitField('cddir')
+
+
+class GfxConvForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    width = TextField('width', validators=[DataRequired()])
+    height = TextField('height', validators=[DataRequired()])
+    fileformat = TextField('fileformat', validators=[DataRequired()])
+    qrange = TextField('qrange', validators=[DataRequired()])
+    item_chb = BooleanField('item_chb', validators=[DataRequired()])
+
+    conv_submit = SubmitField('conv_submit')
+    measure_submit = SubmitField('measure_submit')
+
+
+class GetSelectedFileForm(Form):
+    addressbar = TextField('addressbar', validators=[DataRequired()])
+    item_chb = BooleanField('item_chb', validators=[DataRequired()])

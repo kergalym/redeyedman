@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+from os import remove
+from os.path import exists, isfile
 
 from application import app
 from application import sql
@@ -41,7 +43,6 @@ from flask import request
 from flask import current_app
 from flask import g
 from flask import url_for
-from flask import send_from_directory
 from flask_login import current_user
 from flask_user import roles_required
 from flask_login import login_user
@@ -102,6 +103,9 @@ class ViewDash:
     def user_logout():
         logout_user()
         session.clear()
+        if (exists(("{}/static/get_path.tmp".format(app.root_path)))
+                and isfile(("{}/static/get_path.tmp".format(app.root_path)))):
+            remove("{}/static/get_path.tmp".format(app.root_path))
         return redirect(url_for('show_login'))
 
     @app.route('/adminboard/')
@@ -130,7 +134,6 @@ class ViewDash:
         per_page = 9
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        articles_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -139,11 +142,11 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
-        if not users and pages == None:
+        if not users and pages is None:
             abort(404)
         else:
             articles_loop = sql.session.query(Articles).limit(
-                (per_page)).offset(
+                per_page).offset(
                 (pages - 1) * per_page).all()
             pagination = paginator.paginate(Articles, pages, per_page)
             return render_template('adminboard/adminboard_main.html',
@@ -162,7 +165,6 @@ class ViewDash:
     def show_dashboard_inner():
         per_page = 9
         paginator = Paginator()
-        contents_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -205,7 +207,7 @@ class ViewDash:
         ltime = instance.systime()
         atime = instance.altertime()
         pages = request.args.get('page', type=int, default=1)
-        if not users and pages == None:
+        if not users and pages is None:
             abort(404)
         else:
             categories_loop = sql.session.query(Categories).limit(
@@ -226,10 +228,10 @@ class ViewDash:
 
     @app.route('/adminboard/adminboard_users/')
     @login_required
+    # TODO: user privilegies
     def show_dashboard_users():
         per_page = 9
         paginator = Paginator()
-        users_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -239,7 +241,7 @@ class ViewDash:
         ltime = instance.systime()
         atime = instance.altertime()
         pages = request.args.get('page', type=int, default=1)
-        if not users and pages == None:
+        if not users and pages is None:
             abort(404)
         else:
             users_loop = sql.session.query(Users).limit(
@@ -260,6 +262,7 @@ class ViewDash:
 
     @app.route('/adminboard/adminboard_settings/')
     @login_required
+    # TODO: user privilegies
     #@roles_required('admin')
     def show_dashboard_settings():
         per_page = 9
@@ -300,12 +303,13 @@ class ViewDash:
 
     @app.route('/adminboard/adminboard_media/')
     @login_required
+    # TODO: user privilegies
+    # @roles_required('admin')
     def show_dashboard_media():
         browser = FileBrowser()
         per_page = 9
         pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        files = []
         form = dashboard_filesform.DashboardFilesForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -314,18 +318,36 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
+        f = None
+        get_relpath = None
+
+        if session['login'] != 'admin':
+            flash("You don't have administrator privilegies!", 'error')
+            return redirect(url_for('show_dashboard'))
 
         if not users and pages is None:
             abort(404)
         else:
-            if pages is None:
-                offset + 1
-            else:
-                offset = pages - 1
-            get_relpath = "/static/images/"
+
+            if exists("{}/static/get_path.tmp".format(app.root_path)) is False:
+                get_relpath = "/static/images/"
+            elif exists("{}/static/get_path.tmp".format(app.root_path)):
+                with open("{}/static/get_path.tmp".format(app.root_path), 'r') as f:
+                    get_relpath = f.read()
+
+            limit = per_page
+
+            if get_relpath == '':
+                get_relpath = "/static/images/"
+
             files = browser.show_files(get_relpath)
-            files = files[offset * per_page:len(files) - per_page]
-            #filert
+            offset = ((pages - 1) * per_page)
+            if pages == 0 or pages == 1:
+                f = files[:limit]
+            elif len(files)-offset > offset:
+                f = files[offset:-offset]
+            elif len(files)-offset < offset:
+                f = files[offset:]
             pagination = paginator.paginate(files, pages, per_page)
             return render_template('adminboard/adminboard_media.html',
                                    servername=servername,
@@ -333,7 +355,7 @@ class ViewDash:
                                    freespace=freespace,
                                    users=users, ltime=ltime,
                                    atime=atime,
-                                   files=files,
+                                   files=f,
                                    get_relpath=get_relpath,
                                    form=form,
                                    pagination=pagination
@@ -341,13 +363,14 @@ class ViewDash:
 
     @app.route('/adminboard/adminboard_filemanager/')
     @login_required
+    # TODO: user privilegies
     # @roles_required('admin')
-    def upload_dashboard_media():
+    def show_dashboard_filenamanager():
+        browser = FileBrowser()
         per_page = 9
+        pages = request.args.get('page', type=int, default=1)
         paginator = Paginator()
-        fileserving = FileBrowser()
-        users_loop = []
-        form = dashboard_itemsform.DashboardItemsForm()
+        form = dashboard_filesform.DashboardFilesForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
         users = g.user
@@ -355,33 +378,45 @@ class ViewDash:
         freespace = instance.diskspace()
         ltime = instance.systime()
         atime = instance.altertime()
-        show_files = fileserving.show_files
-        pages = request.args.get('page', type=int, default=1)
+        f = None
+        get_relpath = None
 
         if session['login'] != 'admin':
             flash("You don't have administrator privilegies!", 'error')
             return redirect(url_for('show_dashboard'))
 
-        if not users and pages == None:
+        if not users and pages is None:
             abort(404)
         else:
-            users_loop = sql.session.query(Users).limit(
-                (per_page)).offset(
-                (pages - 1) * per_page).all()
 
-            pagination = paginator.paginate(Users, pages, per_page)
-            return render_template('adminboard/adminboard_media.html',
+            if exists("{}/static/get_path.tmp".format(app.root_path)) is False:
+                get_relpath = "/static/images/"
+            elif exists("{}/static/get_path.tmp".format(app.root_path)):
+                with open("{}/static/get_path.tmp".format(app.root_path), 'r') as f:
+                    get_relpath = f.read()
+
+            limit = per_page
+
+            if get_relpath == '':
+                get_relpath = "/static/images/"
+
+            files = browser.show_files(get_relpath)
+            offset = ((pages - 1) * per_page)
+            if pages == 0 or pages == 1:
+                f = files[:limit]
+            elif len(files)-offset > offset:
+                f = files[offset:-offset]
+            elif len(files)-offset < offset:
+                f = files[offset:]
+            pagination = paginator.paginate(files, pages, per_page)
+            return render_template('adminboard/adminboard_filemanager.html',
                                    servername=servername,
                                    approot=approot[-2],
                                    freespace=freespace,
                                    users=users, ltime=ltime,
                                    atime=atime,
-                                   users_loop=users_loop,
-                                   form=form, show_files=show_files,
+                                   files=f,
+                                   get_relpath=get_relpath,
+                                   form=form,
                                    pagination=pagination
                                    )
-
-    @app.route('/uploads/<filename>')
-    def uploaded_file(filename):
-        return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                   filename)

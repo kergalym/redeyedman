@@ -16,11 +16,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
-	    
-	    var form = $(attach)[0];
-        var formID = new FormData(form);
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
+function ajaxFiles(query_type, attach, urlname) {
+
+
+         if (attach != null
+             && query_type != null
+             && urlname != null) {
+
+	         var form = $(attach)[0];
+             var formID = new FormData(form);
 
             $.ajax({
                 type: query_type,
@@ -28,49 +32,85 @@ function ajaxFiles(warn_msg, colortype, query_type, attach, urlname) {
                 data: formID,
                 contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
                 processData: false, // NEEDED, DON'T OMIT THIS
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data, " ", redirect));
-                    }
+                complete: function (data) {
+                         $('body').html(data.responseText);
                 }
 
             })
-
+        }
 }
 
-function ajaxPost(warn_msg, colortype, query_type, form, urlname, btnAct) {
+function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
 
-	    var rawForm = $(form).serialize();
-        var btnName = btnAct + '=' + btnAct + '&';
-        var formID = btnName + rawForm;
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
+         if (form != null
+             && urlname != null
+             && query_type != null
+             && actBtn != null
+             && addressBar != null
+             && csrf_token != null) {
 
-            $.ajax({
-                type: query_type,
-                url: urlname,
-                data: formID,
-         		dataType: 'json',
-		        encode: true,
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
-                }
+             var actBtn = actBtn + '=True' + '&';
+             var addressBar = 'addressbar=' + addressBar + '&';
+             var csrf_token = 'csrf_token=' + csrf_token + '&';
+             var formID = addressBar + form + actBtn + csrf_token;
+             var cls_warn = null;
 
-            })
+             $.ajax({
+                 type: query_type,
+                 url: urlname,
+                 data: formID,
+          		 dataType: 'json',
+  	             encode: true,
+  	             cache: false,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
 
+             })
+
+          }
 }
 
-function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict) {
+function addUser(query_type, form, urlname, actBtn, csrf_token) {
+
+         if (form != null
+             && urlname != null
+             && query_type != null
+             && actBtn != null
+             && csrf_token != null) {
+
+             var actBtn = actBtn + '=True' + '&';
+             var form = new FormData($(form)[0]);
+             var csrf_token = 'csrf_token=' + csrf_token + '&';
+             var formID = form + actBtn + csrf_token;
+             console.log(formID);
+
+             $.ajax({
+                 type: query_type,
+                 url: urlname,
+                 data: formID,
+          		 dataType: 'json',
+  	             encode: true,
+  	             cache: false,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
+
+             })
+
+          }
+}
+
+
+function gfxConv(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict, csrf_token) {
 
         var rawForm = $(form).serialize();
-        var btnSubmit = btnAct + '=' + btnAct + '&';
+        var btnSubmit = btnAct + '=True' + '&';
         var btnChBox = chkBtn + '=' + pict + '&';
         var addressBar = imgpathField + '=' + imgpath + '&';
         var qrange = qrangeField + '=' + qrange + '&';
-        var formID = addressBar + qrange + btnChBox + btnSubmit + rawForm;
+        var csrf_token = 'csrf_token=' + csrf_token + '&';
+        var formID = addressBar + qrange + btnChBox + btnSubmit + csrf_token + rawForm;
 
             $.ajax({
                 type: query_type,
@@ -78,16 +118,40 @@ function gfxConv(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn,
                 data: formID,
                 dataType: 'json',
                 encode: true,
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
-            }
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
 
-        })
+            })
 
 }    
+
+function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qrange, imgpathField, imgpath, pict, csrf_token) {
+
+        var rawForm = $(form).serialize();
+        var btnSubmit = btnAct + '=True' + '&';
+        var btnChBox = chkBtn + '=' + pict + '&';
+        var addressBar = imgpathField + '=' + imgpath + '&';
+        var qrange = qrangeField + '=' + qrange + '&';
+        var csrf_token = 'csrf_token=' + csrf_token + '&';
+        var formID = addressBar + qrange + btnChBox + btnSubmit + csrf_token + rawForm;
+
+            $.ajax({
+                type: query_type,
+                url: urlname,
+                data: formID,
+                complete: function (data) {
+                        if (pict.slice((pict.length)-3, ) != 'svg') {
+                            var data_array = JSON.parse(data.responseText);
+                            $('#width').attr('value', data_array['width']);
+                            $('#height').attr('value', data_array['height']);
+                        }
+
+                 }
+
+            })
+
+}
 
 function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, content, radioField, radio) {
 
@@ -98,7 +162,6 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
         var content = contentField + '=' + content + '&';
         var radio = radioField + '=' + radio + '&';
         var formID = content + radio + btnChBox + btnSubmit + rawForm;
-        var redirect = "".concat("<a id='redirect' href='",  $(location).attr('href'), "'>", "Reload the page", "</a>");
 
             $.ajax({
                 type: query_type,
@@ -106,17 +169,113 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
                 data: formID,
                 dataType: 'json',
                 encode: true,
-                statusCode: {
-                    200: function (data) {
-                        $('#' + warn_msg).addClass('alert alert-warning warn_msg').css({"background-color": colortype, "color": "white"});
-                        $('#' + warn_msg).html("".concat(data.responseText, " ", redirect));
-                    }
-            }
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
 
-        })
+            })
 
 }    
 
+function formElemIdentify(urlname, event) {
+
+            var multiple = null;
+            var actBtn = null;
+
+            if ($(event).attr('id') === 'rename') {
+                actBtn = $(event).attr('id');
+            }
+
+            if ($(event).attr('id') === 'delete') {
+                actBtn = $(event).attr('id');
+            }
+
+            if ($(event).attr('id') === 'user_submit') {
+                actBtn = $(event).attr('id');
+                var csrf_token = $('input[name="csrf_token"]').attr('value');
+                addUser('POST', '#adduser', urlname, actBtn, csrf_token);
+            }
+
+            var addressBar = $('input[name="addressbar"]').attr('value');
+            var csrf_token = $('input[name="csrf_token"]').attr('value');
+
+            var id = null;
+            var i_num = null;
+            var d_num = null;
+            var form = null;
+            var d_array = $('input[name="delid"]');
+            var ch_array = $('input[name=item_chb]:checked');
+
+            if (ch_array.length === 1) {
+                multiple = 0;
+            } else if (ch_array.length > 1) {
+                multiple = 1;
+            }
+
+            if (multiple === 0) {
+
+                id = ch_array.attr('id');
+                d_num = d_array.attr( "id" );
+
+                i_num = id.replace( /^\D+/g, '');
+                d_num = d_num.replace( /^\D+/g, '');
+                i_str = $('input[name=item_chb]:checked').attr('value');
+
+                $.each(d_array, function(k, v) {
+
+                    d_num = v.id.replace( /^\D+/g, '')
+
+                    if (d_num === i_num) {
+                        i_str = 'item_chb=' + i_str + '&';
+                        d_str = 'delid=' + v.value + '&';
+                        form = i_str + d_str;
+                        ajaxPost('POST', form, urlname, actBtn, addressBar, csrf_token);
+                    }
+                });
+
+            } else if (multiple === 1) {
+
+                id = ch_array.attr('id');
+                d_num = d_array.attr( "id" );
+
+                var equal = 0;
+
+                if (d_array.length === ch_array.length) {
+                    equal = 1;
+                }
+
+                i_num = id.replace( /^\D+/g, '');
+                d_num = d_num.replace( /^\D+/g, '');
+                i_str = $(this).attr('value');
+
+
+                if (equal === 1) {
+
+                   var zip = (ch, d) => ch.map((x,i) => [x,d[i]]);
+
+                   $.each(zip(ch_array, d_array), function(d, ch) {
+                       i_num = ch.id.replace( /^\D+/g, '');
+                       d_num = d.id.replace( /^\D+/g, '');
+
+                       if (d_num === i_num) {
+                           i_str = 'item_chb=' + ch.value + '&';
+                           d_str = 'delid=' + d.value + '&';
+                           form = i_str + d_str;
+                           ajaxPost('POST', form, urlname, actBtn, addressBar, csrf_token);
+                       }
+
+                   });
+
+                   var zip = (ch, d) => ch.map((x,i) => [x,d[i]]);
+                   // for a, b in zip(list1, list2):
+                   for (let [ch, d] of zip(ch_array, d_array))
+                   //     print(a + b)
+                        console.log(d + ' : ' + ch);
+
+                }
+
+            }
+}
 
 $(document).ready(function () {
     
@@ -135,17 +294,20 @@ $(document).ready(function () {
 
     var currentpage = $(location).attr('pathname');
 
-    if (currentpage == '/adminboard/adminboard_main') {
+    if (currentpage == '/adminboard/adminboard_main/') {
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_main', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
+
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_main', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -174,32 +336,33 @@ $(document).ready(function () {
                     pub.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
-                            '/adminboard/adminboard_main', 
+                    pubSwitch('POST', '#pubswitch',
+                            '/adminboard/adminboard_main/',
                             btnAct, chkBtn, content, radioField, radio
                             );
                 });
+
            } else {
 
                 $('#pubswitch_active').css('display', 'none');
                 $('#pubswitch').css('display', 'none');
            }    
 
-        });    
+        });
 
-
-
-    } else if (currentpage == '/adminboard/adminboard_inner') {
+    } else if (currentpage == '/adminboard/adminboard_inner/') {
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_inner', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_inner', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -229,8 +392,8 @@ $(document).ready(function () {
                     pub.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    pubSwitch('warn_msg', '#9A2F2F', 'POST', '#pubswitch', 
-                            '/adminboard/adminboard_inner', 
+                    pubSwitch('POST', '#pubswitch',
+                            '/adminboard/adminboard_inner/',
                             btnAct, chkBtn, content, radioField, radio
                             );
                 });
@@ -242,40 +405,37 @@ $(document).ready(function () {
 
         });    
 
-    } else if (currentpage == '/adminboard/adminboard_category') {
+    } else if (currentpage == '/adminboard/adminboard_category/') {
     
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_category', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
+
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_op', '/adminboard/adminboard_category', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
     
-    } else if (currentpage == '/adminboard/adminboard_media') {
+    } else if (currentpage == '/adminboard/adminboard_media/') {
 
         // ADMINBOARD FILE CRUD BLOCK
-        $('#upload_submit').click(function (upev) {
-            upev.preventDefault();
-            ajaxFiles('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media');
-        });
-        $('#mkdir-submit').click(function (mkev) {
-            mkev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
-        });
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
+
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_media', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
 
@@ -289,13 +449,17 @@ $(document).ready(function () {
            var qrangeField = 'qrange';
            var qrange = '50';
            var isChecked = 0;
-            
+           var csrf_token = null;
+           var dict = null;
+
            if (this.checked) {
 
                 imgpathField = $("input[name*=addressbar]").attr("name");
                 imgpath = $("input[name*=addressbar]").attr("value");
+                csrf_token = $('input[name="csrf_token"]').attr("value");
                 pict = $(this).attr("value");
                 chkBtn = 'item_chb';
+                chkBtnValue = $(this).attr('value');
                 isChecked = 1;
 
                 $('#gfxconv_active').css('display', 'block');
@@ -304,19 +468,30 @@ $(document).ready(function () {
                 $("input[id*=qrange]").on('change', function () {
                     qrange = $(this).val();
                     $('#qval').text(qrange + "%");
-
                 });    
 
                 $('#conv_submit').click(function (conv) {
                     conv.preventDefault();
                     var btnAct = $(this).attr('id');
                   
-                    gfxConv('warn_msg', '#9A2F2F', 'POST', '#gfxconv', 
-                            '../../Helpers/Helper_fileManager_gfxconv', 
+                    gfxConv('POST', '#gfxconv',
+                            '/adminboard/gfx_converter',
                             btnAct, chkBtn, qrangeField, qrange, 
-                            imgpathField, imgpath, pict
+                            imgpathField, imgpath, pict, csrf_token
                             );
                 });
+
+                $('#measure_submit').click(function (meas) {
+                    meas.preventDefault();
+                    var btnAct = $(this).attr('id');
+
+                    getImgSize('POST', '#gfxconv',
+                               '/adminboard/gfx_converter',
+                               btnAct, chkBtn, qrangeField, qrange,
+                               imgpathField, imgpath, pict, csrf_token
+                               );
+                });
+
            } else {
 
                 $('#gfxconv_active').css('display', 'none');
@@ -342,20 +517,61 @@ $(document).ready(function () {
         // ADMINBOARD SHOW BLOCK
 
 
-    } else if (currentpage == '/adminboard/adminboard_users') {
+    } else if (currentpage == '/adminboard/adminboard_filemanager/') {
+
+        // ADMINBOARD FILE CRUD BLOCK
+        $('#rename').click(function (rev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
+
+        $('#delete').click(function (dev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
+
+        // ADMINBOARD IMAGEVIEW BLOCK
+        $('#table-striped [href]').click(function (item) {
+            $(this).data('clicked', true);
+            item.preventDefault();
+            var str = $(this).attr("href");
+            var pattern = /.png|.jpg|.jpe|.jpe|.gif|.svg|.json|.ico/;
+            if (pattern.test(str) == false) {
+               // We have directory then
+               $("input[name='addressbar']").val(str);
+            }
+        });
+
+        // ADMINBOARD SHOW BLOCK
+
+
+    } else if (currentpage == '/adminboard/adminboard_users/') {
+
+        // ADMINBOARD ADDUSER BLOCK
+        $('#user_submit').click(function (dev) {
+           dev.preventDefault();
+           formElemIdentify(currentpage, this);
+        });
 
         $('#adduser_active').css('display', 'block');
         $('#adduser').css('display', 'block');
 
         $('#rename').click(function (rev) {
-            rev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_users', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
+
         $('#delete').click(function (dev) {
-            dev.preventDefault();
-            var btnAct = $(this).attr('id');
-            ajaxPost('warn_msg', '#9A2F2F', 'POST', '#form_upload', '/adminboard/adminboard_users', btnAct);
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
         });
 
     } else {

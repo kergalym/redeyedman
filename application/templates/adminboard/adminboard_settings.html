@@ -63,7 +63,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <div id="toolbar">
                         <ul class="minibar-nav" >
-                            <form class="form_class" method="POST" action="" >
+                            <form class="form_class" method="POST" action="{{ request.path }}" >
                                   <li><input type="submit" name="rename" value="Переименовать" class="button" enabled=""/></li>			
                                 <li><input type="submit" id="delete" name="delete" value="Удалить пользователя" class="button" enabled=""/></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
@@ -120,8 +120,8 @@
                                     <td><a href="/adminboard/editpage_id_users/{{ user.id }}" title="Редактировать пользователя">{{ user.login }}</a></td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.regdate }}</td>
-                                    <td><input type='text' id='delid_{{ user.id }}' name='delid_{{ user.id }}' value='{{ user.id }}' size='1' /></td>
-                                    <td><input type='checkbox' id='checkbox' name='item_chb' value='{{ user.id }}' /></td>                        
+                                    <td><input type='text' id='delid_{{ user.id }}' name='delid' value='{{ user.id }}' size='1' /></td>
+                                    <td><input type='checkbox' id='checkbox_{{ user.id }}' name='item_chb' value='{{ user.id }}' /></td>
                                 </tr>
                                 {% endfor %}
                             </div>

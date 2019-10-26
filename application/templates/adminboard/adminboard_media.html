@@ -44,12 +44,14 @@
                 <a enabled="" href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();">Бэкап сайта</a>	
 
         <li id="gfxconv_active" class="active"><a>Конвертер графических файлов <span class="sr-only">(current)</span></a></li>
-            <form action="" method="post" enctype="multipart/form-data" id="gfxconv">
-
+            <form action="{{ url_for('gfx_converter') }}" method="post" id="gfxconv">
+                {{ form.csrf_token }}
                 <p> Формат файла: </p><select name="fileformat" id="fileformat"><option>PNG</option><option>JPG</option></select>
                 <p> Ширина (px): </p><input type="text" name="width" value="1920" id="width"/>
                 <p> Высота (px): </p><input type="text" name="height" value="1080" id="height"/>
-                <p> Сжатие (Хуже качество при большем значении): <div id="qval">50%</div> </p><input type="range" min="0" max="100" id="qrange"/>
+                <p> Сжатие (Хуже качество при большем значении): <div id="qval">50%</div> </p>
+                <input type="range" min="0" max="100" id="qrange"/>
+                <input type="submit" value="Вычислить размер" id="measure_submit" form="gfxconv" class="btn btn danger" />
                 <input type="submit" value="Конвертировать" id="conv_submit" form="gfxconv" class="btn btn danger" />
             </form>
         
@@ -72,14 +74,14 @@
 				<div id="navbar" class="navbar-collapse collapse">
                     <div id="toolbar">
 						<ul class="minibar-nav">
-							<form id="formnav" name="formnav" class="form_class" method="POST" enctype="multipart/form-data" action="{{ request.path }}" id="uploadform">
+							<form id="formnav" name="formnav" class="form_class" method="post" enctype="multipart/form-data" action="{{ request.path }}">
                                 {{ form.csrf_token }}
 								<li> <label class="button f-upload" style="cursor: pointer;">Выбрать файл<input type="file" name="f_upload" value="Обзор" id="f_upload" multiple /></label></li>
-								<li><input type="submit" name="submit" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
+								<li><input type="submit" name="upload" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
 								<li><input type="submit" name="cddir" value="Перейти в каталог" class="button"  id="cd-submit" enabled=""/></li>		
 								<li><input type="submit" name="mkdir" value="Создать каталог" class="button" id="mkdir-submit" enabled=""/></li>		
-								<li><input type="submit"  id="rename" name="rename" value="Переименовать файл" class="button" id="rename-submit" enabled=""/></li>
-								<li><input type="submit" id="delete" name="delete" value="Удалить файл" class="button" id="del-submit" enabled=""/></li>
+								<li><input type="submit" name="rename" value="Переименовать файл" class="button" id="rename" enabled=""/></li>
+								<li><input type="submit" name="delete" value="Удалить файл" class="button" enabled=""/></li>
 								<li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
 
 						</ul>
@@ -100,22 +102,23 @@
 					<h3 class="page-header">Управление файлами</h3>
                     
 					<h4 class="sub-header">Файлы и каталоги</h4>
-						<div id="warn_msg" align="left"></div>
-					<div class="addressbar">	
+
+					<div class="addressbar">
 						<input type='text' id='text' name='addressbar' value='{{ get_relpath }}' size='1' style="width: 50%"  required placeholder="Путь файлового менеджера"/>
-						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/> 
+						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/>
 					</div>
 					<div class="table-responsive">                       
                         {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                         {% for category, message in messages %}
                         {% if category == 'info' %}
-                        <div class="warn_msg" role="alert">
+                        <div class="warn_msg" role="alert" id="warn_msg">
                             {% else %}
                             <div class="err_msg alert-{{ category }}" role="alert">
                                 {% endif %}
                                 {{ message }}
                             </div>
+                        </div>
                             {% endfor %}
                             {% endif %}
                             {% endwith %}                     
@@ -136,7 +139,6 @@
 							</thead>
 							<tbody>
 							<div class="checkbox">
-                                {{ files|length }}							
 								{% for file in files %}
 									<tr>   
 										<td>{{ file.id }}</td>
@@ -145,8 +147,8 @@
 										<td>{{ file.size }}</td>
                                         <td>{{ file.perm }}</td>
 										<td>{{ file.date }}</td>
-										<td><input type='text' id='text' name='delid_{{ file.name }}' value='{{ file.name }}' size='1' ></td>
-										<td><input type="checkbox" id='checkbox'  name='item_chb_{{ file.name }}' value='{{ file.name }}' /></td> 
+										<td><input type='text' id='delid_{{ file.id }}' name='delid' value='{{ file.name }}' size='1' ></td>
+										<td><input type="checkbox" id='checkbox_{{ file.id }}'  name='item_chb' value='{{ file.name }}' /></td>
 									</tr>
 								{% endfor %}
 							</div>          
@@ -182,7 +184,6 @@
                             </tbody>                             
                         </table>
                         {{ pagination.links }}                        
-					</div>
 				</div>
 			</div> 			
 		</div>
@@ -195,13 +196,12 @@
         <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
         <script type="text/javascript" src="../../static/js/holder.min.js"></script>
         <script type="text/javascript" src="../../static/js/backup.js"></script>
-        <script type="text/javascript" src="../../static/js/checkboxchecker.js"></script>
         <script type="text/javascript">
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>        
         <script type="text/javascript" src="../../static/js/crud.js"></script>       
         <script type="text/javascript" src="../../static/js/modalpict_adm.js"></script>
-        <!-- <script  type="text/javascript" src="../../static/js/proact_search_media.js"></script> -->		        
+        <script  type="text/javascript" src="../../static/js/proact_search_media.js"></script>
     </body>        
 </html>
 

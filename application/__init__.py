@@ -17,7 +17,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask import Flask
-from flask import Request
 from flask_debug import Debug
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -26,7 +25,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-import os
 import sys
 
 # Set encoding to UTF-8 hack
@@ -37,7 +35,7 @@ sys.setdefaultencoding('utf-8')
 app = Flask(__name__)
 app.secret_key = 'unique_GtwAhENew8ghtsgWK'
 app.config.from_object('configuration')
-app.debug = True
+app.debug = False
 
 # Read database settings from the configuration file
 dbhost = app.config['DBHOST']
@@ -46,7 +44,7 @@ dbuser = app.config['DBUSERNAME']
 dbpass = app.config['DBPASSWORD']
 
 # File uplad params
-UPLOAD_FOLDER = '/uploads'
+UPLOAD_FOLDER = '/static/images/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -57,7 +55,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % \
-(dbuser, dbpass, dbhost, dbname)
+                                        (dbuser, dbpass, dbhost, dbname)
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -89,6 +87,4 @@ from application.views import vieweditcontent_id
 from application.views import vieweditcategory_id
 from application.views import vieweditusers_id
 from application.views import viewbackup
-
-
-
+from application.views import viewuseradd

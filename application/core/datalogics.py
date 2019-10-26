@@ -19,8 +19,13 @@
 import os
 import time
 import re
+from os.path import exists
+from os.path import isfile
 from random import randrange
 from datetime import datetime
+
+from PilLite import Image
+
 from application import app
 from application.core.dbmodel import Users
 from application import login_manager
@@ -135,12 +140,69 @@ class Utils(Base):
         try:
             passlength < 1
         except Warning:
-            print "Keyspace must be long"
+            return "Keyspace must be long"
 
         for i in range(self.passlength):
             pwstring = pwstring + keyspace[randrange(maxlen)]
 
         return pwstring
+
+    @login_required
+    def conv_image(self, data):
+        if isinstance(data, dict):
+            img_file = data['name']
+            img_path = data['path']
+            new_format = data['format']
+            new_width = data['width']
+            new_height = data['height']
+            size = new_width, new_height
+            outfile = "{}{}{}".format(img_path, str(img_file[:len(img_file)-3]), str(new_format.lower()))
+            origfile = "{}{}".format(img_path, str(img_file))
+
+            if (isinstance(data, dict)
+                    and exists("{}{}".format(img_path, img_file)) is True
+                    and isfile("{}{}".format(img_path, img_file)) is True
+                    and outfile is not origfile):
+                try:
+                    if img_file[len(img_file) - 3:] == 'png' or 'jpg' or 'jpeg':
+                        img = Image.open("{}{}".format(img_path, img_file))
+                        img.thumbnail(size)
+                        img.save(outfile, new_format)
+                        return {'status': "OK",
+                                'message': "Original file is converted to {}".format(
+                                    outfile)}
+                except IOError:
+                    return {'status': "ERROR",
+                            'message': "Original file is not changed"}
+
+    @login_required
+    def get_image_size(self, data):
+        if isinstance(data, dict):
+            img_file = data['name']
+            img_path = data['path']
+            if (exists("{}{}".format(img_path, img_file))
+                    and isfile("{}{}".format(img_path, img_file))):
+                if img_file[len(img_file)-3:] == 'png' or 'jpg' or 'jpeg':
+                    try:
+                        img = Image.open("{}{}".format(img_path, img_file))
+                        size = img.size
+                        width = int(re.search("\d+", str(size[0])).group())
+                        height = int(re.search("\d+", str(size[1])).group())
+
+                        return {'status': "OK",
+                                'message': "Original file is found",
+                                'width': width,
+                                'height': height
+                                }
+
+                    except IOError:
+                        return {'status': "ERROR",
+                                'message': "Original file is not found"
+                                }
+                else:
+                    return {'status': "ERROR",
+                            'message': "Original file is not supported: {}".format(img_file[len(img_file)-3:])
+                            }
 
 
 class SysInfo(Base):
@@ -149,50 +211,24 @@ class SysInfo(Base):
         self.alterlocaltime = None
 
     @login_required
-    def humanize_bytes(self, bytes, precision=1):
-        """Return a humanized string representation of a number of bytes.
-
-        Assumes `from __future__ import division`.
-
-        >>> humanize_bytes(1)
-        '1 byte'
-        >>> humanize_bytes(1024)
-        '1.0 kB'
-        >>> humanize_bytes(1024*123)
-        '123.0 kB'
-        >>> humanize_bytes(1024*12342)
-        '12.1 MB'
-        >>> humanize_bytes(1024*12342,2)
-        '12.05 MB'
-        >>> humanize_bytes(1024*1234,2)
-        '1.21 MB'
-        >>> humanize_bytes(1024*1234*1111,2)
-        '1.31 GB'
-        >>> humanize_bytes(1024*1234*1111,1)
-        '1.3 GB'
+    def conv_bytes(self, num):
         """
-        abbrevs = (
-            (1 << 50L, 'PB'),
-            (1 << 40L, 'TB'),
-            (1 << 30L, 'GB'),
-            (1 << 20L, 'MB'),
-            (1 << 10L, 'kB'),
-            (1, 'bytes')
-        )
-
-        if bytes == 1:
-            return '1 byte'
-        for factor, suffix in abbrevs:
-            if bytes >= factor:
-                break
-            return '%.*f %s' % (precision, bytes / factor, suffix)
+        Convert bytes to MB.... GB... etc
+        """
+        for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
+            if num < 1024.0:
+                return "{} {}".format(round(float(num), 1), x)
+            num /= 1024.0
 
     @login_required
     def diskspace(self):
+        """
+        Return free disk space
+        """
         f = os.statvfs(app.root_path)
         estimate = f
-        output = (estimate.f_bavail * estimate.f_frsize) / 1024
-        return output
+        output = (estimate.f_bavail * estimate.f_frsize)
+        return self.conv_bytes(output)
 
     @login_required
     def systime(self):

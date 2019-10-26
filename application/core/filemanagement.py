@@ -14,19 +14,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from application import app
+from application import app, ALLOWED_EXTENSIONS
+from application.core.datalogics import SysInfo
 from os import stat
-from os import path
 from os import rename
-from os import remove, rmdir
+from os import remove
 from os import mkdir
 from os import getcwd
 from os import listdir
 from os import chmod
 from os.path import isdir
 from os.path import isfile
-from os.path import join
 from datetime import datetime
+from pwd import getpwuid
+import shutil
 
 
 class FileBrowser:
@@ -39,70 +40,56 @@ class FileBrowser:
         self.obj = None
         self.attr = None
         self.get_path = None
+        self.sbytes = None
+        self.sysinfo = SysInfo()
 
     def allowed_file(self, filename):
         self.filename = filename
         return '.' in self.filename and \
-            self.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-    def array_slice(self, array, offset, length=None):
-        if isinstance(array, list) and not isinstance(array, dict):
-            if isinstance(array, set):
-                array = list(array)
-                return set(array[offset:length])
-            return array[offset:length]
-        return False
+               self.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     def make_dir(self, get_dirname):
         self.get_dirname = get_dirname
         if type(self.get_dirname) == str:
             return mkdir(self.get_dirname)
         else:
-            return "Not a string"
+            return False
 
     def rename_file_dir(self, old_object, new_object):
         self.old_object = old_object
         self.new_object = new_object
-        if isinstance(self.old_object, str) \
-           and isinstance(self.new_object, str):
+        if (isinstance(self.old_object, str)
+                and isinstance(self.new_object, str)):
             return rename(self.old_object, self.new_object)
         else:
-            return "Not a string"
+            return False
 
     def del_file_dir(self, get_path):
         self.get_dirname = get_path
-        if isinstance(self.get_path, (str, unicode)):
-            for files in listdir(self.get_path):
-                get_item = files
-                if isdir("{}/{}".format(self.get_dirname, get_item)):
-                    self.del_file_dir("{}/{}".format(self.get_dirname,
-                                                     get_item))
-                elif isfile("{}/{}".format(self.get_dirname, get_item)):
-                    remove("{}/{}".format(self.get_dirname, get_item))
-                    self.del_file_dir("{}/{}".format(self.get_dirname,
-                                                     get_item))
-
-            return rmdir(self.get_dirname)
+        if isinstance(self.get_dirname, str):
+            if isdir("{}".format(self.get_dirname)):
+                return shutil.rmtree(self.get_dirname)
+            elif isfile("{}".format(self.get_dirname)):
+                return remove("{}".format(self.get_dirname))
         else:
-            return "Not a string"
+            return False
 
     def move_file_dir(self, get_path):
         pass
-        # TODO:
-        # shutil.copytree and shutil.move
+        # TODO: shutil.copytree and shutil.move
 
-    def hsize(self, sbytes):
-        suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-        i = 0
-        self.sbytes = sbytes
+    def file_size(self, file_path):
+        """
+        Return the file size
+        """
+        if isfile(file_path):
+            file_info = stat(file_path)
+            return self.sysinfo.conv_bytes(file_info.st_size)
 
-        while self.sbytes >= 1024 and i < len(suffixes)-1:
-            sbytes /= 1024.
-            i += 1
-        f = ('%.2f' % sbytes).rstrip('0').rstrip('.')
-        return '%s %s' % (f, suffixes[i])
-
-    def polystat(self, object, attribute):
+    def file_attr(self, object, attribute):
+        """
+        Return file attributes
+        """
         self.obj = object
         self.attr = attribute
         if self.attr == 'st_ctime':
@@ -113,61 +100,60 @@ class FileBrowser:
             return oct(mo.st_mode)[-3:]
         elif self.attr == 'st_uid':
             uid = stat(self.obj)
-            return uid.st_uid
+            return getpwuid(uid.st_uid).pw_name
         else:
             return False
 
     def show_files(self, get_path):
-        self.get_path = get_path
-        f_list = []
+        """
+        Shows files for the dashboard media section
+        """
+        # get_path is unicode string, make it simple string
+        self.get_path = str(get_path)
         files = []
-        inner = []
-        if isinstance(self.get_path, str):
-            # Delete first slash for join
-            self.get_path = self.get_path.lstrip('/')
-            if isdir(join(app.root_path, self.get_path)):
-                f_list = listdir(join(app.root_path, self.get_path))
+        if (isinstance(self.get_path, str)
+                and isdir("{}{}".format(app.root_path, self.get_path))):
+                f_list = listdir("{}{}".format(app.root_path, self.get_path))
                 for num, file_x, in enumerate(f_list, 1):
                     inner = [
                         {"id": "{}".format(
                             num),
-                            "relpath": "/{}{}".format(
+                            "relpath": "{}/{}".format(
                                 self.get_path, file_x
-                        ),
+                            ),
                             "name": "{}".format(
                                 file_x
-                        ),
-                            "owner": self.polystat("{}/{}/{}".format(
+                            ),
+                            "owner": self.file_attr("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_uid'
-                        ),
-                            "size": self.hsize(
-                                path.getsize("{}/{}/{}".format(
+                            ),
+                            "size": self.file_size(("{}/{}/{}".format(
                                     app.root_path, self.get_path, file_x))),
-                            "date": self.polystat("{}/{}/{}".format(
+                            "date": self.file_attr("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_ctime'
-                        ),
-                            "perm": self.polystat("{}/{}/{}".format(
+                            ),
+                            "perm": self.file_attr("{}/{}/{}".format(
                                 app.root_path, self.get_path, file_x),
                                 'st_mode'
-                        )}
+                            )}
                     ]
                     files += inner
                 return files
-        else:
-            return "{} is not a directory".format(self.get_path)
 
     def change_own(self, get_path):
+        """
+        Change file owner & permissions
+        """
         self.get_path = get_path
-        if isinstance(self.get_path,  str):
+        if isinstance(self.get_path, str):
             return chmod(self.get_path)
         elif isinstance(self.get_path, list):
             for files in self.get_path:
                 per_file = files
-                per_path = getcwd(self.get_path)
+                per_path = getcwd()
                 if isinstance(per_file, str) and isinstance(per_path, str):
-                    continue
                     file_array = "{}/{}".format(per_path, per_file)
                     chmod(file_array)
                 else:

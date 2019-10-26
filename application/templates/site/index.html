@@ -41,12 +41,12 @@
                             <!-- socialbar begin -->
                             <div class="socialbar">
                                 <a href="https://www.youtube.com/channel/UCV31wHY7yZXe7L5QD3qh2vA"><button class="button-youtube"></button></a>
-                                <a href="#"><button class="button-google"></button></a>
                             </div>
                             <!-- socialbar end -->
-                            <form method="get" action="{{ url_for('show_inner_search') }}">
+                            <form method="post" action="{{ url_for('show_inner_search') }}">
+                                {{ form.csrf_token }}
                                 <div class="search">
-                                    <input type="search" name="query" placeholder="Поиск по сайту"/>
+                                    {{ form.query(type="search", placeholder="Поиск по сайту") }}
                                     <button type="submit" class="btn btn-default" ></button>
                                 </div>
                             </form>
@@ -197,6 +197,14 @@
                         </div>
                         {% endblock %}
 
+			            {% block toggle_pad%}
+			            <div id="toggle_pad" align="center">
+                            <a class="list_toggle" href="#">
+                                <i aria-hidden="true" class="fa fa-2x fa-arrow-down"></i>
+                            </a>
+                        </div>
+                        {% endblock %}
+
                         {% block content_block_b %}
                         <div id="content_bottom_b">
                             <h2 class="line">How To</h2>
@@ -207,7 +215,7 @@
 
                                     <h2 class="line" style="text-align: left;"> {{ game.article_title | safe }} </h2>
 
-                                    <div id="column-text">{{ game.article_text | safe  + "..."}}</div>
+                                    <div id="column-text">{{ game.article_text | ctxt | safe  + "..."}}</div>
 
                                     <a class="readmore-button-alt" href="inner/{{ game.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
@@ -221,7 +229,7 @@
 
                                     <h2 class="line" style="text-align: left;"> {{ howto.article_title | safe }} </h2>
 
-                                    <div id="column-text">{{ howto.article_text | safe  + "..."}}</div>
+                                    <div id="column-text">{{ howto.article_text | ctxt | safe  + "..."}}</div>
 
                                     <a class="readmore-button-alt" href="inner/{{ howto.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
@@ -233,7 +241,7 @@
                                     {% for misc in c_misc %}
                                     <h2 class="line" style="text-align: left;"> {{ misc.article_title | safe }} </h2>
 
-                                    <div id="column-text">{{ misc.article_text | safe  + "..."}}</div>
+                                    <div id="column-text">{{ misc.article_text | ctxt | safe  + "..."}}</div>
 
                                     <a class="readmore-button-alt" href="inner/{{ misc.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
@@ -259,10 +267,10 @@
                         Статьи, хаутушки и просто всякая всячина</p>
                 </div>
                 <div class="footer_data_c">
-                    <p>&copy; 2016 Designed & developed by:<br> Galym Kerimbekov </p>
+                    <p>&copy; 2019 Designed & developed by:<br> Galym Kerimbekov </p>
                 </div>
             </div>
-        </div>        
+        </div>
         {% endblock %}
         <!--  Core JavaScript ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->

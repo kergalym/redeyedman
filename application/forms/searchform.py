@@ -22,3 +22,4 @@ from wtforms.validators import DataRequired
 class SearchForm(RedirectForm):
     query = TextField('query', validators=[DataRequired()])
 
+

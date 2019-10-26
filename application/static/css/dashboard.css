@@ -240,6 +240,34 @@ select {
         color: #242424;
 }
 
+#gfxconv #measure_submit {
+        display: inline-block;
+        padding: 10px 10px 10px 10px;
+        color: #FFFFFF !important;
+        text-decoration: none !important;
+        line-height: 1;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 1px 1px #ccc;
+        border-radius: 4px;
+        margin-top: 15px;
+        background-color: #434343;
+        background: #33232380;
+        border: none;
+        border-top: 3px solid #c2c2c2;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 0 #2D2D2D, 0 2px 0 #2D2D2D, 0 3px 0 #2C2C2C, 0 4px 0 #2A2A2A, 0 0 0 6px black, 0 4px 0 6px black, 0 0 0 7px #222, 0 4px 0 7px #222;
+        -moz-box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 0 #2D2D2D, 0 2px 0 #2D2D2D, 0 3px 0 #2C2C2C, 0 4px 0 #2A2A2A, 0 0 0 6px black, 0 4px 0 6px black, 0 0 0 7px #222, 0 4px 0 7px #222;
+        box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 1px 0 #2D2D2D, 0 2px 0 #2D2D2D, 0 3px 0 #2C2C2C, 0 4px 0 #2A2A2A, 0 0 0 6px black, 0 4px 0 6px black, 0 0 0 7px #222, 0 4px 0 7px #222;
+        padding: 10px 15px 10px 10px;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+        margin-left: 10px;
+        margin-right: 10px;
+        color: #242424;
+}
+
 #gfxconv_active, #gfxconv, 
 #pubswitch_active, #pubswitch {
     display: none;

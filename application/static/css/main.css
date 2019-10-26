@@ -2,11 +2,6 @@
 /* Galym Kerimbekov kegalym2@mail.ru */
 /* Specially for RedEyedman.Ru */
 /* ======================================= */
-html,
-body {
-  height: 100% !important;
-}
-
 body {
     background: #1e1e1e;
     margin: 0 auto;
@@ -20,8 +15,8 @@ body {
     background: #FFF;
 }
 
-html {
-    overflow-x: hidden;
+html, {
+    overflow: hidden !important;
 }
 
 .container-fluid {
@@ -1151,6 +1146,7 @@ and (min-width : 1200px) {
         /* box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); */
         margin: 0px auto 10px;
         color: #34363A;
+        display: none;
     }
 
     #content_bottom_b_inner {
@@ -1167,6 +1163,7 @@ and (min-width : 1200px) {
         /* box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5); */
         margin: 0px auto 10px;
         color: #34363A;
+        display: none;
     }
 
     #content_bottom_c {
@@ -1831,6 +1828,11 @@ img {
     padding-left: 0px;
     padding-right: 0px;
     max-width: 100%;
+}
+
+#footer {
+    position: absolute;
+    width: 100%;
 }
 
 @media only screen and (min-width : 240px) and (orientation: portrait){
