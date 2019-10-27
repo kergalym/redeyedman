@@ -72,7 +72,7 @@
                             <li><a class="button" enabled="" href="">Добавить категорию</a></li>
                             <form class="form_class" method="POST" action="{{ request.path }}" >
                                 {{ form.csrf_token }}
-                                <li><input type="submit" name="rename" value="Переименовать" class="button" enabled=""/></li>
+                                <li><input type="submit" id="rename" name="rename" value="Переименовать" class="button" enabled=""/></li>
                                 <li><input type="submit" id="delete" name="delete" value="Удалить статью" class="button" enabled=""/></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_users') }}">Пользователи</a></li>            
@@ -182,8 +182,11 @@
         <script type="text/javascript" src="../../static/js/holder.min.js"></script>
         <script type="text/javascript" src="../../static/js/backup.js"></script>
         <script type="text/javascript" src="../../static/js/checkboxchecker.js"></script>	
-        <script type="text/javascript" src="../../static/js/crud.js"></script>                
-        <script  type="text/javascript" src="../../static/js/proact_search_inner.js"></script>		        
+        <script type="text/javascript">
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+        <script type="text/javascript" src="../../static/js/crud.js"></script>
+        <script  type="text/javascript" src="../../static/js/proact_search_inner.js"></script>
     </body>
 </html>
 

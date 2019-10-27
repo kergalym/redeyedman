@@ -197,7 +197,6 @@ class ViewDash:
     def show_dashboard_category():
         per_page = 9
         paginator = Paginator()
-        categories_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)
@@ -267,7 +266,6 @@ class ViewDash:
     def show_dashboard_settings():
         per_page = 9
         paginator = Paginator()
-        users_loop = []
         form = dashboard_itemsform.DashboardItemsForm()
         servername = socket.gethostname()
         approot = os.path.split(app.root_path)

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# SECRET_KEY = 'unique_GtwAhENew8ghtsgWK'
-
 DBHOST = 'localhost'
 DBNAME = 'redeyed'
 DBUSERNAME = 'galym'
