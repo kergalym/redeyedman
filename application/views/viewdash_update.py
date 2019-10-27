@@ -45,6 +45,7 @@ from flask import request
 from flask import jsonify
 from flask import url_for
 from flask import g
+from sqlalchemy import exc
 
 
 class ViewUpdate(ViewDash):
@@ -83,11 +84,14 @@ class ViewUpdate(ViewDash):
                             ).values(
                                 id=delid
                             )
-                            conn.execute(stmt)
-                            flash("Item {} is changed to {}".format(x,
-                                                                    form.delid.data), 'info')
+                            try:
+                                conn.execute(stmt)
+                                flash("Item {} is changed to {}".format(x,
+                                                                        form.delid.data), 'info')
+                            except exc.IntegrityError:
+                                flash("Item {} is exists".format(delid), 'error')
                         elif x == delid:
-                            flash("Item {} is exists".format(x), 'error')
+                            flash("Item {} is exists".format(delid), 'error')
                         else:
                             flash("Item {} is not changed to {}".format(x,
                                                                         form.delid.data), 'error')
@@ -151,7 +155,6 @@ class ViewUpdate(ViewDash):
 
     @app.route('/adminboard/adminboard_inner/', methods=['GET', 'POST'])
     @login_required
-    # TODO: check update_dashboard_inner
     def update_dashboard_inner():
         form = dashboard_itemsform.DashboardItemsForm()
         form_next = dashboard_searchform.DashboardSearchForm()
@@ -184,11 +187,14 @@ class ViewUpdate(ViewDash):
                             ).values(
                                 id=delid
                             )
-                            conn.execute(stmt)
-                            flash("Item {} is changed to {}".format(x,
-                                                                    form.delid.data), 'info')
+                            try:
+                                conn.execute(stmt)
+                                flash("Item {} is changed to {}".format(x,
+                                                                        form.delid.data), 'info')
+                            except exc.IntegrityError:
+                                flash("Item {} is exists".format(delid), 'error')
                         elif x == delid:
-                            flash("Item {} is exists".format(x), 'error')
+                            flash("Item {} is exists".format(delid), 'error')
                         else:
                             flash("Item {} is not changed to {}".format(x,
                                                                         form.delid.data), 'error')
@@ -284,11 +290,14 @@ class ViewUpdate(ViewDash):
                             ).values(
                                 id=delid
                             )
-                            conn.execute(stmt)
-                            flash("Item {} is changed to {}".format(x,
-                                                                    form.delid.data), 'info')
+                            try:
+                                conn.execute(stmt)
+                                flash("Item {} is changed to {}".format(x,
+                                                                        form.delid.data), 'info')
+                            except exc.IntegrityError:
+                                flash("Item {} is exists".format(delid), 'error')
                         elif x == delid:
-                            flash("Item {} is exists".format(x), 'error')
+                            flash("Item {} is exists".format(delid), 'error')
                         else:
                             flash("Item {} is not changed to {}".format(x,
                                                                         form.delid.data), 'error')
@@ -358,6 +367,7 @@ class ViewUpdate(ViewDash):
         conn = engine.connect()
 
         if request.method == 'POST':
+            # import pdb; pdb.set_trace()
             if form.rename.data and form.validate_on_submit():
                 checkboxes = request.form.getlist('item_chb')
 
@@ -383,11 +393,14 @@ class ViewUpdate(ViewDash):
                             ).values(
                                 id=delid
                             )
-                            conn.execute(stmt)
-                            flash("Item {} is changed to {}".format(x,
-                                                                    form.delid.data), 'info')
+                            try:
+                                conn.execute(stmt)
+                                flash("Item {} is changed to {}".format(x,
+                                                                        form.delid.data), 'info')
+                            except exc.IntegrityError:
+                                flash("Item {} is exists".format(delid), 'error')
                         elif x == delid:
-                            flash("Item {} is exists".format(x), 'error')
+                            flash("Item {} is exists".format(delid), 'error')
                         else:
                             flash("Item {} is not changed to {}".format(x,
                                                                         form.delid.data), 'error')
@@ -637,11 +650,14 @@ class ViewUpdate(ViewDash):
                             ).values(
                                 id=delid
                             )
-                            conn.execute(stmt)
-                            flash("Item {} is changed to {}".format(x,
-                                                                    form.delid.data), 'info')
+                            try:
+                                conn.execute(stmt)
+                                flash("Item {} is changed to {}".format(x,
+                                                                        form.delid.data), 'info')
+                            except exc.IntegrityError:
+                                flash("Item {} is exists".format(delid), 'error')
                         elif x == delid:
-                            flash("Item {} is exists".format(x), 'error')
+                            flash("Item {} is exists".format(delid), 'error')
                         else:
                             flash("Item {} is not changed to {}".format(x,
                                                                         form.delid.data), 'error')

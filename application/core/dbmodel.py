@@ -131,70 +131,29 @@ class Users(UserMixin, sql.Model):
     email = sql.Column(String, nullable=False)
     regdate = sql.Column(String, nullable=False)
     usr_level = sql.Column(String, nullable=False)
-    # roles = sql.relationship('Role', secondary='user_roles',
-                             # backref=sql.backref('users', lazy='dynamic'))
     
-    def __init__(self, id, login, password, email, regdate, usr_level, roles):
+    def __init__(self, id, login, password, email, regdate, usr_level):
         self.id = id
         self.login = login
         self.password = password
         self.email = email
         self.regdate = regdate
         self.usr_level = usr_level
-        self.roles = roles
 
     def __repr__(self):
         return '<Users(id={id}, login="{login}", password="{password}", \
                 email="{email}", regdate="{regdate}"), \
-                usr_level="{usr_level}", roles="{roles}")>'.format(
+                usr_level="{usr_level}")>'.format(
             login=self.login,
             password=self.password, 
             email=self.email,
             regdate=self.regdate, 
-            usr_level=self.usr_level,
-            roles=self.roles
+            usr_level=self.usr_level
             )
 
     def is_active(self, login):
         if login == Users.query.get(login):
-            self.active = Users.query.get(login) 
-        return self.active
+            return Users.query.get(login)
 
     def is_authenticated(self):
         return True
-
-    
-class Role(sql.Model):
-    __tablename__ = 'role'
-    id = sql.Column(Integer(), primary_key=True)
-    name = sql.Column(String(), unique=True)
-    
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-        
-    def __repr__(self):
-        return '<Role(id="{id}", name="{name}")>'.format(
-            id=self.id,
-            name=self.name
-            )
-    
-    
-class UserRoles(sql.Model):
-    __tablename__ = 'user_roles'
-    id = sql.Column(Integer(), primary_key=True)
-    user_id = sql.Column(Integer(), sql.ForeignKey('user.id', ondelete='CASCADE'))
-    role_id = sql.Column(Integer(), sql.ForeignKey('role.id', ondelete='CASCADE'))
-    
-    def __init__(self, id, user_id, role_id):
-        self.id = id
-        self.user_id = user_id
-        self.role_id = role_id
-        
-    def __repr__(self):
-        return '<UserRoles(id="{id}", user_id="{user_id}", \
-                role_id="{role_id}")>'.format(
-            id=self.id,
-            user_id=self.user_id,
-            name=self.user_id
-            )        

@@ -40,21 +40,19 @@ function ajaxFiles(query_type, attach, urlname) {
         }
 }
 
-function ajaxPost(query_type, form, urlname, actBtn, addressBar, csrf_token) {
+function ajaxPost(query_type, urlname, actBtn, csrf_token, form) {
 
-         if (form != null
-             && urlname != null
+         if (urlname != null
              && query_type != null
              && actBtn != null
-             && addressBar != null
-             && csrf_token != null) {
+             && csrf_token != null
+             && form != null) {
 
              var actBtn = actBtn + '=True' + '&';
-             var addressBar = 'addressbar=' + addressBar + '&';
+             var item_chb = 'item_chb=' + item_chb + '&';
+             var delid = 'delid=' + delid + '&';
              var csrf_token = 'csrf_token=' + csrf_token + '&';
-             var formID = addressBar + form + actBtn + csrf_token;
-             var cls_warn = null;
-
+             var formID = form + actBtn + csrf_token;
              $.ajax({
                  type: query_type,
                  url: urlname,
@@ -83,7 +81,6 @@ function addUser(query_type, form, urlname, actBtn, csrf_token) {
              var form = new FormData($(form)[0]);
              var csrf_token = 'csrf_token=' + csrf_token + '&';
              var formID = form + actBtn + csrf_token;
-             console.log(formID);
 
              $.ajax({
                  type: query_type,
@@ -220,7 +217,6 @@ function formElemIdentify(urlname, event) {
                 i_num = id.replace( /^\D+/g, '');
                 d_num = d_num.replace( /^\D+/g, '');
                 i_str = $('input[name=item_chb]:checked').attr('value');
-
                 $.each(d_array, function(k, v) {
 
                     d_num = v.id.replace( /^\D+/g, '')
@@ -229,7 +225,7 @@ function formElemIdentify(urlname, event) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
                         form = i_str + d_str;
-                        ajaxPost('POST', form, urlname, actBtn, addressBar, csrf_token);
+                        ajaxPost('POST', urlname, actBtn, csrf_token, form);
                     }
                 });
 
@@ -261,7 +257,7 @@ function formElemIdentify(urlname, event) {
                            i_str = 'item_chb=' + ch.value + '&';
                            d_str = 'delid=' + d.value + '&';
                            form = i_str + d_str;
-                           ajaxPost('POST', form, urlname, actBtn, addressBar, csrf_token);
+                           ajaxPost('POST', urlname, actBtn, csrf_token, form);
                        }
 
                    });
@@ -551,11 +547,6 @@ $(document).ready(function () {
 
     } else if (currentpage == '/adminboard/adminboard_users/') {
 
-        // ADMINBOARD ADDUSER BLOCK
-        $('#user_submit').click(function (dev) {
-           dev.preventDefault();
-           formElemIdentify(currentpage, this);
-        });
 
         $('#adduser_active').css('display', 'block');
         $('#adduser').css('display', 'block');
@@ -574,10 +565,42 @@ $(document).ready(function () {
             }
         });
 
+        // ADMINBOARD ADDUSER BLOCK
+        $('#user_submit').click(function (dev) {
+           dev.preventDefault();
+           formElemIdentify(currentpage, this);
+        });
+
+    } else if (currentpage == '/adminboard/adminboard_settings/') {
+
+
+        $('#adduser_active').css('display', 'block');
+        $('#adduser').css('display', 'block');
+
+        $('#rename').click(function (rev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                rev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
+
+        $('#delete').click(function (dev) {
+            if ($('input[name=item_chb]:checked').length === 1) {
+                dev.preventDefault();
+                formElemIdentify(currentpage, this);
+            }
+        });
+
+        // ADMINBOARD ADDUSER BLOCK
+        $('#user_submit').click(function (dev) {
+           dev.preventDefault();
+           formElemIdentify(currentpage, this);
+        });
+
     } else {
 
         $('#adduser_active').css('display', 'none');
         $('#adduser').css('display', 'none');
-    }    
+    }
 
 });

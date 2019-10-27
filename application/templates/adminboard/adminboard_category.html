@@ -65,7 +65,7 @@
                             <li><a class="button" enabled="" href="{{ url_for('show_editpage_category') }}">Добавить категорию</a></li>
                             <form class="form_class" method="POST" action="{{ request.path }}" >
                                 {{ form.csrf_token }}
-                                <li><input type="submit" name="rename" value="Переименовать" class="button" enabled=""/></li>
+                                <li><input type="submit" id="rename" name="rename" value="Переименовать" class="button" enabled=""/></li>
                                 <li><input type="submit" id="delete" name="delete" value="Удалить категорию" class="button" enabled=""/></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Админпанель</a></li>
                                 <li><a class="button" enabled="" href="{{ url_for('show_dashboard_users') }}">Пользователи</a></li>            
@@ -120,8 +120,8 @@
                                     <td>{{ category.id }}</a></td>
                                     <td><a href="/adminboard/editpage_id_category/{{ category.id }}" title="Редактировать категорию">{{ category.category_title }}</a></td>
                                     <td>{{ category.category_date }}</td>
-                                    <td><input type='text' id='delid_{{ category.id }}' name='delid_{{ category.id }}' value='{{ category.id }}' size='1' /></td>
-                                    <td><input type='checkbox' id='checkbox' name='item_chb' value='{{ category.id }}' /></td>                        
+                                    <td><input type='text' id='delid_{{ category.id }}' name='delid' value='{{ category.id }}' size='1' /></td>
+                                    <td><input type='checkbox' id='checkbox_{{ category.id }}' name='item_chb' value='{{ category.id }}' /></td>
                                 </tr>
 
                                 {% endfor %}
@@ -172,6 +172,10 @@
         <script type="text/javascript" src="../../static/js/holder.min.js"></script>
         <script type="text/javascript" src="../../static/js/backup.js"></script>
         <script type="text/javascript" src="../../static/js/checkboxchecker.js"></script>
+        <script type="text/javascript">
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+        <script type="text/javascript" src="../../static/js/crud.js"></script>
         <script  type="text/javascript" src="../../static/js/proact_search_category.js"></script>		
     </body>
 </html>
