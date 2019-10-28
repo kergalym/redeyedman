@@ -69,7 +69,7 @@
                     <div id="toolbar">
                         <ul class="minibar-nav" >
                             <li><a class="button" enabled="" href="{{ url_for('add_editpage_content') }}">Добавить статью</a></li>
-                            <li><a class="button" enabled="" href="">Добавить категорию</a></li>
+                            <li><a class="button" enabled="" href="{{ url_for('add_editpage_category') }}">Добавить категорию</a></li>
                             <form class="form_class" method="POST" action="{{ request.path }}" >
                                 {{ form.csrf_token }}
                                 <li><input type="submit" id="rename" name="rename" value="Переименовать" class="button" enabled=""/></li>

@@ -28,7 +28,8 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
-            
+
+
 #
 #   CONTENT EDITPAGE ADD
 #
@@ -37,44 +38,46 @@ from flask import g
 def show_editpage_category():
     form = categorypageform.CategorypageAddForm()
     editpage_output_loop = Categories.query.filter_by(
-                                                   category_author='admin'
-                                                   ).first()
+        category_author='admin'
+    ).first()
     instance = SysInfo()
-    atime = instance.altertime() 
+    atime = instance.altertime()
     author = g.user
     if editpage_output_loop \
-        and atime and author is not None:
-        return render_template('adminboard/editpage_category.html', 
-                           author=author, atime=atime, \
-                           editpage_output_loop=editpage_output_loop, 
-                           form=form
-                           )
+            and atime and author is not None:
+        return render_template('adminboard/editpage_category.html',
+                               author=author, atime=atime, \
+                               editpage_output_loop=editpage_output_loop,
+                               form=form
+                               )
     else:
         return redirect(url_for('show_login'))
+
 
 @app.route('/adminboard/editpage_category/', methods=['GET', 'POST'])
 @login_required
 def add_editpage_category():
     form = categorypageform.CategorypageAddForm()
     author = g.user
-    if request.method == 'POST' and request.form['save'] \
-        and author is not None  and form.validate_on_submit():
-            rows = sql.session.query(Categories).count()
-            if type(rows) == int:
-               id = rows + 1
-            category_title = request.form['category_title']
-            category_author = request.form['category_author']
-            category_date = request.form['category_date']
-            category_desc = request.form['category_desc']
-            categories = Categories(id, category_title, category_author,
-            category_date, category_desc)
-            sql.session.add(categories)
-            sql.session.commit()
-            flash("Category is changed", 'info')
-            return redirect(url_for('show_dashboard_category'))
-    else:
-        flash("Category is not changed", 'error')
+    iid = None
+    if (request.method == 'POST' and request.form['save']
+            and author is not None and form.validate_on_submit()):
+        rows = sql.session.query(Categories).count()
+        if type(rows) == int:
+            iid = rows + 1
+        category_title = request.form['category_title']
+        category_author = request.form['category_author']
+        category_date = request.form['category_date']
+        category_desc = request.form['category_desc']
+        categories = Categories(iid, category_title, category_author,
+                                category_date, category_desc)
+        sql.session.add(categories)
+        sql.session.commit()
+        flash("Category is added", 'info')
         return redirect(url_for('show_dashboard_category'))
-    return render_template('adminboard/editpage_category.html',  
-                            form=form
-                            )             
+    else:
+        flash("Category is not added", 'error')
+        return redirect(url_for('show_dashboard_category'))
+    return render_template('adminboard/editpage_category.html',
+                           form=form
+                           )
