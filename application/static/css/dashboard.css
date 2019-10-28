@@ -161,7 +161,7 @@ input#f_upload {
     width: 160px;
 }
 
-.text-fields select {
+.text-fields select, select {
     font: inherit;
     color:  #FFFFFF;
     background: #111111; 
