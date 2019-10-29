@@ -80,17 +80,17 @@
                                         {{ articles.article_text | safe }}
 
                                     </div>
+                                    <div id="content_bottom_a">
+                                         <div id="menu">
+                                            {% for menu in menus %}
+                                            <a href="inner/{{ menu.id }}"><h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2></a>
 
-                                    <div id="menu">
-                                        {% for menu in menus %}
-                                        <h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2>
+                                            {{ menu.article_text | ctxt | safe }}
 
-                                        {{ menu.article_text | ctxt | safe }}
+                                            <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
-                                        <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
-
-                                        {% endfor %}
-
+                                            {% endfor %}
+                                            </div>
                                         <div class="pagination">
                                             {{ pagination.links }}
                                         </div>

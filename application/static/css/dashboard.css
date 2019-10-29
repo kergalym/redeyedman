@@ -624,7 +624,6 @@ a:active, a:hover {
     width: 130px;
     height: 110px;
     margin: 10px;
-    /* background: url(/MS/app/views/web/images/adm_board.png) no-repeat; */
 }
 
 .pagination > li > a, .pagination > li > span {
