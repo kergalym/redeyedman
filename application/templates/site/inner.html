@@ -225,6 +225,7 @@
         </script>
 		<script>
             $(document).ready(function () {
+                $(".pagination").css('display', 'none');
                 $("#content-container").css('display', 'none')
                 $(".nav_item2").on("click", function (e) {
                     e.preventDefault();
@@ -233,11 +234,13 @@
                         if ($('#menu').css('display') == 'block') {
                             $("#article-container").hide(300);
                             $("#content-container").show(300);
+                            $(".pagination").show(300);
 
                         } else {
 
                             $("#article-container").show(300);
                             $("#content-container").hide(300);
+                            $(".pagination").hide(300);
                         }
 
                     });
