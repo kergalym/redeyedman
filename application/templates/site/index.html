@@ -283,6 +283,15 @@
         <script type="text/javascript" src="../static/js/bootstrap.js"></script>
         <script src="../static/js/mediaelement-and-player.min.js"></script>
         <script src="../static/js/modalpict.js"></script>
+		<script>
+            $(document).ready(function () {
+                $(".navbar-toggle").on("click", function (e) {
+                    e.preventDefault();
+                    $(".logo span").toggle();
+                    $(".search")css.("margin-top", -30px);
+                });
+            });
+        </script>
         <script>  var video = new MediaElementPlayer('#video');
             $('video').mediaelementplayer({
                 success: function (media, node, player) {

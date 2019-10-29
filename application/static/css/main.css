@@ -1410,10 +1410,12 @@ and (min-width : 1200px) {
     .search{
         float: left;
         height: 35px;
-        /*padding-left: 15px;
-        padding-right: 10px; */
-        /* margin-right: -105px; */
-        /* margin-left: 180px; */
+        margin-left: 80px;
+    }
+    .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+    	border-color: #101010;
+    	/* height: 400px; */
+    	background-color: black;
     }
 }
 
@@ -1539,10 +1541,10 @@ button, html input[type="button"], input[type="reset"], input[type="submit"] {
     margin-top: 8px;
     margin-right: -50px;
     margin-bottom: 8px;
-    background-color: transparent;
-    background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
+    background: url(../images/toggle-con.png) 100% 100% no-repeat;
+    background-size: 95px 35px;
 }
 
 .nav_menu {
@@ -1952,6 +1954,16 @@ img {
 
 .footer-inner {
     margin-top: 85px !important;
+}
+
+@media (max-width: 768px) {
+    .footer-index {
+        display: none;
+    }
+
+    .footer-inner {
+        display: none;
+    }
 }
 
 .footer_data_a, .footer_data_b, .footer_data_c {
