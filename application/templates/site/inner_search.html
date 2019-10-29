@@ -80,22 +80,21 @@
 
                                         {% endfor %}
                                     </div> 
+                                    <div id="content_bottom_a">
+                                         <div id="menu">
+                                             {% for menu in menus %}
+                                             <h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2>
 
-                                    <div id="menu">
-                                        {% for menu in menus %}
-                                        <h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2>
+                                             {{ menu.article_text | ctxt | safe }}
 
-                                        {{ menu.article_text | ctxt | safe }}
+                                             <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
-                                        <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
-
-                                        {% endfor %}
-
-                                        <div class="pagination">
-                                        {{ pagination.links }}
-                                        </div>
-
-                                    </div> 
+                                             {% endfor %}
+                                         </div>
+                                         <div class="pagination">
+                                             {{ pagination.links }}
+                                         </div>
+                                    </div>
                                     {% endblock %}
                                 </div>
                             </div>	
@@ -111,7 +110,7 @@
 
                                         <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
 
-                                            <source type="video/youtube" src="{{ contents.content_text | safe }}" />
+                                            <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
 
                                         </video>
 
@@ -177,7 +176,7 @@
             });
 
 		</script>
-	<script>
+	    <script>
             $(document).ready(function () {
                 $("#content-container").css('display', 'none')
                 $(".nav_item4").on("click", function (e) {
@@ -186,6 +185,7 @@
 
                         if ($('#article-container').css('display') == 'block') {
                             $("#article-container").hide(300);
+                            $("#content_bottom_c_inner").show(300);
                             $("#content-container").hide(300);
                             $("#video-container").show(300);
 
@@ -201,31 +201,35 @@
                 });
             });
 		</script>
-		<script>
+        <script>
             $(document).ready(function () {
                 $("#content-container").css('display', 'none')
-                $(".nav_item3").on("click", function (e) {
-                    e.preventDefault();
-                    $("#content-container").toggle(300, function () {
+                    $(".nav_item3").on("click", function (e) {
+                        e.preventDefault();
+                        $("#content-container").toggle(300, function () {
 
-                        if ($('#article-container').css('display') == 'block') {
-                            $("#article-container").hide(300);
-                            $("#video-container").hide(300);
-                            $("#content-container").show(300);
+                            if ($("#article-container").css('display') == 'block') {
+                                $("#article-container").hide(300);
+                                $("#content_bottom_c_inner").show(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").show(300);
 
-                        } else {
+                            } else {
 
-                            $("#article-container").show(300);
-                            $("#video-container").hide(300);
-                            $("#content-container").hide(300);
-                        }
+                                $("#article-container").show(300);
+                                $("#content_bottom_c_inner").hide(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").hide(300);
 
-                    });
+                            }
+
+                        });
                 });
             });
         </script>
 		<script>
             $(document).ready(function () {
+                $(".pagination").css('display', 'none');
                 $("#content-container").css('display', 'none')
                 $(".nav_item2").on("click", function (e) {
                     e.preventDefault();
@@ -234,11 +238,13 @@
                         if ($('#menu').css('display') == 'block') {
                             $("#article-container").hide(300);
                             $("#content-container").show(300);
+                            $(".pagination").show(300);
 
                         } else {
 
                             $("#article-container").show(300);
                             $("#content-container").hide(300);
+                            $(".pagination").hide(300);
                         }
 
                     });

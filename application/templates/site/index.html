@@ -291,32 +291,6 @@
             });
 
 		</script>
-	<script>
-            $(document).ready(function () {
-                $("#content-container").css('display', 'none')
-                    $(".nav_item3").on("click", function (e) {
-                        e.preventDefault();
-                        $("#content-container").toggle(300, function () {
-
-                            if ($('#menu-index').css('display') == 'block') {
-                                $("#menu-index").hide(300);
-                                $("#content_bottom_c").show(300);
-                                $("#video-container").hide(300);
-                                $("#content-container").show(300);
-
-                            } else {
-
-                                $("#menu-index").show(300);
-                                $("#content_bottom_c").hide(300);
-                                $("#video-container").hide(300);
-                                $("#content-container").hide(300);
-
-                            }
-
-                        });
-                });
-            });
-        </script>
 		<script>
             $(document).ready(function () {
                 $("#content-container").css('display', 'none')
@@ -336,6 +310,32 @@
                                 $("#video-container").hide(300);
                                 $("#content-container").hide(300);
                                 $(".pagination").show(300);
+
+                            }
+
+                        });
+                });
+            });
+        </script>
+	    <script>
+            $(document).ready(function () {
+                $("#content-container").css('display', 'none')
+                    $(".nav_item3").on("click", function (e) {
+                        e.preventDefault();
+                        $("#content-container").toggle(300, function () {
+
+                            if ($('#menu-index').css('display') == 'block') {
+                                $("#menu-index").hide(300);
+                                $("#content_bottom_c").show(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").show(300);
+
+                            } else {
+
+                                $("#menu-index").show(300);
+                                $("#content_bottom_c").hide(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").hide(300);
 
                             }
 

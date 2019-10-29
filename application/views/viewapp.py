@@ -112,31 +112,6 @@ def show_inner(id):
                            )
 
 
-@app.route('/imenu/', defaults={'id': 1})
-@app.route('/imenu/<int:id>')
-def show_imenu(id):
-    per_page = 7
-    articles_loop = Articles.query.filter_by(article_category='Blender3D').all()
-    contents = Content.query.filter_by(content_author='admin').all()
-    c_howto = Articles.query.filter_by(article_category='HowTo').all()
-    c_games = Articles.query.filter_by(article_category='Игры').all()
-    c_misc = Articles.query.filter_by(article_category='разн�е').all()
-    paginator = Paginator()
-    dlogics = Dlogics()
-    menus = sql.session.query(Articles).limit(
-        (per_page)).offset(
-        (id - 1) * per_page).all()
-
-    app.jinja_env.filters['ctxt'] = dlogics.textcutn
-
-    pagination = paginator.paginate(Articles, id, per_page)
-    return render_template('site/imenu.html',
-                           articles_loop=articles_loop, contents=contents,
-                           c_howto=c_howto, c_games=c_games, c_misc=c_misc,
-                           menus=menus, pagination=pagination
-                           )
-
-
 @app.route('/inner_search/', methods=['GET', 'POST'])
 def show_inner_search():
     per_page = 7
