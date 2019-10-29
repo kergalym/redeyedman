@@ -96,10 +96,31 @@ b, strong {
     word-wrap: break-word;
 }
 
-.pagination {
-	display: inline-block;
-	width: 5%;
-	margin-left: -30%;
+/* FOR MOBILE MODE */
+@media (max-width: 768px) {
+    .pagination {
+    	display: inline-block;
+    	width: 5% !important;
+    	margin-left: 5%;
+    }
+}
+
+/* FOR 1080P */
+@media (min-width: 1920px) {
+    .pagination {
+    	display: inline-block;
+    	width: 5% !important;
+    	margin-left: -60%;
+    }
+}
+
+/* FOR 4K */
+@media (min-width: 3840px) {
+    .pagination {
+    	display: inline-block;
+    	width: 5% !important;
+    	margin-left: -30%;
+    }
 }
 
 .pagination ul {
