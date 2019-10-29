@@ -64,6 +64,23 @@
             </div>
         </header>
         <div class="container-fluid">
+
+        {% block footer %}
+        <div class="footer footer-inner" align="center">
+            <div id="footer_container" align="center">
+                <div class="footer_data_a">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Бложик одного Красноглазика</p>
+                </div>
+                <div class="footer_data_b">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Статьи, хаутушки и просто всякая всячина</p>
+                </div>
+                <div class="footer_data_c">
+                    <p>&copy; 2019 Designed & developed by Galym Kerimbekov </p>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
             <div class="row-fluid">
                 {% block page_align %}
                 <div id="page_align" class="b3radius">
@@ -140,23 +157,6 @@
                 </div>
             </div>
         </div>
-        {% block footer %}
-        <div align="center" class="footer">
-            <div id="footer_container" align="center">
-                <div class="footer_data_a">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Бложик одного Красноглазика</p>
-                </div>
-                <div class="footer_data_b">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Статьи, хаутушки и просто всякая всячина</p>
-                </div>
-                <div class="footer_data_c">
-                    <p>&copy; 2019 Designed & developed by:<br> Galym Kerimbekov </p>
-                </div>
-            </div>
-        </div>
-        {% endblock %}
         <!--  Core JavaScript ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/javascript" src="../static/js/jquery.min.js"></script>

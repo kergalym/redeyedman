@@ -132,6 +132,23 @@
             </a>
         </div>
         {% endblock %}
+
+        {% block footer %}
+        <div class="footer footer-index" align="center">
+            <div id="footer_container" align="center">
+                <div class="footer_data_a">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Бложик одного Красноглазика</p>
+                </div>
+                <div class="footer_data_b">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Статьи, хаутушки и просто всякая всячина</p>
+                </div>
+                <div class="footer_data_c">
+                    <p>&copy; 2019 Designed & developed by Galym Kerimbekov </p>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
         <div class="container-fluid">
             <div class="row-fluid">
                 {% block page_align %}
@@ -251,27 +268,10 @@
 
                             </div>
                         </div>{% endblock %}
-                    </div>     
+                    </div>
                 </div>
             </div>
         </div>
-        {% block footer %}
-        <div class="footer" align="center">
-            <div id="footer_container" align="center">
-                <div class="footer_data_a">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Бложик одного Красноглазика</p>
-                </div>
-                <div class="footer_data_b">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Статьи, хаутушки и просто всякая всячина</p>
-                </div>
-                <div class="footer_data_c">
-                    <p>&copy; 2019 Designed & developed by:<br> Galym Kerimbekov </p>
-                </div>
-            </div>
-        </div>
-        {% endblock %}
         <!--  Core JavaScript ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/javascript" src="../static/js/jquery.min.js"></script>
@@ -329,6 +329,7 @@
                                 $("#content_bottom_c").show(300);
                                 $("#video-container").hide(300);
                                 $("#content-container").show(300);
+                                $(".pagination").hide(300);
 
                             } else {
 
@@ -336,7 +337,7 @@
                                 $("#content_bottom_c").hide(300);
                                 $("#video-container").hide(300);
                                 $("#content-container").hide(300);
-
+                                $(".pagination").show(300);
                             }
 
                         });

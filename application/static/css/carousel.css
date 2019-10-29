@@ -189,14 +189,14 @@
 @media only screen and (min-width : 1920px){
     .carousel {
         position: relative;
-        height: 800px;
+        height: 400px;
         margin-top: 90px;
         margin-bottom: 10px;
 
     }
     /* Declare heights because of positioning of img element */
     .carousel .item {
-        height: 800px;
+        height: 400px;
     }
     /* Since positioning the image, we need to help out the caption */
     .carousel-caption {
