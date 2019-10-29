@@ -36,9 +36,8 @@
                                 <li><a class="nav_item1" href="/index">ГЛАВНАЯ</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="nav_item2" data-toggle="dropdown" role="button" aria-expanded="false">СТАТЬИ<span class="caret"></span></a>
-                                <li><a class="nav_item1" href="#content_bottom_a">Wiki</a></li>
-                                <li><a class="nav_item2" href="#content_bottom_b">HowTo</a></li>
-                                <li><a class="nav_item3" href="#content_bottom_c">GameLab</a></li>
+                                <li><a class="nav_item3" href="#content_bottom_b">BLENDER GALLERY</a></li>
+                                <li><a class="nav_item4" href="#content_bottom_c">VIDEO GALLERY</a></li>
                             </ul>
                             <!-- socialbar begin -->
                             <div class="socialbar">
@@ -141,7 +140,7 @@
             </div>
         </div>
         {% block footer %}
-        <div align="center" id="footer">
+        <div align="center" class="footer">
             <div id="footer_container" align="center">
                 <div class="footer_data_a">
                     <p align="left" >RedEyedman | Having fun with Gentoo! <br>
@@ -179,7 +178,7 @@
 	<script>
             $(document).ready(function () {
                 $("#content-container").css('display', 'none')
-                $(".nav_item5").on("click", function (e) {
+                $(".nav_item4").on("click", function (e) {
                     e.preventDefault();
                     $("#video-container").toggle(300, function () {
 
@@ -202,29 +201,6 @@
 		</script>
 		<script>
             $(document).ready(function () {
-                $("#content-container").css('display', 'none')
-                $(".nav_item4").on("click", function (e) {
-                    e.preventDefault();
-                    $("#content-container").toggle(300, function () {
-
-                        if ($('#article-container').css('display') == 'block') {
-                            $("#article-container").hide(300);
-                            $("#video-container").hide(300);
-                            $("#content-container").show(300);
-
-                        } else {
-
-                            $("#article-container").show(300);
-                            $("#video-container").hide(300);
-                            $("#content-container").hide(300);
-                        }
-
-                    });
-                });
-            });
-        </script>
-		<script>
-            $(document).ready(function () {
                 $(".pagination").css('display', 'none');
                 $("#content-container").css('display', 'none')
                 $(".nav_item2").on("click", function (e) {
@@ -244,6 +220,14 @@
                         }
 
                     });
+                });
+            });
+        </script>
+		<script>
+            $(document).ready(function () {
+                $(".nav_item3").on("click", function (e) {
+                    e.preventDefault();
+                    $("#content_bottom_b").toggle();
                 });
             });
         </script>

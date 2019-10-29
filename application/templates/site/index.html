@@ -34,9 +34,9 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
                                 <li><a class="nav_item1" href="index">ГЛАВНАЯ</a></li>
-                                <li><a class="nav_item2" href="#content_bottom_a">Wiki</a></li>
-                                <li><a class="nav_item3" href="#content_bottom_b">HowTo</a></li>
-                                <li><a class="nav_item4" href="#content_bottom_c">GameLab</a></li>
+                                <li><a class="nav_item2" href="#content_bottom_a">PROJECTS</a></li>
+                                <li><a class="nav_item3" href="#content_bottom_b">BLENDER GALLERY</a></li>
+                                <li><a class="nav_item4" href="#content_bottom_c">VIDEO GALLERY</a></li>
                             </ul>
                             <!-- socialbar begin -->
                             <div class="socialbar">
@@ -256,7 +256,7 @@
             </div>
         </div>
         {% block footer %}
-        <div align="center" id="footer">
+        <div class="footer" align="center">
             <div id="footer_container" align="center">
                 <div class="footer_data_a">
                     <p align="left" >RedEyedman | Having fun with Gentoo! <br>
@@ -328,12 +328,14 @@
                                 $("#menu-index").hide(300);
                                 $("#content_bottom_c").show(300);
                                 $("#video-container").show(300);
+                                $(".pagination").hide(300);
 
                             } else {
 
                                 $("#menu-index").show(300);
                                 $("#video-container").hide(300);
                                 $("#content-container").hide(300);
+                                $(".pagination").show(300);
 
                             }
 
