@@ -110,37 +110,44 @@ class FileBrowser:
         """
         # get_path is unicode string, make it simple string
         self.get_path = str(get_path)
+
         files = []
+
         if (isinstance(self.get_path, str)
                 and isdir("{}{}".format(app.root_path, self.get_path))):
-                f_list = listdir("{}{}".format(app.root_path, self.get_path))
-                for num, file_x, in enumerate(f_list, 1):
-                    inner = [
-                        {"id": "{}".format(
-                            num),
-                            "relpath": "{}/{}".format(
-                                self.get_path, file_x
-                            ),
-                            "name": "{}".format(
-                                file_x
-                            ),
-                            "owner": self.file_attr("{}/{}/{}".format(
-                                app.root_path, self.get_path, file_x),
-                                'st_uid'
-                            ),
-                            "size": self.file_size(("{}/{}/{}".format(
-                                    app.root_path, self.get_path, file_x))),
-                            "date": self.file_attr("{}/{}/{}".format(
-                                app.root_path, self.get_path, file_x),
-                                'st_ctime'
-                            ),
-                            "perm": self.file_attr("{}/{}/{}".format(
-                                app.root_path, self.get_path, file_x),
-                                'st_mode'
-                            )}
-                    ]
-                    files += inner
-                return files
+
+            # if no slash at the end of path
+            if self.get_path.endswith("/") is False:
+                self.get_path = "{}/".format(self.get_path)
+
+            f_list = listdir("{}{}".format(app.root_path, self.get_path))
+            for num, file_x, in enumerate(f_list, 1):
+                inner = [
+                    {"id": "{}".format(
+                        num),
+                        "relpath": "{}{}".format(
+                            self.get_path, file_x
+                        ),
+                        "name": "{}".format(
+                            file_x
+                        ),
+                        "owner": self.file_attr("{}/{}{}".format(
+                            app.root_path, self.get_path, file_x),
+                            'st_uid'
+                        ),
+                        "size": self.file_size(("{}/{}{}".format(
+                            app.root_path, self.get_path, file_x))),
+                        "date": self.file_attr("{}/{}{}".format(
+                            app.root_path, self.get_path, file_x),
+                            'st_ctime'
+                        ),
+                        "perm": self.file_attr("{}/{}{}".format(
+                            app.root_path, self.get_path, file_x),
+                            'st_mode'
+                        )}
+                ]
+                files += inner
+            return files
 
     def change_own(self, get_path):
         """
