@@ -34,9 +34,9 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav">
                                 <li><a class="nav_item1" href="index">ГЛАВНАЯ</a></li>
-                                <li><a class="nav_item2" href="#content_bottom_a">Wiki</a></li>
-                                <li><a class="nav_item3" href="#content_bottom_b">HowTo</a></li>
-                                <li><a class="nav_item4" href="#content_bottom_c">GameLab</a></li>
+                                <li><a class="nav_item2" href="#content_bottom_a">PROJECTS</a></li>
+                                <li><a class="nav_item3" href="#content_bottom_b">BLENDER GALLERY</a></li>
+                                <li><a class="nav_item4" href="#content_bottom_c">VIDEO GALLERY</a></li>
                             </ul>
                             <!-- socialbar begin -->
                             <div class="socialbar">
@@ -132,6 +132,23 @@
             </a>
         </div>
         {% endblock %}
+
+        {% block footer %}
+        <div class="footer footer-index" align="center">
+            <div id="footer_container" align="center">
+                <div class="footer_data_a">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Бложик одного Красноглазика</p>
+                </div>
+                <div class="footer_data_b">
+                    <p align="left" >RedEyedman | Having fun with Gentoo! Статьи, хаутушки и просто всякая всячина</p>
+                </div>
+                <div class="footer_data_c">
+                    <p>&copy; 2019 Designed & developed by Galym Kerimbekov </p>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
         <div class="container-fluid">
             <div class="row-fluid">
                 {% block page_align %}
@@ -143,7 +160,7 @@
                                 <div id="content_bottom_a">
                                     <div id="menu-index">
                                         {% for item in menu %}
-                                        <h2 class="line" style="text-align: center;">{{ item.article_title }}</h2>
+                                        <a href="inner/{{ item.id }}"><h2 class="line" style="text-align: center;">{{ item.article_title }}</h2></a>
 
                                         {{ item.article_text|ctxt|safe }}
 
@@ -251,27 +268,10 @@
 
                             </div>
                         </div>{% endblock %}
-                    </div>     
+                    </div>
                 </div>
             </div>
         </div>
-        {% block footer %}
-        <div align="center" id="footer">
-            <div id="footer_container" align="center">
-                <div class="footer_data_a">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Бложик одного Красноглазика</p>
-                </div>
-                <div class="footer_data_b">
-                    <p align="left" >RedEyedman | Having fun with Gentoo! <br>
-                        Статьи, хаутушки и просто всякая всячина</p>
-                </div>
-                <div class="footer_data_c">
-                    <p>&copy; 2019 Designed & developed by:<br> Galym Kerimbekov </p>
-                </div>
-            </div>
-        </div>
-        {% endblock %}
         <!--  Core JavaScript ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/javascript" src="../static/js/jquery.min.js"></script>
@@ -283,6 +283,15 @@
         <script type="text/javascript" src="../static/js/bootstrap.js"></script>
         <script src="../static/js/mediaelement-and-player.min.js"></script>
         <script src="../static/js/modalpict.js"></script>
+		<script>
+            $(document).ready(function () {
+                $(".navbar-toggle").on("click", function (e) {
+                    e.preventDefault();
+                    $(".logo span").toggle();
+                    $(".search")css.("margin-top", -30px);
+                });
+            });
+        </script>
         <script>  var video = new MediaElementPlayer('#video');
             $('video').mediaelementplayer({
                 success: function (media, node, player) {
@@ -291,32 +300,6 @@
             });
 
 		</script>
-	<script>
-            $(document).ready(function () {
-                $("#content-container").css('display', 'none')
-                    $(".nav_item3").on("click", function (e) {
-                        e.preventDefault();
-                        $("#content-container").toggle(300, function () {
-
-                            if ($('#menu-index').css('display') == 'block') {
-                                $("#menu-index").hide(300);
-                                $("#content_bottom_c").show(300);
-                                $("#video-container").hide(300);
-                                $("#content-container").show(300);
-
-                            } else {
-
-                                $("#menu-index").show(300);
-                                $("#content_bottom_c").hide(300);
-                                $("#video-container").hide(300);
-                                $("#content-container").hide(300);
-
-                            }
-
-                        });
-                });
-            });
-        </script>
 		<script>
             $(document).ready(function () {
                 $("#content-container").css('display', 'none')
@@ -328,13 +311,42 @@
                                 $("#menu-index").hide(300);
                                 $("#content_bottom_c").show(300);
                                 $("#video-container").show(300);
+                                $(".pagination").hide(300);
 
                             } else {
 
                                 $("#menu-index").show(300);
                                 $("#video-container").hide(300);
                                 $("#content-container").hide(300);
+                                $(".pagination").show(300);
 
+                            }
+
+                        });
+                });
+            });
+        </script>
+	    <script>
+            $(document).ready(function () {
+                $("#content-container").css('display', 'none')
+                    $(".nav_item3").on("click", function (e) {
+                        e.preventDefault();
+                        $("#content-container").toggle(300, function () {
+
+                            if ($('#menu-index').css('display') == 'block') {
+                                $("#menu-index").hide(300);
+                                $("#content_bottom_c").show(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").show(300);
+                                $(".pagination").hide(300);
+
+                            } else {
+
+                                $("#menu-index").show(300);
+                                $("#content_bottom_c").hide(300);
+                                $("#video-container").hide(300);
+                                $("#content-container").hide(300);
+                                $(".pagination").show(300);
                             }
 
                         });

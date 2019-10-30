@@ -161,7 +161,7 @@ input#f_upload {
     width: 160px;
 }
 
-select {
+.text-fields select, select {
     font: inherit;
     color:  #FFFFFF;
     background: #111111; 
@@ -180,6 +180,26 @@ select {
     box-shadow: 0px 0px 1px 0px rgba(0,0,0,1), 0px 3px 15px 2px rgba(0,0,0,1);
     border: 1px solid #5c5c5c;
     border-top: 1px solid #999;
+    /*border-radius*/
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#articleparam-container select {
+    font: inherit;
+    color:  #FFFFFF;
+    background: inherit;
+    padding: 5px 10px 5px 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /*box-shadow*/
+    border: 1px solid #000;
+    border-top: 1px solid #000;
     /*border-radius*/
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -224,7 +244,7 @@ select {
         border-radius: 4px;
         margin-top: 15px;
         background-color: #434343;
-        background: #33232380;
+        background: rgba(96, 26, 26, 0.55);
         border: none;
         border-top: 3px solid #c2c2c2;
         -webkit-border-radius: 5px;
@@ -252,7 +272,7 @@ select {
         border-radius: 4px;
         margin-top: 15px;
         background-color: #434343;
-        background: #33232380;
+        background: rgba(96, 26, 26, 0.55);
         border: none;
         border-top: 3px solid #c2c2c2;
         -webkit-border-radius: 5px;
@@ -539,7 +559,7 @@ a:active, a:hover {
     font-size: 11px;
     text-decoration: none !important;
     background-color: #434343;
-    background: rgba(51, 35, 35, 0.55);  /*Fixed to rgba*/;
+    background: rgba(96, 26, 26, 0.55);  /*Fixed to rgba*/;
     color: #FFFFFF;
     border: none;
     border-top: 3px solid #c2c2c2;
@@ -604,7 +624,6 @@ a:active, a:hover {
     width: 130px;
     height: 110px;
     margin: 10px;
-    /* background: url(/MS/app/views/web/images/adm_board.png) no-repeat; */
 }
 
 .pagination > li > a, .pagination > li > span {
@@ -645,7 +664,7 @@ a:active, a:hover {
     border-radius:4px;
     margin-top: 15px;
     background-color: #434343;
-    background: rgba(51, 35, 35, 0.55);  /*Fixed to rgba*/
+    background: rgba(96, 26, 26, 0.55);  /*Fixed to rgba*/
     border: none;
     border-top: 3px solid #c2c2c2;
     /*border-radius*/
@@ -720,7 +739,7 @@ a:active, a:hover {
     border-radius:4px;
     margin-top: 15px;
     background-color: #434343;
-    background: rgba(51, 35, 35, 0.55);  /*Fixed to rgba*/
+    background: rgba(96, 26, 26, 0.55); /*Fixed to rgba*/
     border: none;
     border-top: 3px solid #c2c2c2;
     /*border-radius*/

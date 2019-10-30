@@ -29,7 +29,8 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
-            
+
+
 #
 #   CONTENT EDITPAGE ADD
 #
@@ -38,48 +39,49 @@ from flask import g
 def show_editpage_content():
     form = contentpageform.ContentpageAddForm()
     editpage_output_loop = Content.query.filter_by(
-                                                    content_author='admin'
-                                                    ).first()
+        content_author='admin'
+    ).first()
     categories_loop = Categories.query.all()
     instance = SysInfo()
-    atime = instance.altertime() 
+    atime = instance.altertime()
     author = g.user
     if editpage_output_loop and categories_loop \
-        and atime and author is not None:
+            and atime and author is not None:
         return render_template(
-                                'adminboard/editpage_content.html', 
-                                author=author, atime=atime, \
-                                editpage_output_loop=editpage_output_loop, 
-                                categories_loop=categories_loop, 
-                                form=form)
+            'adminboard/editpage_content.html',
+            author=author, atime=atime, \
+            editpage_output_loop=editpage_output_loop,
+            categories_loop=categories_loop,
+            form=form)
     else:
         return redirect(url_for('show_login'))
+
 
 @app.route('/adminboard/editpage_content/', methods=['GET', 'POST'])
 @login_required
 def add_editpage_content():
     form = contentpageform.ContentpageAddForm()
-    author = g.user    
-    if request.method == 'POST' and author is not None \
-        and form.validate_on_submit():
-            rows = sql.session.query(Content).count()
-            if type(rows) == int:
-               id = rows + 1
-            content_title = request.form['content_title']
-            content_author = request.form['content_author']
-            content_category = request.form['content_category']
-            content_date = request.form['content_date']
-            content_text = request.form['content_text']
-            contents = Content(id, content_title, content_author, 
-            content_category, content_date, content_text)
-            sql.session.add(contents)
-            sql.session.commit()
-            flash("Article is changed", 'info')
-            return redirect(url_for('show_dashboard_inner'))
+    author = g.user
+    iid = None
+    if (request.method == 'POST' and author is not None
+            and form.validate_on_submit()):
+        rows = sql.session.query(Content).count()
+        if type(rows) == int:
+            iid = rows + 1
+        content_title = request.form['content_title']
+        content_author = request.form['content_author']
+        content_category = request.form['content_category']
+        content_date = request.form['content_date']
+        content_text = request.form['content_text']
+        contents = Content(iid, content_title, content_author,
+                           content_category, content_date, content_text)
+        sql.session.add(contents)
+        sql.session.commit()
+        flash("Content is added", 'info')
+        return redirect(url_for('show_dashboard_inner'))
     else:
-        flash("Article is not changed", 'error')
+        flash("Content is not added", 'error')
         return redirect(url_for('show_dashboard_inner'))
     return render_template('adminboard/editpage_content.html',
-                            form=form
-                            )             
-                                     
+                           form=form
+                           )

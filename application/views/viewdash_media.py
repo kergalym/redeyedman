@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-from os.path import exists
 
+from os.path import exists
 from application import app
 from application import session
 from application.core.datalogics import SysInfo
@@ -36,10 +36,10 @@ import socket
 import os
 
 
-@app.route('/adminboard/adminboard_filemanager/')
+@app.route('/adminboard/adminboard_media/')
 @login_required
 # TODO: user privilegies
-def show_dashboard_filenamanager():
+def show_dashboard_media():
     browser = FileBrowser()
     per_page = 9
     pages = request.args.get('page', type=int, default=1)
@@ -83,7 +83,7 @@ def show_dashboard_filenamanager():
         elif len(files)-offset < offset:
             f = files[offset:]
         pagination = paginator.paginate(files, pages, per_page)
-        return render_template('adminboard/adminboard_filemanager.html',
+        return render_template('adminboard/adminboard_media.html',
                                servername=servername,
                                approot=approot[-2],
                                freespace=freespace,
@@ -94,4 +94,3 @@ def show_dashboard_filenamanager():
                                form=form,
                                pagination=pagination
                                )
-

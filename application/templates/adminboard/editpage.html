@@ -46,9 +46,6 @@
                 <td><label style="word-wrap: break-word;">Категория:<select name="article_category"><option value="Категория:">{{ editpage_output_loop.article_category }}</option></select></label></td>
             </tr>
             <tr>
-                <td><label>Позиция:<select name="article_category"><option value="Позиция:">{{ editpage_output_loop.pos_category }}</option></select></label></td>
-            </tr>
-            <tr>
                 <td><label>Дата:<select name="article_date"><option value="Дата:">{{ editpage_output_loop.article_date }}</option></select></label></td>
             </tr>
         </div> 
@@ -103,13 +100,12 @@
                                class="form-control", placeholder="Введите название статьи") }}
                 </div>	
                 <textarea id="article_text" name="article_text" rows="15" cols="80" style="width: 80%">
-                    {{ form.article_text }}                 
                 </textarea>
                 <script>
     CKEDITOR.replace('article_text', {
     filebrowserBrowseUrl: '/application/static/adminboard/adminboard_filemanager.html'});
     CKEDITOR.replace('article_text', {toolbar: 'filebrowser'});
-                </script>		
+                </script>
             </div>
 
         </form>
@@ -118,7 +114,7 @@
     <hr>
 
     <footer>
-        <p align="right"class="copyright">&copy; </p>
+        <p align="right"class="copyright">&copy; RedEyedman 2019 </p>
     </footer>
 </div> <!-- /container -->
 

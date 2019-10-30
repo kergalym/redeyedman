@@ -15,36 +15,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-from os.path import exists
 
 from application import app
-from application import session
+from application import sql
+from application.core.dbmodel import Content
 from application.core.datalogics import SysInfo
 from application.core.datalogics import Paginator
-from application.core.filemanagement import FileBrowser
-from application.forms import dashboard_filesform
-from flask import session as session
+from application.forms import dashboard_itemsform
 from flask_login import login_required
-from flask import flash
 from flask import abort
-from flask import redirect
 from flask import render_template
 from flask import request
 from flask import g
-from flask import url_for
 import socket
 import os
 
 
-@app.route('/adminboard/adminboard_filemanager/')
+@app.route('/adminboard/adminboard_inner/')
 @login_required
-# TODO: user privilegies
-def show_dashboard_filenamanager():
-    browser = FileBrowser()
+def show_dashboard_inner():
     per_page = 9
-    pages = request.args.get('page', type=int, default=1)
     paginator = Paginator()
-    form = dashboard_filesform.DashboardFilesForm()
+    form = dashboard_itemsform.DashboardItemsForm()
     servername = socket.gethostname()
     approot = os.path.split(app.root_path)
     users = g.user
@@ -52,46 +44,21 @@ def show_dashboard_filenamanager():
     freespace = instance.diskspace()
     ltime = instance.systime()
     atime = instance.altertime()
-    f = None
-    get_relpath = None
-
-    if session['login'] != 'admin':
-        flash("You don't have administrator privilegies!", 'error')
-        return redirect(url_for('show_dashboard'))
-
-    if not users and pages is None:
+    pages = request.args.get('page', type=int, default=1)
+    if not users and pages == None:
         abort(404)
     else:
-
-        if exists("{}/static/get_path.tmp".format(app.root_path)) is False:
-            get_relpath = "/static/images/"
-        elif exists("{}/static/get_path.tmp".format(app.root_path)):
-            with open("{}/static/get_path.tmp".format(app.root_path), 'r') as f:
-                get_relpath = f.read()
-
-        limit = per_page
-
-        if get_relpath == '':
-            get_relpath = "/static/images/"
-
-        files = browser.show_files(get_relpath)
-        offset = ((pages - 1) * per_page)
-        if pages == 0 or pages == 1:
-            f = files[:limit]
-        elif len(files)-offset > offset:
-            f = files[offset:-offset]
-        elif len(files)-offset < offset:
-            f = files[offset:]
-        pagination = paginator.paginate(files, pages, per_page)
-        return render_template('adminboard/adminboard_filemanager.html',
+        contents_loop = sql.session.query(Content).limit(
+            (per_page)).offset(
+            (pages - 1) * per_page).all()
+        pagination = paginator.paginate(Content, pages, per_page)
+        return render_template('adminboard/adminboard_inner.html',
                                servername=servername,
                                approot=approot[-2],
                                freespace=freespace,
                                users=users, ltime=ltime,
                                atime=atime,
-                               files=f,
-                               get_relpath=get_relpath,
+                               contents_loop=contents_loop,
                                form=form,
                                pagination=pagination
                                )
-
