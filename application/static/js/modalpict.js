@@ -20,9 +20,11 @@ $(document).ready(function() {
     $('a[href]').has('img').click(function(event) {
         event.preventDefault();
         var imgurl = $(this).attr("href");
-        
+
+        console.log(imgurl);
+
         /*  Predefined div strings
-        Yes, I Know, very ugly approach, I need String.format */
+        Yes, I Know, very ugly approach, I need concat */
         var imgovr_div = "<div id='img-ovr' class='img-ovr'> </div>";
         var imgshow_div = "<div id='imgshow' class='imgshow'> \n\
             <div id='img-plus'> | + | </div><div id='img-minus'> | - | </div><div id='img-close'> | X | </div></div>";
@@ -30,11 +32,11 @@ $(document).ready(function() {
             solid; border-width:5px; margin:5px;'>";
                 
         // Add an image overlay at the end of the block 
-        $('#content_bottom_b').prepend(imgovr_div);
+        $('body').prepend(imgovr_div);
         $('.img-ovr').css({"background-color": "black", "width": "100%", 
             "height": "100%", "z-index": "3", "position": "fixed", 
-            "opacity": "0.2"})
-                       .animate({opacity: 0.9, top: '0%'}, 200);
+            "opacity": "1.0"})
+                       .animate({opacity: 1.0, top: '0%'}, 200);
         
         // Append an image overlay first
         $('#img-ovr').append(imgshow_div);
@@ -47,15 +49,15 @@ $(document).ready(function() {
 
         // Define the close button properties
         $('#img-close').css({"color": "white", "width": "40px", 
-            "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+            "height": "40px", "cursor": "pointer", "margin-left": "94%"});
 
         // Define the close button properties
         $('#img-plus').css({"color": "white", "width": "40px",
-            "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+            "height": "40px", "cursor": "pointer", "margin-left": "90%"});
         
         // Define the close button properties
         $('#img-minus').css({"color": "white", "width": "40px",
-            "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+            "height": "40px", "cursor": "pointer", "margin-left": "92%"});
 
         // Append an image 
         $('#imgshow').append(reconst_imgurl);

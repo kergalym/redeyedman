@@ -97,10 +97,10 @@ b, strong {
 }
 
 /* FOR MOBILE MODE */
-@media (max-width: 768px) {
+@media (min-width: 767px) {
     .pagination {
     	display: inline-block;
-    	width: 5% !important;
+    	width: 2% !important;
     	margin-left: 5%;
     }
 }
