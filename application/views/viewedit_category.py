@@ -28,11 +28,9 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
+from sqlalchemy import exc
 
 
-#
-#   CONTENT EDITPAGE ADD
-#
 @app.route('/adminboard/editpage_category/')
 @login_required
 def show_editpage_category():
@@ -43,10 +41,11 @@ def show_editpage_category():
     instance = SysInfo()
     atime = instance.altertime()
     author = g.user
-    if editpage_output_loop \
-            and atime and author is not None:
+    if (editpage_output_loop
+            and atime
+            and author is not None):
         return render_template('adminboard/editpage_category.html',
-                               author=author, atime=atime, \
+                               author=author, atime=atime,
                                editpage_output_loop=editpage_output_loop,
                                form=form
                                )
@@ -60,8 +59,10 @@ def add_editpage_category():
     form = categorypageform.CategorypageAddForm()
     author = g.user
     iid = None
-    if (request.method == 'POST' and request.form['save']
-            and author is not None and form.validate_on_submit()):
+    if (request.method == 'POST'
+            and request.form['save']
+            and author is not None
+            and form.validate_on_submit()):
         rows = sql.session.query(Categories).count()
         if type(rows) == int:
             iid = rows + 1
@@ -72,8 +73,11 @@ def add_editpage_category():
         categories = Categories(iid, category_title, category_author,
                                 category_date, category_desc)
         sql.session.add(categories)
-        sql.session.commit()
-        flash("Category is added", 'info')
+        try:
+            sql.session.commit()
+            flash("Category is added", 'info')
+        except exc.IntegrityError:
+            flash("Category {} is exist".format(category_title), 'error')
         return redirect(url_for('show_dashboard_category'))
     else:
         flash("Category is not added", 'error')

@@ -82,7 +82,7 @@ class Dlogics(Base):
 
             if len(rawtext) >= self.maxlength:
                 # Replace with a part of unicode string
-                text = rawtext[0:self.maxlength] + " ... "
+                text = rawtext[0:self.maxlength] + "..."
                 prepared = "{}{}{}".format(btag, text, etag)
                 content += unicode(prepared)
                 return content

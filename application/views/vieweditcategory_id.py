@@ -21,29 +21,27 @@ from application import sql
 from application.core.dbmodel import Categories
 from application.core.datalogics import SysInfo
 from application.forms import categorypage_idform
+from flask_login import login_required
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-
-
-#
-#   ARTICLES EDITPAGE ADD
-#
+from sqlalchemy import exc
 
 
 @app.route('/adminboard/editpage_id_category/<int:id>', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def show_categorypageid(id):
     form = categorypage_idform.CategorypageidForm()
     editpage_output_loop = Categories.query.filter_by(id=id).first()
     instance = SysInfo()
     atime = instance.altertime()
     author = session['login']
-    if editpage_output_loop \
-            and atime and author is not None:
+    if (editpage_output_loop
+            and atime
+            and author is not None):
         return render_template(
             'adminboard/editpage_id_category.html',
             author=author, atime=atime,
@@ -54,7 +52,7 @@ def show_categorypageid(id):
 
 
 @app.route('/adminboard/editpage_id_category/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def update_categorypageid():
     error = None
     form = categorypage_idform.CategorypageidForm()
@@ -69,11 +67,15 @@ def update_categorypageid():
             categories = Categories(category_id, category_title,
                                     category_author, category_date, category_desc)
             sql.session.add(categories)
-            sql.session.commit()
-            error = "Category is changed"
-            return redirect(url_for('show_categorypageid', category_id=request.form['category_id']))
+            try:
+                sql.session.commit()
+                flash("Category is changed", 'info')
+            except exc.IntegrityError:
+                flash("Category with same name is exist", 'error')
+            return redirect(url_for('show_categorypageid',
+                                    category_id=request.form['category_id']))
     else:
-        error = "Category is not changed"
+        flash("Category is not changed", 'error')
         return redirect(url_for('show_categorypageid'))
     return render_template('adminboard/editpage_id_category.html',
                            form=form, error=error

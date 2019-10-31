@@ -21,7 +21,6 @@ from application import sql
 from application.core.dbmodel import Categories
 from application.core.dbmodel import Articles
 from application.core.datalogics import SysInfo
-# from application.core.dlogics import Base
 from application.forms import editpageform
 from flask_login import login_required
 from flask import flash
@@ -30,11 +29,9 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
+from sqlalchemy import exc
 
 
-#
-#   ARTICLES EDITPAGE ADD
-#
 @app.route('/adminboard/editpage/')
 @login_required
 def show_editpage():
@@ -46,8 +43,9 @@ def show_editpage():
     instance = SysInfo()
     atime = instance.altertime()
     author = g.user
-    if editpage_output_loop and categories_loop \
-            and atime and author is not None:
+    if (editpage_output_loop and categories_loop
+            and atime
+            and author is not None):
         return render_template(
             'adminboard/editpage.html',
             author=author, atime=atime,
@@ -64,8 +62,9 @@ def add_editpage():
     form = editpageform.EditpageAddForm()
     author = g.user
     iid = None
-    if request.method == 'POST' and author is not None \
-            and form.validate_on_submit():
+    if (request.method == 'POST'
+            and author is not None
+            and form.validate_on_submit()):
         rows = sql.session.query(Articles).count()
         if type(rows) == int:
             iid = rows + 1
@@ -77,8 +76,11 @@ def add_editpage():
         articles = Articles(iid, article_title, article_author,
                             article_category, article_date, article_text)
         sql.session.add(articles)
-        sql.session.commit()
-        flash("Article is added", 'info')
+        try:
+            sql.session.commit()
+            flash("Article is added", 'info')
+        except exc.IntegrityError:
+            flash("Article {} is exist".format(article_title), 'error')
         return redirect(url_for('show_dashboard_main'))
     else:
         flash("Article is not added", 'error')

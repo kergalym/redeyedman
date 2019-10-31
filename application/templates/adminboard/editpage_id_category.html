@@ -31,8 +31,25 @@
 
     <body>
 
+					<div class="msg_block" align="center">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        {% if category == 'info' %}
+                        <div class="warn_msg" role="alert">
+                            {% else %}
+                            <div class="err_msg alert-{{ category }}" role="alert">
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+					</div>
+
         <div align="right" id="articleparam-container"> 
-            <label>Сведения начального материала:</label>
+            <label>Данные текущей категории:</label>
             <tr>
                 <td><label>ID:<select name="id"><option value="ID:">{{ editpage_output_loop.id }}</option></select></label></td>
             </tr>

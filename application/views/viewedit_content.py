@@ -29,11 +29,9 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
+from sqlalchemy import exc
 
 
-#
-#   CONTENT EDITPAGE ADD
-#
 @app.route('/adminboard/editpage_content/')
 @login_required
 def show_editpage_content():
@@ -45,11 +43,13 @@ def show_editpage_content():
     instance = SysInfo()
     atime = instance.altertime()
     author = g.user
-    if editpage_output_loop and categories_loop \
-            and atime and author is not None:
+    if (editpage_output_loop
+            and categories_loop
+            and atime
+            and author is not None):
         return render_template(
             'adminboard/editpage_content.html',
-            author=author, atime=atime, \
+            author=author, atime=atime,
             editpage_output_loop=editpage_output_loop,
             categories_loop=categories_loop,
             form=form)
@@ -63,7 +63,8 @@ def add_editpage_content():
     form = contentpageform.ContentpageAddForm()
     author = g.user
     iid = None
-    if (request.method == 'POST' and author is not None
+    if (request.method == 'POST'
+            and author is not None
             and form.validate_on_submit()):
         rows = sql.session.query(Content).count()
         if type(rows) == int:
@@ -76,8 +77,11 @@ def add_editpage_content():
         contents = Content(iid, content_title, content_author,
                            content_category, content_date, content_text)
         sql.session.add(contents)
-        sql.session.commit()
-        flash("Content is added", 'info')
+        try:
+            sql.session.commit()
+            flash("Content is added", 'info')
+        except exc.IntegrityError:
+            flash("Content {} is exist".format(content_title), 'error')
         return redirect(url_for('show_dashboard_inner'))
     else:
         flash("Content is not added", 'error')

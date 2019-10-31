@@ -31,8 +31,25 @@
 
 	<body>
 
+					<div class="msg_block" align="center">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        {% if category == 'info' %}
+                        <div class="warn_msg" role="alert">
+                            {% else %}
+                            <div class="err_msg alert-{{ category }}" role="alert">
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+					</div>
+
         <div align="right" id="articleparam-container"> 
-            <label>Сведения начального материала:</label>
+            <label>Данные текущего материала:</label>
             <tr>
                 <td><label>ID:<select name="id"><option value="ID:"> {{ editpage_output_loop.id }}</option></select></label></td>
             </tr>
@@ -44,9 +61,6 @@
             </tr>
             <tr>
                 <td><label style="word-wrap: break-word;">Категория:<select name="article_category"><option value="Категория:">{{ editpage_output_loop.article_category }}</option></select></label></td>
-            </tr>
-            <tr>
-                <td><label>Позиция:<select name="article_category"><option value="Позиция:">{{ editpage_output_loop.pos_category }}</option></select></label></td>
             </tr>
             <tr>
                 <td><label>Дата:<select name="article_date"><option value="Дата:">{{ editpage_output_loop.article_date }}</option></select></label></td>
@@ -100,7 +114,9 @@
 			<div id="editor" align="center">
 
 				<h3>Редактирование материала</h3>
+
 				<div class="text-field-title">
+
 					<label style="margin-top: -10px;"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i> Заголовок:</label>
 					<input type="text" name="article_title" id="article_title" style="display: block; width: 80%; margin-left: 2%" class="form-control" value="{{ editpage_output_loop.article_title }}" placeholder="Введите название материала" required autofocus>								
                 </div>
@@ -116,6 +132,7 @@
 
 
 		</form>
+
 	</div>
 
 	<hr>

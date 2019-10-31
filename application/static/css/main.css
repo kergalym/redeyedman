@@ -97,29 +97,33 @@ b, strong {
 }
 
 /* FOR MOBILE MODE */
-@media (min-width: 767px) {
+@media (max-width: 767px) {
     .pagination {
-    	display: inline-block;
+    	display: block;
     	width: 2% !important;
-    	margin-left: 5%;
+    }
+}
+
+@media (min-width: 1366px) {
+    .pagination {
+    	display: block;
+    	width: 2% !important;
     }
 }
 
 /* FOR 1080P */
 @media (min-width: 1920px) {
     .pagination {
-    	display: inline-block;
+    	display: block;
     	width: 5% !important;
-    	margin-left: -60%;
     }
 }
 
 /* FOR 4K */
 @media (min-width: 3840px) {
     .pagination {
-    	display: inline-block;
+    	display: block;
     	width: 5% !important;
-    	margin-left: -30%;
     }
 }
 
@@ -256,13 +260,19 @@ table {
     width: 100% !important;
     height: 360px;
 }
-@media  (width: 680px) {
+@media (width: 680px) {
     .container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse {
         margin-right: -15px;
         margin-left: -15px;
         background-image: url("../images/logo.png");
         background-repeat: no-repeat;
         background-size: inherit;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 630px;
     }
 }
 a {
@@ -1581,6 +1591,7 @@ button, html input[type="button"], input[type="reset"], input[type="submit"] {
     -ms-transition: All 0.5s ease;
     transition: All 0.5s ease;
 }
+
 .nav_item1:hover,.nav_item2:hover,.nav_item3:hover,.nav_item4:hover,.nav_item5:hover {
     background-color: #000;
     color: #fff;
