@@ -72,6 +72,12 @@ def update_dashboard_media():
               and form_files.delete.data is False
               and form_upload.validate_on_submit()):
 
+            get_path = str(form_files.addressbar.data)
+
+            # if no slash at the end of path
+            if get_path.endswith("/") is False:
+                get_path = "{}/".format(get_path)
+
             # when working in upload context check if unwanted buttons are not pressed
             if (file.filename
                     and form_cddir.cddir.data is False
@@ -80,16 +86,16 @@ def update_dashboard_media():
                     and form_files.delete.data is False
                     and fileserving.allowed_file(file.filename)
                     and exists("{}{}".format(app.root_path,
-                                             request.form['addressbar']))):
+                                             get_path))):
                 filename = secure_filename(file.filename)
-                fpath = "{}{}{}".format(app.root_path, request.form['addressbar'], filename)
+                fpath = "{}{}{}".format(app.root_path, get_path, filename)
                 if filename and exists(fpath) is False:
                     file.save(fpath)
-                    flash("{}{} is uploaded".format(request.form['addressbar'], filename), 'info')
+                    flash("{}{} is uploaded".format(get_path, filename), 'info')
                 elif exists(fpath):
-                    flash("{}{} is exists".format(request.form['addressbar'], filename), 'error')
+                    flash("{}{} is exists".format(get_path, filename), 'error')
                 else:
-                    flash("{}{} is not uploaded".format(request.form['addressbar'], filename), 'error')
+                    flash("{}{} is not uploaded".format(get_path, filename), 'error')
 
             return redirect(url_for('show_dashboard_media'))
 
@@ -140,11 +146,18 @@ def update_dashboard_media():
             if (len(request.form.getlist('item_chb')) == 1
                     and len(request.form.getlist('delid')) == 1
                     and isinstance(request.form['addressbar'], unicode)):
+
+                get_path = str(form_files.addressbar.data)
+
+                # if no slash at the end of path
+                if get_path.endswith("/") is False:
+                    get_path = "{}/".format(get_path)
+
                 old_object = "{}{}{}".format(app.root_path,
-                                             request.form['addressbar'],
+                                             get_path,
                                              request.form.get('item_chb'))
                 new_object = "{}{}{}".format(app.root_path,
-                                             request.form['addressbar'],
+                                             get_path,
                                              form_files.delid.data)
 
                 if exists(old_object):
@@ -165,8 +178,15 @@ def update_dashboard_media():
 
             if (len(request.form.getlist('item_chb')) == 1
                     and isinstance(request.form['addressbar'], unicode)):
+
+                get_path = str(form_files.addressbar.data)
+
+                # if no slash at the end of path
+                if get_path.endswith("/") is False:
+                    get_path = "{}/".format(get_path)
+
                 get_object = "{}{}{}".format(app.root_path,
-                                             request.form['addressbar'],
+                                             get_path,
                                              request.form['item_chb'])
                 if exists(get_object):
                     fileserving.del_file_dir(get_object)
