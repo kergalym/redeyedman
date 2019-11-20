@@ -69,7 +69,7 @@ def add_editpage_category():
         category_title = request.form['category_title']
         category_author = request.form['category_author']
         category_date = request.form['category_date']
-        category_desc = request.form['category_desc']
+        category_desc = request.form['category_title']
         categories = Categories(iid, category_title, category_author,
                                 category_date, category_desc)
         sql.session.add(categories)

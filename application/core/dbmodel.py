@@ -30,17 +30,19 @@ class Articles(sql.Model):
     article_author = sql.Column(String, nullable=False)
     article_category = sql.Column(String, nullable=False)
     article_date = sql.Column(String, nullable=False)
+    article_mod_date = sql.Column(String, nullable=False)
     article_text = sql.Column(String, nullable=False)
 
     def __init__(
                 self, id, article_title, 
                 article_author, article_category, 
-                article_date, article_text):
+                article_date, article_mod_date, article_text):
         self.id = id                    
         self.article_title = article_title
         self.article_author = article_author
         self.article_category = article_category
         self.article_date = article_date
+        self.article_mod_date = article_mod_date
         self.article_text = article_text
 
     def __repr__(self):
@@ -48,12 +50,14 @@ class Articles(sql.Model):
             article_author="{article_author}", \
             article_category="{article_category}", \
             article_date="{article_date}, \
+            article_mod_date="{article_mod_date}, \
             article_text="{article_text}")>'.format(
             id=self.id,
             article_title=self.article_title,
             article_author=self.article_author,
             article_category=self.article_category,
             article_date=self.article_date,
+            article_mod_date=self.article_mod_date,
             article_text=self.article_text
             )
 

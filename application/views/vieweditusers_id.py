@@ -18,7 +18,9 @@
 
 from application.core.datalogics import Utils
 from application import app
+from application import engine
 from application import sql
+from sqlalchemy import update
 from application.core.dbmodel import Users
 from application.core.dbmodel import Categories
 from application.core.datalogics import SysInfo
@@ -70,26 +72,29 @@ def update_userspageid():
             and request.method == 'POST'
             and request.form.get('save', None)
             and form.validate_on_submit()):
-        id = request.form['id']
-        login = request.form['login']
-        password = utils.hash_password(request.form['password'])
-        email = request.form['email']
-        regdate = request.form['regdate']
-        usr_level = request.form['usr_level']
-        usersdata = Users(id, login, password, email,
-                          regdate, usr_level)
-        sql.session.add(usersdata)
+
+        conn = engine.connect()
+        stmt = update(Users).where(
+            Users.id == form.id.data).values(
+            id=form.id.data,
+            login=form.login.data,
+            password=form.password.data,
+            email=form.email.data,
+            regdate=form.regdate.data,
+            usr_level=form.usr_level.data,
+        )
+
         try:
-            sql.session.commit()
+            conn.execute(stmt)
             flash("User's data is changed", 'info')
         except exc.IntegrityError:
             flash("Identical user's data is exist", 'error')
         flash("User's data is changed", 'info')
         return redirect(url_for('show_userspageid',
                                 id=form.id.data))
-    elif author is not None \
-            and request.method == 'POST' \
-            and form_genpass.validate_on_submit():
+    elif (author is not None
+            and request.method == 'POST'
+            and form_genpass.validate_on_submit()):
         passwordphrase = utils.randomstr(int(request.form['passlength']))
         return jsonify(passwordphrase=passwordphrase)
     else:

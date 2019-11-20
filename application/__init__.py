@@ -86,7 +86,6 @@ from application.views import viewdash_main
 from application.views import viewdash_inner
 from application.views import viewdash_media
 from application.views import viewdash_category
-from application.views import viewdash_settings
 from application.views import viewdash_users
 from application.views import viewdash_filemanager
 
@@ -95,7 +94,6 @@ from application.views import viewdash_inner_update
 from application.views import viewdash_media_update
 from application.views import viewdash_media_gfx_converter_update
 from application.views import viewdash_category_update
-from application.views import viewdash_settings_update
 from application.views import viewdash_users_update
 from application.views import viewdash_filemanager_update
 from application.views import viewdash_forgot_password_update

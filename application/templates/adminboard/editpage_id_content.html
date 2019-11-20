@@ -63,7 +63,7 @@
                 <td><label style="word-wrap: break-word;">Категория:<select name="content_category"><option value="Категория:">{{ editpage_output_loop.content_category }}</option></select></label></td>
             </tr>
             <tr>
-                <td><label>Дата:<select name="content_date"><option value="Дата:">{{ editpage_output_loop.content_date }}</option></select></label></td>
+                <td><label>Изменено:<select name="content_date"><option value="Дата:">{{ editpage_output_loop.content_date }}</option></select></label></td>
             </tr>
         </div> 
 
@@ -79,7 +79,7 @@
 					<a class="navbar-brand" href="{{ url_for('show_dashboard_main') }}">Материалы</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-					<form class="form_class_edit" method="post" action="{{ request.url }}">
+					<form class="form_class_edit" method="post" action="{{ url_for('update_contentpageid') }}">
                         {{ form.csrf_token }}
 						<ul class="minibar" align="center">
 							<li><input type="submit" name="save" value="Сохранить" class="button" /></li>
@@ -97,7 +97,7 @@
 				<div class="text-fields">
 
 					<label style="text-align: left; width: 80%;"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i> Номер:</label>
-					<input type="text" name="id" style="width: 80%;" id="content_id" class="form-control" value="{{ editpage_output_loop.id }}" placeholder="Введите номер" required autofocus>
+					<input type="text" name="id" style="width: 80%;" id="id" class="form-control" value="{{ editpage_output_loop.id }}" placeholder="Введите номер" required autofocus>
 					<label style="text-align: left; width: 80%;"><i class="fa fa-user fa-2x" aria-hidden="true"></i> Автор:</label>
 					<select name="content_author" style="width: 80%;" id="auth_selector"><option>{{ editpage_output_loop.content_author }}</option></select>
 					<label style="text-align:left; width: 80%;"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i> Дата:</label>

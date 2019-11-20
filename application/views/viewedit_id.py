@@ -62,11 +62,16 @@ def update_editpageid():
     error = None
     form = editpage_idform.EditpageidForm()
     instance = SysInfo()
-    atime = instance.altertime()
     author = g.user
+
     if (request.method == 'POST' and author is not None
             and request.form['save']):
         if form.validate_on_submit():
+
+            # we assign record time to this form element
+            # as unicode string to be consistent with other form elements here
+            form.article_mod_date.data = unicode(instance.altertime())
+
             conn = engine.connect()
             stmt = update(Articles).where(
                 Articles.id == form.id.data).values(
@@ -74,9 +79,11 @@ def update_editpageid():
                 article_title=form.article_title.data,
                 article_author=form.article_author.data,
                 article_category=form.article_category.data,
-                article_date=atime,
+                article_date=form.article_date.data,
+                article_mod_date=form.article_mod_date.data,
                 article_text=form.article_text.data
             )
+
             try:
                 conn.execute(stmt)
                 flash("Article is changed", 'info')

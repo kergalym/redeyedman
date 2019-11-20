@@ -63,9 +63,14 @@
                 <td><label style="word-wrap: break-word;">Категория:<select name="article_category"><option value="Категория:">{{ editpage_output_loop.article_category }}</option></select></label></td>
             </tr>
             <tr>
-                <td><label>Дата:<select name="article_date"><option value="Дата:">{{ editpage_output_loop.article_date }}</option></select></label></td>
+                <td><label>Создано:<select name="article_date"><option value="Дата:">{{ editpage_output_loop.article_date }}</option></select></label></td>
             </tr>
-        </div> 
+            <tr>
+				<td><label>Изменено:
+    				<select name="article_mod_date" id="article_mod_date"><option value="Дата:">{{ editpage_output_loop.article_mod_date }}</option></select></label></td>
+            </tr>
+
+        </div>
 
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
@@ -85,8 +90,7 @@
 							<li><input type="submit" name="save" value="Сохранить" class="button" /></li>
 							<li><input type="reset" name="reset" value="Сбросить" class="button" /></li>
 							<li><a href="{{ url_for('show_dashboard_main') }}" class="button">Закрыть</a><li>
-						</ul>       
-
+						</ul>
 				</div><!--/.navbar-collapse -->
 			</div>
 		</nav>
@@ -148,6 +152,5 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
 <script type="text/javascript" src="../../static/js/bootstrap.js"></script>
-
 </body>
 </html>
