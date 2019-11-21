@@ -72,9 +72,11 @@ def add_editpage():
         article_author = request.form['article_author']
         article_category = request.form['article_category']
         article_date = request.form['article_date']
+        article_mod_date = request.form['article_date']
         article_text = request.form['article_text']
         articles = Articles(iid, article_title, article_author,
-                            article_category, article_date, article_text)
+                            article_category, article_date,
+                            article_mod_date, article_text)
         sql.session.add(articles)
         try:
             sql.session.commit()
