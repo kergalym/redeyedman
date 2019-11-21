@@ -199,7 +199,7 @@
                                     <div id="content-container">
 
                                         {% for article in articles_loop %}
-                                        <h2 class="line" style="text-align: left;">{{ article.article_title }}</h2>
+                                        <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a></a>
 
                                         {{ article.article_text | safe }}
 

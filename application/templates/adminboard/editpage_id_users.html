@@ -51,7 +51,7 @@
 				<td><label>ID:<select name="id"><option value="ID:">{{ editpage_output_loop.id }}</option></select></label></td>
 			</tr>
 			<tr>
-				<td><label style="word-wrap: break-word;">Логин:<select name="login"><option value="Логин:">{{ editpage_output_loop.login }}</option></select></label></td>
+				<td><label style="word-wrap: break-word;">Логин:<select name="login"><option value="Логин:">{{ editpage_output_loop.login|truncate(13) }}</option></select></label></td>
 			</tr>
 			<tr>
 				<td><label>Уровень:<select name="usr_level"><option value="Уровень:">{{ editpage_output_loop.usr_level }}</option></select></label></td>

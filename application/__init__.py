@@ -65,8 +65,6 @@ sql = SQLAlchemy(app)
 # Make session
 session = sessionmaker()
 session.configure(bind=engine)
-sdigit = app.config['SESSIONTIME']
-app.permanent_session_lifetime = timedelta(minutes=sdigit)
 session_timein = app.permanent_session_lifetime
 
 # Debug

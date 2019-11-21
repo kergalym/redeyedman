@@ -72,6 +72,8 @@ def show_index():
 
 @app.route('/inner/', defaults={'id': 1})
 @app.route('/inner/<int:id>', methods=['GET', 'POST'])
+@app.route('/imenu/', defaults={'id': 1})
+@app.route('/imenu/<int:id>', methods=['GET', 'POST'])
 def show_inner(id):
     per_page = 7
     search_limit = 4

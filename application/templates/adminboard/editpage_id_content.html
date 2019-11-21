@@ -54,7 +54,7 @@
                 <td><label>ID:<select name="id"><option value="ID:">{{ editpage_output_loop.id }}</option></select></label></td>
             </tr>
             <tr>
-                <td><label style="word-wrap: break-word;">Заголовок:<select name="content_title"><option value="Заголовок:"> {{ editpage_output_loop.content_title }}</option></select></label></td>
+                <td><label style="word-wrap: break-word;">Заголовок:<select name="content_title"><option value="Заголовок:"> {{ editpage_output_loop.content_title|truncate(13) }}</option></select></label></td>
             </tr>
             <tr>
                 <td><label style="word-wrap: break-word;">Автор:<select name="content_author"><option value="Автор:">{{ editpage_output_loop.content_author }}</option></select></label></td>
