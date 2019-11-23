@@ -90,12 +90,22 @@
                                 {% block content_block_inner_search %}
                                 <div id="content">
                                     <div id="article-container">
-                                        {% for search in s_menus %}
-                                        <h2 class="line" style="text-align: center;"><a class="line" style="text-align: left;" href="/inner/{{ search.id }}"> {{ search.id }} . {{ search.article_title }}</a></h2>
+                                        {% if s_menus|length > 1 %}
 
-                                        {{ search.article_text | ctxt | safe }}
+                                            {% for search in s_menus %}
+
+                                                <h2 class="line" style="text-align: center;"><a class="line" style="text-align: left;" href="/inner/{{ search.id }}"> {{ search.id }} . {{ search.article_title }}</a></h2>
+
+                                                    {{ search.article_text | ctxt | safe }}
 
                                         {% endfor %}
+
+                                            {% else %}
+
+                                                <img src="/static/images/korlan/404.png">
+
+                                            {% endif %}
+
                                     </div> 
                                     <div id="content_bottom_a">
                                          <div id="menu">
@@ -139,11 +149,12 @@
                                     <div id="content-container">
 
                                         {% for article in articles_loop %}
-                                        <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a>
 
-                                        {{ article.article_text | safe }}
+                                                <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a>
 
-                                        <a class="readmore-button" href="/imenu/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                {{ article.article_text | safe }}
+
+                                                <a class="readmore-button" href="/imenu/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
                                         {% endfor %}	
 
