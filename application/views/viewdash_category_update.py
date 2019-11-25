@@ -73,6 +73,7 @@ def update_dashboard_category():
                         )
                         try:
                             conn.execute(stmt)
+                            conn.close()
                             flash("Item {} is changed to {}".format(x,
                                                                     form.delid.data), 'info')
                         except exc.IntegrityError:
@@ -109,6 +110,7 @@ def update_dashboard_category():
                         stmt = delete(Categories).where(
                             Categories.id == x)
                         conn.execute(stmt)
+                        conn.close()
                         flash("Item {} is deleted!".format(x), 'info')
                     elif x == n:
                         flash("Item {} is exists".format(x), 'error')
@@ -125,14 +127,18 @@ def update_dashboard_category():
         elif form_next.validate_on_submit():
             data = []
             data_array = sql.session.query(Categories).filter(
-                Categories.category_title.match(form.query.data)).all()
-            for x in data_array:
-                data = x
+                Categories.category_title.match(form_next.query.data)).all()
+            if data_array:
+                for x in data_array:
+                    data = x
 
-            return jsonify(id=str(data.id),
-                           title=data.category_title,
-                           date=data.category_date
-                           )
+                return jsonify(id=str(data.id),
+                               author=data.category_author,
+                               title=data.category_title,
+                               date=data.category_date
+                               )
+            else:
+                return redirect(url_for('show_dashboard_category'))
 
     return render_template('adminboard/adminboard_category.html',
                            form=form

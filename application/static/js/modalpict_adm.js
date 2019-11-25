@@ -55,15 +55,15 @@ $(document).ready(function() {
 
 		// Define the close button properties
 		$('#img-close').css({"color": "white", "width": "40px", 
-		    "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+		    "height": "40px", "cursor": "pointer", "margin-left": "94%"});
 
-		// Define the close button properties
+		// Define the plus button properties
 		$('#img-plus').css({"color": "white", "width": "40px",
-		    "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+		    "height": "40px", "cursor": "pointer", "margin-left": "90%"});
 		
-		// Define the close button properties
+		// Define the minus button properties
 		$('#img-minus').css({"color": "white", "width": "40px",
-		    "height": "40px", "cursor": "pointer", "margin-left": "95%"});
+		    "height": "40px", "cursor": "pointer", "margin-left": "92%"});
 
 		// Append an image 
 		$('#imgshow').append(reconst_imgurl);

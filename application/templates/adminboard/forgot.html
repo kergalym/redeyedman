@@ -28,25 +28,19 @@
         <div class="container">
             <noscript><span>У Вас отключён javascript...</span></noscript>
 
-            <form  class="form-signin" role="form" method="post" action="">
+            <form  class="form-signin" role="form" method="post" action="{{ url_for('forgot_password') }}">
                 {{ form.csrf_token }}
-                <h2 class="form-signin-heading">Админпанель <br> </h2>
-                <label for="inputLogin" class="sr-only">Логин </label>
-               {{ form.login(placeholder="Логин", class="form-control") }}
-                <label for="inputPassword" class="sr-only">Пароль </label>
-               {{ form.password(value="password", placeholder="Пароль", class="form-control") }}
-                <div class="checkbox">
-                    <label>
-                        {{ form.remember_me(value="remember_me") }} Запомнить
-                    </label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+                <h3 align="center" class="form-signin-heading" style="margin-bottom: 10%">
+                    Потеряли пароль?  <br>  ¯ \ _ (ツ) _ / ¯ <br>
+                </h3>
+                <label for="inputEmail" class="sr-only">Ввести E-Mail </label>
+               {{ form.email(placeholder="email", class="form-control") }}
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Восстановить пароль</button>
             </form>
+            </div>
 
-            <div style="text-align: center; color: #FFFFF"><a href="/forgot/">Сбросить пароль</a></div>
-
-         </div>
-
+        <div style="text-align: center; color: #FFFFF"><a href="/login/">Войти</a></div>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
 		<div id="warn_msg" align="center">

@@ -47,7 +47,7 @@ def update_dashboard_media():
     fileserving = FileBrowser()
 
     if request.method == 'POST':
-        file = request.files['f_upload']
+        file = request.files.get('f_upload')
 
         # when working in upload context check if unwanted buttons are not pressed
         if (file.filename == ''

@@ -36,7 +36,6 @@ $(document).ready(function() {
                 data: $('#formsearch').serialize(),
                 type: 'POST',
                 success: function (data) {
-                    console.log($(location).attr("href"));
                     $('.table.table-striped').css({
                         "display": "none"
                     });

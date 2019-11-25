@@ -91,21 +91,21 @@
                                     <div id="article-container">
                                         <h2 class="line">{{ articles.article_title }}</h2>
 
-                                        <p style="font-size: small;">Дата публикации: {{ articles.article_date }}</p>
+                                        <p style="font-size: small;"><i class="fa fa-user" aria-hidden="true" >  Автор: {{ articles.article_author }}</i></p>
 
-                                    {% if articles.article_mod_date is sameas true %}
+                                        <p style="font-size: small;"><i class="fa fa-database" aria-hidden="true" >  Категория: {{ articles.article_category }}</i></p>
 
-                                        <p style="font-size: small;">Дата изменения: {{ articles.article_mod_date }}</p>
+                                        <p style="font-size: small;"><i class="fa fa-calendar" aria-hidden="true" >  Дата публикации: {{ articles.article_date }}</i></p>
 
-                                    {% endif %}
+                                        <p style="font-size: small;"><i class="fa fa-calendar" aria-hidden="true" >  Дата изменения: {{ articles.article_mod_date }}</i></p>
 
-                                        {{ articles.article_text | safe }}
+                                        <p style="margin-top: 2%;">{{ articles.article_text | safe }}</p>
 
                                     </div>
                                     <div id="content_bottom_a">
                                          <div id="menu">
                                             {% for menu in menus %}
-                                            <a href="inner/{{ menu.id }}"><h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2></a>
+                                            <a href="/inner/{{ menu.id }}"><h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2></a>
 
                                             {{ menu.article_text | ctxt | safe }}
 

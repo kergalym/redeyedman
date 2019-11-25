@@ -107,7 +107,7 @@
 						<input type='text' id='text' name='addressbar' value='{{ get_relpath }}' size='1' style="width: 50%"  required placeholder="Путь файлового менеджера"/>
 						<input type='text' id='text' name='newdirname' value='' size='1' style="width: 10%" placeholder=" Введите каталог"/>
 					</div>
-					<div class="table-responsive">                       
+					<div class="table-responsive">
                         {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                         {% for category, message in messages %}
@@ -155,35 +155,7 @@
                             </form>
 							</tbody>
 						</table>
-
-                        <div id="search">
-                        <form id="formsearch" name="formsearch" method="POST" action="{{ request.path }}">
-                        {{ form.csrf_token }}    
-                            <div class="search">
-                                <input name="query" placeholder="Поиск..." type="search">
-                            </div>
-                        </div> 
-                        
-                        <table id="table-striped-search" class="table table-striped-search">
-                            <thead>
-                                <tr>
-                                    <th><i class="fa fa-list-ol" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-user" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-database" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i></th>
-                                    <th><input type="checkbox" id='checkbox_all' name='items_chb'/></th>
-                                </tr>			  
-                            </thead>
-                            <tbody>
-                                <div  id="checkbox-search" class="checkbox-search">
-                                
-                                </div>
-                            </form>                            
-                            </tbody>                             
-                        </table>
-                        {{ pagination.links }}                        
+                        {{ pagination.links }}
 				</div>
 			</div> 			
 		</div>
@@ -201,8 +173,7 @@
         </script>        
         <script type="text/javascript" src="../../static/js/crud.js"></script>       
         <script type="text/javascript" src="../../static/js/modalpict_adm.js"></script>
-        <script  type="text/javascript" src="../../static/js/proact_search_media.js"></script>
-    </body>        
+    </body>
 </html>
 
 

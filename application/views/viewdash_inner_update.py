@@ -72,6 +72,7 @@ def update_dashboard_inner():
                         )
                         try:
                             conn.execute(stmt)
+                            conn.close()
                             flash("Item {} is changed to {}".format(x,
                                                                     form.delid.data), 'info')
                         except exc.IntegrityError:
@@ -108,6 +109,7 @@ def update_dashboard_inner():
                         stmt = delete(Content).where(
                             Content.id == x)
                         conn.execute(stmt)
+                        conn.close()
                         flash("Item {} is deleted!".format(x), 'info')
                     elif x == n:
                         flash("Item {} is exists".format(x), 'error')
@@ -123,16 +125,19 @@ def update_dashboard_inner():
         elif form_next.validate_on_submit():
             data = []
             data_array = sql.session.query(Content).filter(
-                Content.content_title.match(form.query.data)).all()
-            for x in data_array:
-                data = x
+                Content.content_title.match(form_next.query.data)).all()
+            if data_array:
+                for x in data_array:
+                    data = x
 
-            return jsonify(id=str(data.id),
-                           title=data.content_title,
-                           author=data.content_author,
-                           category=data.content_category,
-                           date=data.content_date
-                           )
+                return jsonify(id=str(data.id),
+                               title=data.content_title,
+                               author=data.content_author,
+                               category=data.content_category,
+                               date=data.content_date
+                               )
+            else:
+                return redirect(url_for('show_dashboard_inner'))
 
     return render_template('adminboard/adminboard_inner.html',
                            form=form

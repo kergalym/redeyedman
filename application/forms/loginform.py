@@ -16,10 +16,14 @@
 
 from application.forms.secureredirectforms import RedirectForm
 from wtforms import TextField, BooleanField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(RedirectForm):
     login = TextField('login', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
     remember_me = BooleanField('remember_me', default=False)
+
+
+class ForgotForm(RedirectForm):
+    email = TextField('email', validators=[Length(min=4, max=16)])

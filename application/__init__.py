@@ -24,7 +24,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_bcrypt import Bcrypt
-from datetime import timedelta
 import sys
 
 # Set encoding to UTF-8 hack
@@ -56,7 +55,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % \
                                         (dbuser, dbpass, dbhost, dbname)
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], pool_size=30, max_overflow=0)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -70,6 +69,7 @@ session_timein = app.permanent_session_lifetime
 # Debug
 Debug(app)
 toolbar = DebugToolbarExtension(app)
+
 
 # Import views to enable proper routing
 from application.core import dbmodel

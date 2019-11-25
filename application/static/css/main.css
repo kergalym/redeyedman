@@ -390,10 +390,17 @@ a {
     }
 }
 
+@media only screen and (max-width : 480px) and (orientation : portrait) {
+    .nav_menu {
+        width: 45%;
+    }
+}
+
 @media only screen and (min-width : 768px) {
     .logo {
         position:relative;
     }
+
     .logo span {
         position:absolute;
         left: -70px;
@@ -403,6 +410,7 @@ a {
         background:url(../images/favicon.svg) no-repeat;
         background-size: 50%;
     }
+
 }
 
 /* Desktop */
@@ -496,6 +504,12 @@ a {
         width: 70% !important;
 	float: left;
 	margin-right: 8px;
+    }
+}
+
+@media only screen and (min-width : 768px) {
+    #page_align {
+        margin-top: 2%;
     }
 }
 

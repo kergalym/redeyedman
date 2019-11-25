@@ -16,6 +16,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+function uploadProgressBar() {
+$(document).ready(function(){
+
+});
+
+}
+
 function ajaxFiles(query_type, attach, urlname) {
 
 
@@ -32,6 +39,17 @@ function ajaxFiles(query_type, attach, urlname) {
                 data: formID,
                 contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
                 processData: false, // NEEDED, DON'T OMIT THIS
+                beforeSend: function() {
+                    var percent = '0%';
+                    $('.warn_msg').width(percent);
+                    $('.warn_msg').css({"display": "block", "background-color": "#4F6988"})
+                    $('.warn_msg').html(percent);
+                },
+                uploadProgress: function(event, position, total, percentComplete) {
+                    var percent = percentComplete + '%';
+                    $('.warn_msg').width(percent);
+                    $('.warn_msg').html(percent);
+                },
                 complete: function (data) {
                          $('body').html(data.responseText);
                 }
@@ -78,9 +96,9 @@ function addUser(query_type, form, urlname, actBtn, csrf_token) {
              && csrf_token != null) {
 
              var actBtn = actBtn + '=True' + '&';
-             var form = new FormData($(form)[0]);
+             var rawForm = $(form).serialize();;
              var csrf_token = 'csrf_token=' + csrf_token + '&';
-             var formID = form + actBtn + csrf_token;
+             var formID = actBtn + csrf_token + rawForm;
 
              $.ajax({
                  type: query_type,
@@ -92,7 +110,6 @@ function addUser(query_type, form, urlname, actBtn, csrf_token) {
                  complete: function (data) {
                          $('body').html(data.responseText);
                  }
-
              })
 
           }
@@ -190,7 +207,7 @@ function formElemIdentify(urlname, event) {
             if ($(event).attr('id') === 'user_submit') {
                 actBtn = $(event).attr('id');
                 var csrf_token = $('input[name="csrf_token"]').attr('value');
-                addUser('POST', '#adduser', urlname, actBtn, csrf_token);
+                addUser('POST', '#adduser', '/adminboard/useradd', actBtn, csrf_token);
             }
 
             var addressBar = $('input[name="addressbar"]').attr('value');
@@ -546,32 +563,6 @@ $(document).ready(function () {
 
 
     } else if (currentpage == '/adminboard/adminboard_users/') {
-
-
-        $('#adduser_active').css('display', 'block');
-        $('#adduser').css('display', 'block');
-
-        $('#rename').click(function (rev) {
-            if ($('input[name=item_chb]:checked').length === 1) {
-                rev.preventDefault();
-                formElemIdentify(currentpage, this);
-            }
-        });
-
-        $('#delete').click(function (dev) {
-            if ($('input[name=item_chb]:checked').length === 1) {
-                dev.preventDefault();
-                formElemIdentify(currentpage, this);
-            }
-        });
-
-        // ADMINBOARD ADDUSER BLOCK
-        $('#user_submit').click(function (dev) {
-           dev.preventDefault();
-           formElemIdentify(currentpage, this);
-        });
-
-    } else if (currentpage == '/adminboard/adminboard_settings/') {
 
 
         $('#adduser_active').css('display', 'block');

@@ -140,7 +140,8 @@
                             </form>
                             </tbody>
                         </table>
-<div id="search">
+
+                        <div id="search">
                         <form id="formsearch" name="formsearch" method="POST" action="{{ request.path }}">
                         {{ form.csrf_token }}    
                             <div class="search">
@@ -186,7 +187,7 @@
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>
         <script type="text/javascript" src="../../static/js/crud.js"></script>
-        <script  type="text/javascript" src="../../static/js/proact_search_users.js"></script>
+        <script type="text/javascript" src="../../static/js/proact_search_users.js"></script>
     </body>
 </html>
 

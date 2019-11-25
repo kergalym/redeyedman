@@ -109,7 +109,7 @@
                             </div>
                             {% endfor %}
                             {% endif %}
-                            {% endwith %}                     
+                            {% endwith %}
                         {{ pagination.links }}
                         <table class="table table-striped">
                             <thead>
@@ -140,7 +140,7 @@
                             </form>
                             </tbody>                            
                         </table>    
-                        
+
                         <div id="search">
                         <form id="formsearch" name="formsearch" method="POST" action="{{ request.path }}">
                         {{ form.csrf_token }}    
@@ -187,7 +187,7 @@
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>        
         <script type="text/javascript" src="../../static/js/crud.js"></script>                        
-        <script  type="text/javascript" src="../../static/js/proact_search_main.js"></script>		        
+        <script type="text/javascript" src="../../static/js/proact_search_main.js"></script>
     </body>
 </html>
 

@@ -148,6 +148,7 @@ class Users(UserMixin, sql.Model):
         return '<Users(id={id}, login="{login}", password="{password}", \
                 email="{email}", regdate="{regdate}"), \
                 usr_level="{usr_level}")>'.format(
+            id=self.id,
             login=self.login,
             password=self.password, 
             email=self.email,

@@ -44,6 +44,7 @@ def update_dashboard_users():
     author = g.user
     conn = engine.connect()
 
+    # import pdb; pdb.set_trace()
     if request.method == 'POST':
         if form.rename.data and form.validate_on_submit():
             checkboxes = request.form.getlist('item_chb')
@@ -72,6 +73,7 @@ def update_dashboard_users():
                         )
                         try:
                             conn.execute(stmt)
+                            conn.close()
                             flash("Item {} is changed to {}".format(x,
                                                                     form.delid.data), 'info')
                         except exc.IntegrityError:
@@ -108,6 +110,7 @@ def update_dashboard_users():
                         stmt = delete(Users).where(
                             Users.id == x)
                         conn.execute(stmt)
+                        conn.close()
                         flash("Item {} is deleted!".format(x), 'info')
                     elif x == n:
                         flash("Item {} is exists".format(x), 'error')
@@ -124,15 +127,18 @@ def update_dashboard_users():
     elif form_next.validate_on_submit():
         data = []
         data_array = sql.session.query(Users).filter(
-            Users.login.match(form.query.data)).all()
-        for x in data_array:
-            data = x
+            Users.login.match(form_next.query.data)).all()
+        if data_array:
+            for x in data_array:
+                data = x
 
-        return jsonify(id=str(data.id),
-                       login=data.login,
-                       email=data.email,
-                       date=data.regdate
-                       )
+            return jsonify(id=str(data.id),
+                           login=data.login,
+                           email=data.email,
+                           date=data.regdate
+                           )
+        else:
+            return redirect(url_for('show_dashboard_users'))
 
     return render_template('adminboard/adminboard_users.html',
                            form=form
