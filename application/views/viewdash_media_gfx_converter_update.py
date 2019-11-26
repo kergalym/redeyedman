@@ -30,7 +30,6 @@ from flask import url_for
 
 @app.route('/adminboard/gfx_converter', methods=['GET', 'POST'])
 @login_required
-# TODO: add arg self to the decorator
 def gfx_converter():
     form = dashboard_filesform.GfxConvForm()
 

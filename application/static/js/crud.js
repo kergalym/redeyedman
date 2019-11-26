@@ -16,12 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-function uploadProgressBar() {
-$(document).ready(function(){
-
-});
-
-}
 
 function ajaxFiles(query_type, attach, urlname) {
 
@@ -167,15 +161,13 @@ function getImgSize(query_type, form, urlname, btnAct, chkBtn, qrangeField, qran
 
 }
 
-function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBtn, content, radioField, radio) {
+function pubSwitch(query_type, urlname, btnAct, chkBtn, radio, csrf_token) {
 
-        var rawForm = $(form).serialize();
-        var btnSubmit = btnAct + '=' + btnAct + '&';
-        var btnChBox = 'content=' + chkBtn + '&';
-        var contentField = "content_index";
-        var content = contentField + '=' + content + '&';
-        var radio = radioField + '=' + radio + '&';
-        var formID = content + radio + btnChBox + btnSubmit + rawForm;
+        var btnSubmit = btnAct + '=True' + '&';
+        var btnChBox = 'item_chb=' + chkBtn + '&';
+        var radio = 'published=' + radio + '&';
+        var token = 'csrf_token=' + csrf_token + '&';
+        var formID = radio + btnChBox + btnSubmit + token;
 
             $.ajax({
                 type: query_type,
@@ -190,6 +182,33 @@ function pubSwitch(warn_msg, colortype, query_type, form, urlname, btnAct, chkBt
             })
 
 }    
+
+function pubMultSwitch(query_type, urlname, btnAct, chkBtn, radio, csrf_token) {
+
+        var btnSubmit = btnAct + '=True' + '&';
+        var radio = 'published=' + radio + '&';
+        var token = 'csrf_token=' + csrf_token + '&';
+        var btnChBox = '';
+
+        $.each(chkBtn, function(i) {
+                btnChBox += 'item_chb=' + chkBtn[i].value + '&';
+        });
+
+        var formID = radio + btnChBox + btnSubmit + token;
+
+            $.ajax({
+                type: query_type,
+                url: urlname,
+                data: formID,
+                dataType: 'json',
+                encode: true,
+                 complete: function (data) {
+                         $('body').html(data.responseText);
+                 }
+
+            })
+
+}
 
 function formElemIdentify(urlname, event) {
 
@@ -328,38 +347,187 @@ $(document).ready(function () {
         $("input[name*=item_chb]").click(function () {
 
            var chkBtn = '';
-           var radioField = 'radio';
+           var radio = null;
            var isChecked = 0;
             
            if (this.checked) {
 
-                content = $(this).attr("value");
-                chkBtn = content;
+                chkBtn = $(this).val();
                 isChecked = 1;
 
                 $('#pubswitch_active').css('display', 'block');
                 $('#pubswitch').css('display', 'block');
+                $('input[name="pub_off"]').attr( "checked", true );
+                $('input[name="pub_on"]').attr( "checked", false );
 
-                $("input[type*=radio]").on('change', function () {
+                $('input[name="pub_on"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
                     radio = $(this).val();
 
-                });    
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
 
-                $('#pub_submit').click(function (pub) {
-                    pub.preventDefault();
-                    var btnAct = $(this).attr('id');
-                  
-                    pubSwitch('POST', '#pubswitch',
-                            '/adminboard/adminboard_main/',
-                            btnAct, chkBtn, content, radioField, radio
-                            );
+                         pubSwitch('POST','/adminboard/pub_switcher_main',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
                 });
+
+                $('input[name="pub_off"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_main',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                });
+
+                if ($('input[name="pub_on"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_main',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                }
+
+                if ($('input[name="pub_off"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_main',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                }
+
 
            } else {
 
                 $('#pubswitch_active').css('display', 'none');
                 $('#pubswitch').css('display', 'none');
            }    
+
+        });
+
+        // PUB MULTIPLE SWITCHER BLOCK
+        $("input[name*=items_chb]").click(function () {
+
+           var chkBtn = $("input[name*=item_chb]").serializeArray()
+
+           var radio = null;
+           var isChecked = 0;
+
+           if (this.checked) {
+
+                isChecked = 1;
+
+                $('#pubswitch_active').css('display', 'block');
+                $('#pubswitch').css('display', 'block');
+                $('input[name="pub_off"]').attr( "checked", true );
+                $('input[name="pub_on"]').attr( "checked", false );
+
+                $('input[name="pub_on"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_main',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                });
+
+                $('input[name="pub_off"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_main',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                });
+
+                if ($('input[name="pub_on"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_main',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                }
+
+                if ($('input[name="pub_off"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_main',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                }
+
+
+           } else {
+
+                $('#pubswitch_active').css('display', 'none');
+                $('#pubswitch').css('display', 'none');
+           }
 
         });
 
@@ -383,40 +551,189 @@ $(document).ready(function () {
         $("input[name*=item_chb]").click(function () {
 
            var chkBtn = '';
-           var radioField = 'radio';
+           var radio = null;
            var isChecked = 0;
-            
+
            if (this.checked) {
 
-                content = $(this).attr("value");
-                chkBtn = content;
+                chkBtn = $(this).val();
                 isChecked = 1;
 
                 $('#pubswitch_active').css('display', 'block');
                 $('#pubswitch').css('display', 'block');
+                $('input[name="pub_off"]').attr( "checked", true );
+                $('input[name="pub_on"]').attr( "checked", false );
 
-                $("input[type*=radio]").on('change', function () {
+                $('input[name="pub_on"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
                     radio = $(this).val();
-                    console.log(radio = $(this).val());
 
-                });    
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
 
-                $('#pub_submit').click(function (pub) {
-                    pub.preventDefault();
-                    var btnAct = $(this).attr('id');
-                  
-                    pubSwitch('POST', '#pubswitch',
-                            '/adminboard/adminboard_inner/',
-                            btnAct, chkBtn, content, radioField, radio
-                            );
+                         pubSwitch('POST','/adminboard/pub_switcher_inner',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
                 });
+
+                $('input[name="pub_off"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_inner',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                });
+
+                if ($('input[name="pub_on"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_inner',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                }
+
+                if ($('input[name="pub_off"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubSwitch('POST','/adminboard/pub_switcher_inner',
+                                 btnAct, chkBtn, radio, csrf_token
+                                 );
+                     });
+
+                }
+
+
            } else {
 
                 $('#pubswitch_active').css('display', 'none');
                 $('#pubswitch').css('display', 'none');
-           }    
+           }
 
-        });    
+        });
+
+        // PUB MULTIPLE SWITCHER BLOCK
+        $("input[name*=items_chb]").click(function () {
+
+           var chkBtn = $("input[name*=item_chb]").serializeArray()
+
+           var radio = null;
+           var isChecked = 0;
+
+           if (this.checked) {
+
+                isChecked = 1;
+
+                $('#pubswitch_active').css('display', 'block');
+                $('#pubswitch').css('display', 'block');
+                $('input[name="pub_off"]').attr( "checked", true );
+                $('input[name="pub_on"]').attr( "checked", false );
+
+                $('input[name="pub_on"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_inner',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                });
+
+                $('input[name="pub_off"]').click(function () {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_inner',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                });
+
+                if ($('input[name="pub_on"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_off"]').attr( "checked", false );
+                    radio = $(this).val();
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_inner',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                }
+
+                if ($('input[name="pub_off"]').is(':checked')) {
+                    $(this).attr( "checked", true );
+                    $('input[name="pub_on"]').attr( "checked", false );
+                    radio = 0;
+
+                     $('#pub_submit').click(function (pub) {
+                         pub.preventDefault();
+                         var btnAct = $(this).attr('id');
+                         var csrf_token = $('input[name="csrf_token"]').val();
+
+                         pubMultSwitch('POST','/adminboard/pub_switcher_inner',
+                                        btnAct, chkBtn, radio, csrf_token
+                                      );
+                     });
+
+                }
+
+
+           } else {
+
+                $('#pubswitch_active').css('display', 'none');
+                $('#pubswitch').css('display', 'none');
+           }
+
+        });
 
     } else if (currentpage == '/adminboard/adminboard_category/') {
     

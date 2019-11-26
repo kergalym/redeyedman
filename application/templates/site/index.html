@@ -160,11 +160,13 @@
                                 <div id="content_bottom_a">
                                     <div id="menu-index">
                                         {% for item in menu %}
-                                        <a href="inner/{{ item.id }}"><h2 class="line" style="text-align: center;">{{ item.article_title }}</h2></a>
+                                            {% if item.published == 1 %}
+                                                <a href="inner/{{ item.id }}"><h2 class="line" style="text-align: center;">{{ item.article_title }}</h2></a>
 
-                                        {{ item.article_text|ctxt|safe }}
+                                                {{ item.article_text|ctxt|safe }}
 
-                                        <a class="readmore-button" href="inner/{{ item.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                <a class="readmore-button" href="inner/{{ item.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                            {% endif %}
 
                                         {% endfor %}
                                     </div>
@@ -185,13 +187,18 @@
 
                                         {% for content in contents %}
 
-                                        <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
+                                            {% if content.published == 1 %}
 
-                                            <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
+                                                <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
 
-                                        </video>
+                                                    <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
 
-                                        <span id="player1-mode"></span>
+                                                </video>
+
+                                                <span id="player1-mode"></span>
+
+                                            {% endif %}
+
                                         {% endfor %}
                                         {% endblock %}
                                     </div>
@@ -199,13 +206,18 @@
                                     <div id="content-container">
 
                                         {% for article in articles_loop %}
-                                        <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a></a>
 
-                                        {{ article.article_text | safe }}
+                                            {% if article.published == 1 %}
 
-                                        <a class="readmore-button" href="inner/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a></a>
 
-                                        {% endfor %}	
+                                                {{ article.article_text | safe }}
+
+                                            <a class="readmore-button" href="inner/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                            {% endif %}
+
+                                        {% endfor %}
 
                                     </div>
 
@@ -230,11 +242,15 @@
 
                                     {% for game in c_games %}
 
-                                    <h2 class="line" style="text-align: left;"> {{ game.article_title | safe }} </h2>
+                                        {% if game.published == 1 %}
 
-                                    <div id="column-text">{{ game.article_text | ctxt | safe  + "..."}}</div>
+                                            <h2 class="line" style="text-align: left;"> {{ game.article_title | safe }} </h2>
 
-                                    <a class="readmore-button-alt" href="inner/{{ game.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                            <div id="column-text">{{ game.article_text | ctxt | safe  + "..."}}</div>
+
+                                            <a class="readmore-button-alt" href="inner/{{ game.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                        {% endif%}
 
                                     {% endfor %}       
 
@@ -244,11 +260,15 @@
                                 <div class="col-sm-4">
                                     {% for howto in c_howto %}
 
-                                    <h2 class="line" style="text-align: left;"> {{ howto.article_title | safe }} </h2>
+                                        {% if howto.published == 1 %}
 
-                                    <div id="column-text">{{ howto.article_text | ctxt | safe  + "..."}}</div>
+                                            <h2 class="line" style="text-align: left;"> {{ howto.article_title | safe }} </h2>
 
-                                    <a class="readmore-button-alt" href="inner/{{ howto.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                            <div id="column-text">{{ howto.article_text | ctxt | safe  + "..."}}</div>
+
+                                            <a class="readmore-button-alt" href="inner/{{ howto.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                        {% endif %}
 
                                     {% endfor %}      
 
@@ -256,11 +276,16 @@
 
                                 <div class="col-sm-4">
                                     {% for misc in c_misc %}
-                                    <h2 class="line" style="text-align: left;"> {{ misc.article_title | safe }} </h2>
 
-                                    <div id="column-text">{{ misc.article_text | ctxt | safe  + "..."}}</div>
+                                        {% if misc.published == 1 %}
 
-                                    <a class="readmore-button-alt" href="inner/{{ misc.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                            <h2 class="line" style="text-align: left;"> {{ misc.article_title | safe }} </h2>
+
+                                            <div id="column-text">{{ misc.article_text | ctxt | safe  + "..."}}</div>
+
+                                            <a class="readmore-button-alt" href="inner/{{ misc.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                        {% endif %}
 
                                     {% endfor %}     
 

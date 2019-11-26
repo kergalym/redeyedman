@@ -94,15 +94,19 @@
 
                                             {% for search in s_menus %}
 
+                                                {% if search.published == 1 %}
+
                                                 <h2 class="line" style="text-align: center;"><a class="line" style="text-align: left;" href="/inner/{{ search.id }}"> {{ search.id }} . {{ search.article_title }}</a></h2>
 
                                                     {{ search.article_text | ctxt | safe }}
+
+                                                {% endif %}
 
                                         {% endfor %}
 
                                             {% else %}
 
-                                                <img src="/static/images/korlan/404.jpg">
+                                                <img src="/static/images/korlan/404.jpg"/>
 
                                             {% endif %}
 
@@ -110,11 +114,15 @@
                                     <div id="content_bottom_a">
                                          <div id="menu">
                                              {% for menu in menus %}
-                                             <h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2>
 
-                                             {{ menu.article_text | ctxt | safe }}
+                                                {% if menu.published == 1 %}
+                                                    <h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2>
 
-                                             <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                    {{ menu.article_text | ctxt | safe }}
+
+                                                    <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                                {% endif %}
 
                                              {% endfor %}
                                          </div>
@@ -135,26 +143,36 @@
 
                                         {% for content in contents %}
 
-                                        <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
+                                        {% if content.published == 1 %}
 
-                                            <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
+                                            <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
 
-                                        </video>
+                                                <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
 
-                                        <span id="player1-mode"></span>
+                                            </video>
+
+                                            <span id="player1-mode"></span>
+
+                                        {% endif %}
+
                                         {%endfor%}
-                                        {% endblock %}
                                     </div>
+
+                                {% endblock %}
 
                                     <div id="content-container">
 
                                         {% for article in articles_loop %}
+
+                                            {% if article.published == 1 %}
 
                                                 <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a>
 
                                                 {{ article.article_text | safe }}
 
                                                 <a class="readmore-button" href="/imenu/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                            {% endif %}
 
                                         {% endfor %}	
 

@@ -91,6 +91,7 @@ from application.views import viewdash_main_update
 from application.views import viewdash_inner_update
 from application.views import viewdash_media_update
 from application.views import viewdash_media_gfx_converter_update
+from application.views import viewdash_pub
 from application.views import viewdash_category_update
 from application.views import viewdash_users_update
 from application.views import viewdash_filemanager_update
