@@ -134,7 +134,8 @@ def update_dashboard_inner():
                                title=data.content_title,
                                author=data.content_author,
                                category=data.content_category,
-                               date=data.content_date
+                               date=data.content_date,
+                               published=data.published
                                )
             else:
                 return redirect(url_for('show_dashboard_inner'))

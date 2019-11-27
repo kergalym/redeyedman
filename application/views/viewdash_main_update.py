@@ -135,7 +135,8 @@ def update_dashboard_main():
                                title=data.article_title,
                                author=data.article_author,
                                category=data.article_category,
-                               date=data.article_date
+                               date=data.article_date,
+                               published=data.published
                                )
             else:
                 return redirect(url_for('show_dashboard_main'))
