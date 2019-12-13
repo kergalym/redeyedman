@@ -112,6 +112,7 @@ class Paginator(Base):
             return "{} is not a list".format(self.class_name)
         pagination = Pagination(page=self.pages, total=totalrecords,
                                 per_page=self.per_page,
+                                alignment="center",
                                 css_framework='bootstrap')
         return pagination
 

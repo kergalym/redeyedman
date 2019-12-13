@@ -21,6 +21,7 @@ from wtforms.validators import DataRequired
 
 
 class ContentpageAddForm(Form):
+    id = TextField('id', validators=[DataRequired()])
     content_title = TextField('content_title', validators=[DataRequired()])
     content_author = TextField('content_author', validators=[DataRequired()])
     content_category = TextField('content_category', validators=[DataRequired()])

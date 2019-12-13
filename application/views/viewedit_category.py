@@ -58,14 +58,12 @@ def show_editpage_category():
 def add_editpage_category():
     form = categorypageform.CategorypageAddForm()
     author = g.user
-    iid = None
     if (request.method == 'POST'
             and request.form['save']
             and author is not None
             and form.validate_on_submit()):
         rows = sql.session.query(Categories).count()
-        if type(rows) == int:
-            iid = rows + 1
+        iid = rows + 1
         category_title = request.form['category_title']
         category_author = request.form['category_author']
         category_date = request.form['category_date']
@@ -75,12 +73,12 @@ def add_editpage_category():
         sql.session.add(categories)
         try:
             sql.session.commit()
-            flash("Category is added", 'info')
+            flash("Category {}: {} is added".format(iid, category_title), 'info')
         except exc.IntegrityError:
-            flash("Category {} is exist".format(category_title), 'error')
+            flash("Category {}: {} is exist".format(iid, category_title), 'error')
         return redirect(url_for('show_dashboard_category'))
     else:
-        flash("Category is not added", 'error')
+        flash("Category desc is empty", 'error')
         return redirect(url_for('show_dashboard_category'))
     return render_template('adminboard/editpage_category.html',
                            form=form

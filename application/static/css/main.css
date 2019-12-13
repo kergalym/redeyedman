@@ -390,9 +390,9 @@ a {
     }
 }
 
-@media only screen and (max-width : 480px) and (orientation : portrait) {
+@media only screen and (min-width : 480px) and (orientation : portrait) {
     .nav_menu {
-        width: 45%;
+        width: 40%;
     }
 }
 
@@ -1451,7 +1451,7 @@ and (min-width : 1200px) {
     .search{
         float: right;
         height: 35px;
-        margin-top: -7%;
+        margin-top: -5%;
         margin-left: 30%;
         /*width: auto;*/
     }

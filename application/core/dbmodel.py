@@ -81,14 +81,14 @@ class Content(sql.Model):
 
     def __init__(
                 self, id, content_title, content_author, content_category,
-                content_date, content_text):
+                content_date, content_text, published):
         self.id = id                     
         self.content_title = content_title
         self.content_author = content_author
         self.content_category = content_category
         self.content_date = content_date
         self.content_text = content_text
-        self.published = sql.Column(Integer, nullable=False)
+        self.published = published
 
     def __repr__(self):
         return '<Content(id={id}, \

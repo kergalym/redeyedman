@@ -20,6 +20,7 @@ from wtforms.validators import DataRequired
 
 
 class CategorypageAddForm(Form):
+    id = TextField('id', validators=[DataRequired()])
     category_title = TextField('category_title', validators=[DataRequired()])
     category_author = TextField('category_author', validators=[DataRequired()])
     category_date = TextField('category_date', validators=[DataRequired()])

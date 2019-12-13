@@ -61,13 +61,11 @@ def show_editpage():
 def add_editpage():
     form = editpageform.EditpageAddForm()
     author = g.user
-    iid = None
+    published = 0
     if (request.method == 'POST'
             and author is not None
             and form.validate_on_submit()):
-        rows = sql.session.query(Articles).count()
-        if type(rows) == int:
-            iid = rows + 1
+        iid = request.form['id']
         article_title = request.form['article_title']
         article_author = request.form['article_author']
         article_category = request.form['article_category']
@@ -76,16 +74,17 @@ def add_editpage():
         article_text = request.form['article_text']
         articles = Articles(iid, article_title, article_author,
                             article_category, article_date,
-                            article_mod_date, article_text)
+                            article_mod_date, article_text,
+                            published)
         sql.session.add(articles)
         try:
             sql.session.commit()
-            flash("Article is added", 'info')
+            flash("Article {}: {} is added".format(iid, article_title), 'info')
         except exc.IntegrityError:
-            flash("Article {} is exist".format(article_title), 'error')
+            flash("Article {}: {} is exist".format(iid, article_title), 'error')
         return redirect(url_for('show_dashboard_main'))
     else:
-        flash("Article is not added", 'error')
+        flash("Article text is empty", 'error')
         return redirect(url_for('show_dashboard_main'))
 
     return render_template('adminboard/editpage.html',
