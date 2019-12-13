@@ -37,7 +37,7 @@ class DashboardCddirForm(Form):
 
 class DashboardUploadForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
-    # f_upload = BooleanField('f_upload')
+    f_upload = BooleanField('f_upload')
     # upload = SubmitField('upload')
 
 

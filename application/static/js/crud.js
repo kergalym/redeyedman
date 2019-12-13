@@ -65,6 +65,7 @@ function ajaxPost(query_type, urlname, actBtn, csrf_token, form) {
              var delid = 'delid=' + delid + '&';
              var csrf_token = 'csrf_token=' + csrf_token + '&';
              var formID = form + actBtn + csrf_token;
+             console.log(formID);
              $.ajax({
                  type: query_type,
                  url: urlname,
@@ -261,6 +262,7 @@ function formElemIdentify(urlname, event) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
                         form = i_str + d_str;
+                        console.log(form);
                         ajaxPost('POST', urlname, actBtn, csrf_token, form);
                     }
                 });

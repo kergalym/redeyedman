@@ -122,8 +122,10 @@ def update_dashboard_media():
 
         elif (form_mkdir.mkdir.data
               and form_mkdir.validate_on_submit()):
-
-            get_root_dirname = "{}{}".format(app.root_path, form_mkdir.addressbar.data)
+            addressbar = form_mkdir.addressbar.data
+            if addressbar.endswith("/") is False:
+                addressbar = "{}/".format(addressbar)
+            get_root_dirname = "{}{}".format(app.root_path, addressbar)
             newdirname = form_mkdir.newdirname.data
 
             if exists(get_root_dirname) is True:
