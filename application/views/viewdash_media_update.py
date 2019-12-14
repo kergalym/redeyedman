@@ -50,52 +50,53 @@ def update_dashboard_media():
         file = request.files.get('f_upload')
 
         # when working in upload context check if unwanted buttons are not pressed
-        if (file.filename == ''
-                and form_cddir.cddir.data is False
-                and form_mkdir.mkdir.data is False
-                and form_files.rename.data is False
-                and form_files.delete.data is False
-                and form_upload.validate_on_submit()):
-            flash("No item selected", 'error')
-            return redirect(url_for('show_dashboard_media'))
-
-        # check if the post request has the file part
-        elif 'f_upload' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-
-        # when working in upload context check if unwanted buttons are not pressed
-        elif (file.filename
-              and form_cddir.cddir.data is False
-              and form_mkdir.mkdir.data is False
-              and form_files.rename.data is False
-              and form_files.delete.data is False
-              and form_upload.validate_on_submit()):
-
-            get_path = str(form_files.addressbar.data)
-
-            # if no slash at the end of path
-            if get_path.endswith("/") is False:
-                get_path = "{}/".format(get_path)
-
-            # when working in upload context check if unwanted buttons are not pressed
-            if (file.filename
+        if file:
+            if (file.filename == ''
                     and form_cddir.cddir.data is False
                     and form_mkdir.mkdir.data is False
-                    and form_files.rename.data is False
-                    and form_files.delete.data is False
-                    and fileserving.allowed_file(file.filename)
-                    and exists("{}{}".format(app.root_path,
-                                             get_path))):
-                filename = secure_filename(file.filename)
-                fpath = "{}{}{}".format(app.root_path, get_path, filename)
-                if filename and exists(fpath) is False:
-                    file.save(fpath)
-                    flash("{} is uploaded".format(filename), 'info')
-                elif exists(fpath):
-                    flash("{} is exists".format(filename), 'error')
-                else:
-                    flash("{} is not uploaded".format(filename), 'error')
+                    and form_files.f_rename.data is False
+                    and form_files.f_delete.data is False
+                    and form_upload.validate_on_submit()):
+                flash("No item selected", 'error')
+                return redirect(url_for('show_dashboard_media'))
+
+            # check if the post request has the file part
+            elif 'f_upload' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+
+            # when working in upload context check if unwanted buttons are not pressed
+            elif (file.filename
+                  and form_cddir.cddir.data is False
+                  and form_mkdir.mkdir.data is False
+                  and form_files.f_rename.data is False
+                  and form_files.f_delete.data is False
+                  and form_upload.validate_on_submit()):
+
+                get_path = str(form_files.addressbar.data)
+
+                # if no slash at the end of path
+                if get_path.endswith("/") is False:
+                    get_path = "{}/".format(get_path)
+
+                # when working in upload context check if unwanted buttons are not pressed
+                if (file.filename
+                        and form_cddir.cddir.data is False
+                        and form_mkdir.mkdir.data is False
+                        and form_files.f_rename.data is False
+                        and form_files.f_delete.data is False
+                        and fileserving.allowed_file(file.filename)
+                        and exists("{}{}".format(app.root_path,
+                                                 get_path))):
+                    filename = secure_filename(file.filename)
+                    fpath = "{}{}{}".format(app.root_path, get_path, filename)
+                    if filename and exists(fpath) is False:
+                        file.save(fpath)
+                        flash("{} is uploaded".format(filename), 'info')
+                    elif exists(fpath):
+                        flash("{} is exists".format(filename), 'error')
+                    else:
+                        flash("{} is not uploaded".format(filename), 'error')
 
             return redirect(url_for('show_dashboard_media'))
 
@@ -142,7 +143,7 @@ def update_dashboard_media():
             flash("No item selected", 'error')
             return redirect(url_for('show_dashboard_media'))
 
-        elif (form_files.rename.data
+        elif (form_files.f_rename.data
               and form_files.validate_on_submit()):
 
             if (len(request.form.getlist('item_chb')) == 1
@@ -169,13 +170,13 @@ def update_dashboard_media():
                 else:
                     flash("{} is not renamed to {}".format(request.form.get('item_chb'),
                                                            form_files.delid.data), 'error')
-                return redirect(url_for('show_dashboard_media'))
+            return redirect(url_for('show_dashboard_media'))
 
-        elif form_files.rename.data is True and form_files.validate_on_submit() is False:
+        elif form_files.f_rename.data is True and form_files.validate_on_submit() is False:
             flash("No item selected", 'error')
             return redirect(url_for('show_dashboard_media'))
 
-        elif (form_files.delete.data
+        elif (form_files.f_delete.data
               and form_files.validate_on_submit()):
 
             if (len(request.form.getlist('item_chb')) == 1
@@ -195,9 +196,9 @@ def update_dashboard_media():
                     flash("{} is deleted".format(request.form['item_chb']), 'info')
                 else:
                     flash("{} was not deleted".format(request.form['item_chb']), 'error')
-                return redirect(url_for('show_dashboard_media'))
+            return redirect(url_for('show_dashboard_media'))
 
-        elif form_files.delete.data is True and form_files.validate_on_submit() is False:
+        elif form_files.f_delete.data is True and form_files.validate_on_submit() is False:
             flash("No item selected", 'error')
             return redirect(url_for('show_dashboard_media'))
 

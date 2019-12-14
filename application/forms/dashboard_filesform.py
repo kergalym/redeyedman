@@ -38,16 +38,16 @@ class DashboardCddirForm(Form):
 class DashboardUploadForm(Form):
     addressbar = TextField('addressbar', validators=[DataRequired()])
     f_upload = BooleanField('f_upload')
-    # upload = SubmitField('upload')
 
 
 class DashboardFilesForm(Form):
+    f_upload = BooleanField('f_upload')
     addressbar = TextField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
     delid = TextField('delid', validators=[DataRequired()])
 
-    rename = SubmitField('rename')
-    delete = SubmitField('delete')
+    f_rename = SubmitField('f_rename')
+    f_delete = SubmitField('f_delete')
 
 
 class GfxConvForm(Form):

@@ -80,8 +80,8 @@
 								<li><input type="submit" name="upload" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
 								<li><input type="submit" name="cddir" value="Перейти в каталог" class="button"  id="cd-submit" enabled=""/></li>		
 								<li><input type="submit" name="mkdir" value="Создать каталог" class="button" id="mkdir-submit" enabled=""/></li>		
-								<li><input type="submit" name="rename" value="Переименовать файл" class="button" id="rename" enabled=""/></li>
-								<li><input type="submit" name="delete" value="Удалить файл" class="button" enabled=""/></li>
+								<li><input type="submit" name="f_rename" value="Переименовать файл" class="button" id="f_rename" enabled=""/></li>
+								<li><input type="submit" name="f_delete" value="Удалить файл" class="button" id="f_delete" enabled=""/></li>
 								<li><a class="button" enabled="" href="{{ url_for('show_dashboard_main') }}">Материалы</a></li>
 
 						</ul>
@@ -171,7 +171,7 @@
         <script type="text/javascript">
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>        
-        <script type="text/javascript" src="../../static/js/crud.js"></script>       
+        <script type="text/javascript" src="../../static/js/crud.js"></script>
         <script type="text/javascript" src="../../static/js/modalpict_adm.js"></script>
     </body>
 </html>

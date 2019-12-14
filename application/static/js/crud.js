@@ -17,41 +17,6 @@
  */
 
 
-function ajaxFiles(query_type, attach, urlname) {
-
-
-         if (attach != null
-             && query_type != null
-             && urlname != null) {
-
-	         var form = $(attach)[0];
-             var formID = new FormData(form);
-
-            $.ajax({
-                type: query_type,
-                url: urlname,
-                data: formID,
-                contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-                processData: false, // NEEDED, DON'T OMIT THIS
-                beforeSend: function() {
-                    var percent = '0%';
-                    $('.warn_msg').width(percent);
-                    $('.warn_msg').css({"display": "block", "background-color": "#4F6988"})
-                    $('.warn_msg').html(percent);
-                },
-                uploadProgress: function(event, position, total, percentComplete) {
-                    var percent = percentComplete + '%';
-                    $('.warn_msg').width(percent);
-                    $('.warn_msg').html(percent);
-                },
-                complete: function (data) {
-                         $('body').html(data.responseText);
-                }
-
-            })
-        }
-}
-
 function ajaxPost(query_type, urlname, actBtn, csrf_token, form) {
 
          if (urlname != null
@@ -65,7 +30,7 @@ function ajaxPost(query_type, urlname, actBtn, csrf_token, form) {
              var delid = 'delid=' + delid + '&';
              var csrf_token = 'csrf_token=' + csrf_token + '&';
              var formID = form + actBtn + csrf_token;
-             console.log(formID);
+
              $.ajax({
                  type: query_type,
                  url: urlname,
@@ -224,12 +189,21 @@ function formElemIdentify(urlname, event) {
                 actBtn = $(event).attr('id');
             }
 
+            if ($(event).attr('id') === 'f_rename') {
+                actBtn = $(event).attr('id');
+            }
+
+            if ($(event).attr('id') === 'f_delete') {
+                actBtn = $(event).attr('id');
+            }
+
             if ($(event).attr('id') === 'user_submit') {
                 actBtn = $(event).attr('id');
                 var csrf_token = $('input[name="csrf_token"]').attr('value');
                 addUser('POST', '#adduser', '/adminboard/useradd', actBtn, csrf_token);
             }
 
+            var f_upload = $('input[name="f_upload"]').val()
             var addressBar = $('input[name="addressbar"]').attr('value');
             var csrf_token = $('input[name="csrf_token"]').attr('value');
 
@@ -261,8 +235,10 @@ function formElemIdentify(urlname, event) {
                     if (d_num === i_num) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
-                        form = i_str + d_str + 'addressbar=' + addressBar + '&';
-                        console.log(form);
+                        form = i_str + d_str;
+                        if (actBtn === 'f_rename' || 'f_delete') {
+                            form = i_str + d_str + 'addressbar=' + addressBar + '&' + 'f-upload=' + f_upload + '&';
+                        }
                         ajaxPost('POST', urlname, actBtn, csrf_token, form);
                     }
                 });
@@ -299,12 +275,6 @@ function formElemIdentify(urlname, event) {
                        }
 
                    });
-
-                   var zip = (ch, d) => ch.map((x,i) => [x,d[i]]);
-                   // for a, b in zip(list1, list2):
-                   for (let [ch, d] of zip(ch_array, d_array))
-                   //     print(a + b)
-                        console.log(d + ' : ' + ch);
 
                 }
 
@@ -756,14 +726,14 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_media/') {
 
         // ADMINBOARD FILE CRUD BLOCK
-        $('#rename').click(function (rev) {
+        $('#f_rename').click(function (rev) {
             if ($('input[name=item_chb]:checked').length === 1) {
                 rev.preventDefault();
                 formElemIdentify(currentpage, this);
             }
         });
 
-        $('#delete').click(function (dev) {
+        $('#f_delete').click(function (dev) {
             if ($('input[name=item_chb]:checked').length === 1) {
                 dev.preventDefault();
                 formElemIdentify(currentpage, this);
@@ -852,14 +822,14 @@ $(document).ready(function () {
     } else if (currentpage == '/adminboard/adminboard_filemanager/') {
 
         // ADMINBOARD FILE CRUD BLOCK
-        $('#rename').click(function (rev) {
+        $('#f_rename').click(function (rev) {
             if ($('input[name=item_chb]:checked').length === 1) {
                 rev.preventDefault();
                 formElemIdentify(currentpage, this);
             }
         });
 
-        $('#delete').click(function (dev) {
+        $('#f_delete').click(function (dev) {
             if ($('input[name=item_chb]:checked').length === 1) {
                 dev.preventDefault();
                 formElemIdentify(currentpage, this);
