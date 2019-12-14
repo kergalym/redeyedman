@@ -548,6 +548,10 @@ a:active, a:hover {
     padding: 5%;
 }
 
+.pagination .disabled {
+	margin-right: 20% !important;
+}
+
 .pagination ul {
     display: flex !important;
     list-style-type: none;
