@@ -13,7 +13,7 @@ function startProgress()
 
     // update progress bar
     setInterval(function () {
-        $('#backup').width(progress);
+        $('#backup').html(progress + '% is done');
         progress++;
     }, 5);
 }
