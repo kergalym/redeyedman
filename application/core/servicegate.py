@@ -52,7 +52,9 @@ class Backup:
                 tar.add(self.site_parent_path)
             return "Backup is created: {}".format(self.file_output)
         else:
-            return ("No correct data for export the database or destination/site parent path isn't exist.\n"
-                    "Backup Path: {}\n".format(self.backup_path),
-                    "Backup Path Access: {}\n".format(os.access(self.backup_path, os.W_OK)),
-                    "Please, contact to administrator \n")
+            msg = "No correct data for export the database or destination/site parent path isn't exist.\n" \
+                  "Backup Path: {}\n" \
+                  "Backup Path Access: {}\n" \
+                  "Please, contact to administrator \n".format(self.backup_path,
+                                                               os.access(self.backup_path, os.W_OK))
+            return msg
