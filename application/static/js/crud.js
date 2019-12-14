@@ -261,7 +261,7 @@ function formElemIdentify(urlname, event) {
                     if (d_num === i_num) {
                         i_str = 'item_chb=' + i_str + '&';
                         d_str = 'delid=' + v.value + '&';
-                        form = i_str + d_str;
+                        form = i_str + d_str + 'addressbar=' + addressBar + '&';
                         console.log(form);
                         ajaxPost('POST', urlname, actBtn, csrf_token, form);
                     }

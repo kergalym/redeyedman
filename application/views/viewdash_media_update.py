@@ -91,11 +91,11 @@ def update_dashboard_media():
                 fpath = "{}{}{}".format(app.root_path, get_path, filename)
                 if filename and exists(fpath) is False:
                     file.save(fpath)
-                    flash("{}{} is uploaded".format(get_path, filename), 'info')
+                    flash("{} is uploaded".format(filename), 'info')
                 elif exists(fpath):
-                    flash("{}{} is exists".format(get_path, filename), 'error')
+                    flash("{} is exists".format(filename), 'error')
                 else:
-                    flash("{}{} is not uploaded".format(get_path, filename), 'error')
+                    flash("{} is not uploaded".format(filename), 'error')
 
             return redirect(url_for('show_dashboard_media'))
 
@@ -164,12 +164,12 @@ def update_dashboard_media():
 
                 if exists(old_object):
                     fileserving.rename_file_dir(old_object, new_object)
-                    flash("{} is renamed to {}".format(old_object,
-                                                       new_object), 'info')
+                    flash("{} is renamed to {}".format(request.form.get('item_chb'),
+                                                       form_files.delid.data), 'info')
                 else:
-                    flash("{} is not renamed to {}".format(old_object,
-                                                           new_object), 'error')
-            return redirect(url_for('show_dashboard_media'))
+                    flash("{} is not renamed to {}".format(request.form.get('item_chb'),
+                                                           form_files.delid.data), 'error')
+                return redirect(url_for('show_dashboard_media'))
 
         elif form_files.rename.data is True and form_files.validate_on_submit() is False:
             flash("No item selected", 'error')
@@ -192,9 +192,9 @@ def update_dashboard_media():
                                              request.form['item_chb'])
                 if exists(get_object):
                     fileserving.del_file_dir(get_object)
-                    flash("{} is deleted".format(get_object), 'info')
+                    flash("{} is deleted".format(request.form['item_chb']), 'info')
                 else:
-                    flash("{} was not deleted".format(get_object), 'error')
+                    flash("{} was not deleted".format(request.form['item_chb']), 'error')
                 return redirect(url_for('show_dashboard_media'))
 
         elif form_files.delete.data is True and form_files.validate_on_submit() is False:
