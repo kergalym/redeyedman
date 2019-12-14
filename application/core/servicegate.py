@@ -36,12 +36,6 @@ class Backup:
         self.file_output = "{}-{}.tar.gz".format(app.config['DBNAME'],
                                                  str(self.instance.altertime()))
 
-    def exclude(self, filename):
-        if filename == self.file_output:
-            return True
-        else:
-            return False
-
     def db_backup(self):
         if (os.path.isdir(self.backup_path)
                 and os.access(self.backup_path, os.W_OK)
@@ -55,7 +49,7 @@ class Backup:
 
             with tarfile.open("{}{}".format(self.backup_path, self.file_output),
                               "w:gz") as tar:
-                tar.add(self.site_parent_path, exclude=self.exclude)
+                tar.add(self.site_parent_path)
             return "Backup is created: {}".format(self.file_output)
         else:
             return "No correct data for export the database or destination/site parent path isn't exist. " \
