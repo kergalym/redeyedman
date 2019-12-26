@@ -1445,7 +1445,11 @@ and (min-width : 1200px) {
     .search{
         float: left;
         height: 35px;
-        margin-left: 80px;
+        margin-left: 15%;
+        width: 60%;
+    }
+    #query {
+        margin-right: 2%;
     }
     .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
     	border-color: #101010;

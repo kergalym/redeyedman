@@ -65,7 +65,7 @@ $(document).ready(function() {
             $('#img-minus').css({"color": "white", "width": "40px",
                 "height": "40px", "cursor": "pointer", "margin-left": "92%"});
 
-            if(window.matchMedia('(max-width: 360px)').matches){
+            if(window.matchMedia('(max-width: 544px)').matches){
           		// Define the close button properties
           		$('#img-close').css({"color": "white", "width": "40px",
           		    "height": "40px", "cursor": "pointer", "margin-left": "54%"});
