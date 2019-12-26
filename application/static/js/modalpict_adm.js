@@ -65,6 +65,34 @@ $(document).ready(function() {
     		$('#img-minus').css({"color": "white", "width": "40px",
     		    "height": "40px", "cursor": "pointer", "margin-left": "92%"});
 
+            if(window.matchMedia('(max-width: 360px)').matches){
+          		// Define the close button properties
+          		$('#img-close').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "54%"});
+
+          		// Define the plus button properties
+          		$('#img-plus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "50%", "margin-top": "20%"});
+
+          		// Define the minus button properties
+          		$('#img-minus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "52%"});
+            }
+
+            if(window.matchMedia('(max-width: 768px)').matches){
+          		// Define the close button properties
+          		$('#img-close').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "54%"});
+
+          		// Define the plus button properties
+          		$('#img-plus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "50%", "margin-top": "20%"});
+
+          		// Define the minus button properties
+          		$('#img-minus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin-left": "52%"});
+            }
+
     		// Append an image
     		$('#imgshow').append(reconst_imgurl);
     		$('#img-ovr').css({"overflow": "scroll"})
