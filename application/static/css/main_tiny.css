@@ -23,6 +23,7 @@
         margin-left: 15%;
     }
     #query {
+        width: 50%;
         margin-right: 2%;
     }
     .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
@@ -31,6 +32,10 @@
     }
     #bs-example-navbar-collapse-1 {
 	    width: 60%;
+    }
+    #content_inner img {
+        width: 100% !important;
+        height: 100% !important;
     }
 }
 
@@ -59,5 +64,9 @@
     .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
     	border-color: #101010;
     	background-color: black;
+    }
+    #content_inner img {
+        width: 100% !important;
+        height: 100% !important;
     }
 }
