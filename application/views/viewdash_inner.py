@@ -51,7 +51,7 @@ def show_dashboard_inner():
         contents_loop = sql.session.query(Content).limit(
             (per_page)).offset(
             (pages - 1) * per_page).all()
-        pagination = paginator.paginate(Content, pages, per_page)
+        pagination = paginator.paginate_queries(Content, pages, per_page)
         return render_template('adminboard/adminboard_inner.html',
                                servername=servername,
                                approot=approot[-2],

@@ -18,12 +18,10 @@
 
 from os.path import exists
 from application import app
-from application import session
 from application.core.datalogics import SysInfo
 from application.core.datalogics import Paginator
 from application.core.filemanagement import FileBrowser
 from application.forms import dashboard_filesform
-from flask import session as session
 from flask_login import login_required
 from flask import flash
 from flask import abort
@@ -41,7 +39,7 @@ import os
 # TODO: user privilegies
 def show_dashboard_media():
     browser = FileBrowser()
-    per_page = 9
+    per_page = 10
     pages = request.args.get('page', type=int, default=1)
     paginator = Paginator()
     form = dashboard_filesform.DashboardFilesForm()
@@ -55,7 +53,7 @@ def show_dashboard_media():
     f = None
     get_relpath = None
 
-    if session['login'] != 'admin':
+    if g.user != 'admin':
         flash("You don't have administrator privilegies!", 'error')
         return redirect(url_for('show_dashboard'))
 
@@ -69,20 +67,20 @@ def show_dashboard_media():
             with open("{}/static/get_path.tmp".format(app.root_path), 'r') as f:
                 get_relpath = f.read()
 
-        limit = per_page
-
         if get_relpath == '':
             get_relpath = "/static/images/"
 
         files = browser.show_files(get_relpath)
         offset = ((pages - 1) * per_page)
+        limit = per_page
         if pages == 0 or pages == 1:
             f = files[:limit]
         elif len(files)-offset > offset:
-            f = files[offset:-offset]
+            f = files[limit:]
         elif len(files)-offset < offset:
             f = files[offset:]
-        pagination = paginator.paginate(files, pages, per_page)
+
+        pagination = paginator.paginate_files(files, pages, per_page)
         return render_template('adminboard/adminboard_media.html',
                                servername=servername,
                                approot=approot[-2],

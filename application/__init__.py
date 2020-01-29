@@ -24,7 +24,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_bcrypt import Bcrypt
-from datetime import timedelta
 import sys
 
 # Set encoding to UTF-8 hack
@@ -33,8 +32,8 @@ sys.setdefaultencoding('utf-8')
 
 # Define the app object and load the config from the file
 app = Flask(__name__)
-app.secret_key = 'unique_GtwAhENew8ghtsgWK'
 app.config.from_object('configuration')
+app.secret_key = app.config['SECRET_KEY']
 app.debug = False
 
 # Read database settings from the configuration file
@@ -56,7 +55,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % \
                                         (dbuser, dbpass, dbhost, dbname)
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], pool_size=30, max_overflow=0)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -65,13 +64,12 @@ sql = SQLAlchemy(app)
 # Make session
 session = sessionmaker()
 session.configure(bind=engine)
-sdigit = app.config['SESSIONTIME']
-app.permanent_session_lifetime = timedelta(minutes=sdigit)
 session_timein = app.permanent_session_lifetime
 
 # Debug
 Debug(app)
 toolbar = DebugToolbarExtension(app)
+
 
 # Import views to enable proper routing
 from application.core import dbmodel
@@ -86,7 +84,6 @@ from application.views import viewdash_main
 from application.views import viewdash_inner
 from application.views import viewdash_media
 from application.views import viewdash_category
-from application.views import viewdash_settings
 from application.views import viewdash_users
 from application.views import viewdash_filemanager
 
@@ -94,8 +91,8 @@ from application.views import viewdash_main_update
 from application.views import viewdash_inner_update
 from application.views import viewdash_media_update
 from application.views import viewdash_media_gfx_converter_update
+from application.views import viewdash_pub
 from application.views import viewdash_category_update
-from application.views import viewdash_settings_update
 from application.views import viewdash_users_update
 from application.views import viewdash_filemanager_update
 from application.views import viewdash_forgot_password_update

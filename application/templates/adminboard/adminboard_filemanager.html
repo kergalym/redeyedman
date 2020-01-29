@@ -44,12 +44,12 @@
 						<ul class="minibar-nav">
 							<form class="form_class" method="POST" enctype="multipart/form-data" action="{{ request.path }}">
                                 {{ form.csrf_token }}                                
-								<li> <label class="button f-upload" style="cursor: pointer;">Выбрать файл<input type="file" name="f_upload" value="Обзор" id="f_upload"/></label></li>
-								<li><input type="submit" name="submit" value="Загрузить файлы" class="button" enabled=""/></li>
-								<li><input type="submit" name="cddir" value="Перейти в каталог" class="button" enabled=""/></li>		
-								<li><input type="submit" name="mkdir" value="Создать каталог" class="button" enabled=""/></li>		
-								<li><input type="submit"  id="rename" name="rename" value="Переименовать файл" class="button" enabled=""/></li>
-								<li><input type="submit" id="delete" name="delete" value="Удалить файл" class="button" enabled=""/></li>
+								<li> <label class="button f-upload" style="cursor: pointer;">Выбрать файл<input type="file" name="f_upload" value="Обзор" id="f_upload" multiple /></label></li>
+								<li><input type="submit" name="upload" value="Загрузить файлы" class="button" id="upload_submit" enabled=""/></li>
+								<li><input type="submit" name="cddir" value="Перейти в каталог" class="button"  id="cd-submit" enabled=""/></li>
+								<li><input type="submit" name="mkdir" value="Создать каталог" class="button" id="mkdir-submit" enabled=""/></li>
+								<li><input type="submit" name="f_rename" value="Переименовать файл" class="button" id="f_rename" enabled=""/></li>
+								<li><input type="submit" name="f_delete" value="Удалить файл" class="button" id="f_delete" enabled=""/></li>
 						</ul>
 					</div>
 
@@ -92,7 +92,7 @@
 									<th><i class="fa fa-user" aria-hidden="true"> Пользователь</i></th>
 									<th><i class="fa fa-file-o" aria-hidden="true"> Размер</i></th>
 									<th><i class="fa fa-calendar" aria-hidden="true"> Дата создания</i></th>									
-									<th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i></th>
+									<th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Название</th>
 									<th><input type="checkbox" id='checkbox_all' name='items_chb' value='' /></th>
 								</tr>			  
 							</thead>
@@ -105,7 +105,7 @@
 										<td>{{ file.user }}</td>
 										<td>{{ file.size }}</td>										
 										<td>{{ file.date }}</td>
-										<td><input type='text' id='text' name='delid_{{ file.id }}' value='{{ file.id }}' size='1' ></td>
+										<td><input type='text' id='text' name='delid_{{ file.id }}' value='{{ file.id }}' size='30' ></td>
 										<td><input type="checkbox" id='checkbox'  name='item_chb_{{ file.id }}' value='{{ file.id }}' /></td> 
 									</tr>
 								{% endfor %}

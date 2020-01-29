@@ -51,7 +51,7 @@ def show_dashboard_main():
         articles_loop = sql.session.query(Articles).limit(
             per_page).offset(
             (pages - 1) * per_page).all()
-        pagination = paginator.paginate(Articles, pages, per_page)
+        pagination = paginator.paginate_queries(Articles, pages, per_page)
         return render_template('adminboard/adminboard_main.html',
                                servername=servername,
                                approot=approot[-2],

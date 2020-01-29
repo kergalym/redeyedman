@@ -52,7 +52,7 @@ def show_dashboard_category():
             (per_page)).offset(
             (pages - 1) * per_page).all()
 
-        pagination = paginator.paginate(Categories, pages, per_page)
+        pagination = paginator.paginate_queries(Categories, pages, per_page)
         return render_template('adminboard/adminboard_category.html',
                                servername=servername,
                                approot=approot[-2],

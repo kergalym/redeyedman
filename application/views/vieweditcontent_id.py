@@ -17,67 +17,82 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from application import app
+from application import engine
 from application import sql
+from sqlalchemy import update
 from application.core.dbmodel import Content
 from application.core.dbmodel import Categories
 from application.core.datalogics import SysInfo
 from application.forms import contentpage_idform
+from flask_login import login_required
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import session
 from flask import url_for
-
-#
-#   ARTICLES EDITPAGE ADD
-#
+from flask import g
+from sqlalchemy import exc
 
 
 @app.route('/adminboard/editpage_id_content/<int:id>', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def show_contentpageid(id):
     form = contentpage_idform.ContentpageidForm()
-    editpage_output_loop = Content.query.filter_by(id=id).first()
-    categories_loop = Categories.query.all()
+    editpage_output_loop = sql.session.query(Content).filter_by(id=id).first()
+    categories_loop = sql.session.query(Categories).all()
     instance = SysInfo()
-    atime = instance.altertime() 
-    author = session['login']
-    if editpage_output_loop and categories_loop \
-        and atime and author is not None:
+    atime = instance.altertime()
+    author = g.user
+    if (editpage_output_loop
+            and categories_loop
+            and atime
+            and author is not None):
         return render_template(
-                                'adminboard/editpage_id_content.html', 
-                                author=author, atime=atime, 
-                                editpage_output_loop=editpage_output_loop,
-                                categories_loop=categories_loop,
-                                form=form)
+            'adminboard/editpage_id_content.html',
+            editpage_output_loop=editpage_output_loop,
+            categories_loop=categories_loop,
+            form=form)
     else:
         return redirect(url_for('show_login'))
-    
+
+
 @app.route('/adminboard/editpage_id_content/', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def update_contentpageid():
     error = None
     form = contentpage_idform.ContentpageidForm()
-    author = session['login']
-    if request.method == 'POST' and form.validate_on_submit():
-        if author is not None:
-            content_id = request.form['content_id']                
-            content_title = request.form['content_title']
-            content_author = request.form['content_author']
-            content_category = request.form['content_category']
-            content_date = request.form['content_date']
-            content_text = request.form['content_text']
-            contents = Content(content_id, content_title, content_author, 
-            content_category, content_date, content_text)
-            sql.session.add(contents)
-            sql.session.commit()
-            error = "Content is changed"
-            return redirect(url_for('show_contentpageid', id=request.form['content_id']))
+    instance = SysInfo()
+    author = g.user
+
+    if (request.method == 'POST' and author is not None
+            and request.form['save']):
+        if form.validate_on_submit():
+
+            # we assign record time to this form element
+            # as unicode string to be consistent with other form elements here
+            form.content_date.data = unicode(instance.altertime())
+
+            conn = engine.connect()
+            stmt = update(Content).where(
+                Content.id == form.id.data).values(
+                id=form.id.data,
+                content_title=form.content_title.data,
+                content_author=form.content_author.data,
+                content_category=form.content_category.data,
+                content_date=form.content_date.data,
+                content_text=form.content_text.data
+            )
+
+            try:
+                conn.execute(stmt)
+                flash("Content is changed", 'info')
+            except exc.IntegrityError:
+                flash("Content with same name is exist", 'error')
+            return redirect(url_for('show_contentpageid',
+                                    id=form.id.data))
     else:
-        error = "Content is not changed"
+        flash("Content is not changed", 'error')
         return redirect(url_for('show_contentpageid'))
-    return render_template('adminboard/editpage_id_content.html',  
-                            form=form, error=error
-                            ) 
-                       
+    return render_template('adminboard/editpage_id_content.html',
+                           form=form, error=error
+                           )

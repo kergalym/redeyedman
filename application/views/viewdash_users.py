@@ -53,7 +53,7 @@ def show_dashboard_users():
             (per_page)).offset(
             (pages - 1) * per_page).all()
 
-        pagination = paginator.paginate(Users, pages, per_page)
+        pagination = paginator.paginate_queries(Users, pages, per_page)
         return render_template('adminboard/adminboard_users.html',
                                servername=servername,
                                approot=approot[-2],

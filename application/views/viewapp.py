@@ -48,13 +48,18 @@ def show_index():
 
     app.jinja_env.filters['ctxt'] = dlogics.textcutn
 
-    pagination = paginator.paginate(Articles, pages, per_page)
+    pagination = paginator.paginate_queries(Articles, pages, per_page)
 
     if request.method == 'POST' and form.validate_on_submit():
 
         s_menus = sql.session.query(Articles).filter(Articles.article_text.like(
             "%{}%".format(form.query.data))).limit(search_limit).offset(
             (pages - 1) * search_limit).all()
+
+        if form.query.data not in s_menus:
+            s_menus = sql.session.query(Articles).filter(Articles.article_title.like(
+                "%{}%".format(form.query.data))).limit(search_limit).offset(
+                (pages - 1) * search_limit).all()
 
         return render_template('site/inner_search.html',
                                articles_loop=articles_loop, contents=contents,
@@ -72,6 +77,8 @@ def show_index():
 
 @app.route('/inner/', defaults={'id': 1})
 @app.route('/inner/<int:id>', methods=['GET', 'POST'])
+@app.route('/imenu/', defaults={'id': 1})
+@app.route('/imenu/<int:id>', methods=['GET', 'POST'])
 def show_inner(id):
     per_page = 7
     search_limit = 4
@@ -91,13 +98,18 @@ def show_inner(id):
 
     app.jinja_env.filters['ctxt'] = dlogics.textcutn
 
-    pagination = paginator.paginate(Articles, pages, per_page)
+    pagination = paginator.paginate_queries(Articles, pages, per_page)
 
     if request.method == 'POST' and form.validate_on_submit():
 
         s_menus = sql.session.query(Articles).filter(Articles.article_text.like(
             "%{}%".format(form.query.data))).limit(search_limit).offset(
             (pages - 1) * search_limit).all()
+
+        if form.query.data not in s_menus:
+            s_menus = sql.session.query(Articles).filter(Articles.article_title.like(
+                "%{}%".format(form.query.data))).limit(search_limit).offset(
+                (pages - 1) * search_limit).all()
 
         return render_template('site/inner_search.html',
                                articles_loop=articles_loop, contents=contents,
@@ -131,7 +143,7 @@ def show_inner_search():
 
     app.jinja_env.filters['ctxt'] = dlogics.textcutn
 
-    pagination = paginator.paginate(Articles, pages, per_page)
+    pagination = paginator.paginate_queries(Articles, pages, per_page)
 
     if request.method == 'POST' and form.validate_on_submit():
 

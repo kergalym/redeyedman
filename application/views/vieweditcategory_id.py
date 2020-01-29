@@ -17,36 +17,35 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from application import app
+from application import engine
 from application import sql
+from sqlalchemy import update
 from application.core.dbmodel import Categories
 from application.core.datalogics import SysInfo
 from application.forms import categorypage_idform
+from flask_login import login_required
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import session
 from flask import url_for
-
-
-#
-#   ARTICLES EDITPAGE ADD
-#
+from flask import g
+from sqlalchemy import exc
 
 
 @app.route('/adminboard/editpage_id_category/<int:id>', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def show_categorypageid(id):
     form = categorypage_idform.CategorypageidForm()
-    editpage_output_loop = Categories.query.filter_by(id=id).first()
+    editpage_output_loop = sql.session.query(Categories).filter_by(id=id).first()
     instance = SysInfo()
     atime = instance.altertime()
-    author = session['login']
-    if editpage_output_loop \
-            and atime and author is not None:
+    author = g.user
+    if (editpage_output_loop
+            and atime
+            and author is not None):
         return render_template(
             'adminboard/editpage_id_category.html',
-            author=author, atime=atime,
             editpage_output_loop=editpage_output_loop,
             form=form)
     else:
@@ -54,26 +53,43 @@ def show_categorypageid(id):
 
 
 @app.route('/adminboard/editpage_id_category/', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def update_categorypageid():
     error = None
     form = categorypage_idform.CategorypageidForm()
-    author = session['login']
-    if request.method == 'POST' and form.validate_on_submit():
-        if author is not None:
-            category_id = request.form['category_id']
-            category_title = request.form['category_title']
-            category_author = request.form['category_author']
-            category_date = request.form['category_date']
-            category_desc = request.form['category_desc']
-            categories = Categories(category_id, category_title,
-                                    category_author, category_date, category_desc)
-            sql.session.add(categories)
-            sql.session.commit()
-            error = "Category is changed"
-            return redirect(url_for('show_categorypageid', category_id=request.form['category_id']))
+    instance = SysInfo()
+    author = g.user
+
+    if (request.method == 'POST' and author is not None
+            and request.form['save']):
+        if form.validate_on_submit():
+
+            # if author field is suddenly empty
+            form.category_author.data = unicode(author)
+
+            # we assign record time to this form element
+            # as unicode string to be consistent with other form elements here
+            form.category_date.data = unicode(instance.altertime())
+
+            conn = engine.connect()
+            stmt = update(Categories).where(
+                Categories.id == form.id.data).values(
+                id=form.id.data,
+                category_title=form.category_title.data,
+                category_author=form.category_author.data,
+                category_date=form.category_date.data,
+                category_desc=form.category_desc.data
+            )
+
+            try:
+                conn.execute(stmt)
+                flash("Category is changed", 'info')
+            except exc.IntegrityError:
+                flash("Category with same name is exist", 'error')
+            return redirect(url_for('show_categorypageid',
+                                    id=form.id.data))
     else:
-        error = "Category is not changed"
+        flash("Category is not changed", 'error')
         return redirect(url_for('show_categorypageid'))
     return render_template('adminboard/editpage_id_category.html',
                            form=form, error=error

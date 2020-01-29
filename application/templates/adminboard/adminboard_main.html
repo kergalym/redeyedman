@@ -45,7 +45,7 @@
                 <a enabled="" href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();">Бэкап сайта</a>	
 
         <li id="pubswitch_active" class="active"><a> Видимость контента <span class="sr-only">(current)</span></a></li>
-            <form action="" method="post" enctype="multipart/form-data" id="pubswitch">
+            <form action="{{ url_for('pub_switcher_main') }}" method="post" enctype="multipart/form-data" id="pubswitch">
                 <p><input type="radio" name="pub_on" value="1"> Активировать контент<br></p>
                 <p><input type="radio" name="pub_off" value="0"> Деактивировать контент<br></p>
                 <input value="Выбрать" id="pub_submit" form="pubswitch" class="btn btn danger" type="submit">
@@ -109,17 +109,18 @@
                             </div>
                             {% endfor %}
                             {% endif %}
-                            {% endwith %}                     
+                            {% endwith %}
                         {{ pagination.links }}
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th><i class="fa fa-list-ol" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-user" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-database" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i></th>
+                                    <th><i class="fa fa-pencil-square-o" aria-hidden="true"> Записи</i></th>
+                                    <th><i class="fa fa-user" aria-hidden="true"> Пользователь</i></th>
+                                    <th><i class="fa fa-database" aria-hidden="true"> Категория</i></th>
+                                    <th><i class="fa fa-calendar" aria-hidden="true"> Дата создания</i></th>
+                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"> Статус</i></th>
+                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"> Индекс</i></th>
                                     <th><input type="checkbox" id='checkbox_all' name='items_chb'/></th>
                                 </tr>			  
                             </thead>
@@ -132,6 +133,11 @@
                                         <td>{{ article.article_author }}</td>
                                         <td>{{ article.article_category }}</td>
                                         <td>{{ article.article_date }}</td>
+                                        {% if article.published == 1 %}
+                                            <td> Опубликовано </td>
+                                        {% elif article.published == 0 %}
+                                            <td> Не опубликовано </td>
+                                        {% endif %}
                                         <td><input type='text' id='delid_{{ article.id }}' name='delid' value='{{ article.id }}' size='1' ></td>
                                         <td><input type="checkbox" id='checkbox_{{ article.id }}' name='item_chb' value='{{ article.id }}' /></td>
                                     </tr>
@@ -140,7 +146,7 @@
                             </form>
                             </tbody>                            
                         </table>    
-                        
+
                         <div id="search">
                         <form id="formsearch" name="formsearch" method="POST" action="{{ request.path }}">
                         {{ form.csrf_token }}    
@@ -153,11 +159,12 @@
                             <thead>
                                 <tr>
                                     <th><i class="fa fa-list-ol" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-pencil-square-o" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-user" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-database" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i></th>
+                                    <th><i class="fa fa-pencil-square-o" aria-hidden="true"> Записи</i></th>
+                                    <th><i class="fa fa-user" aria-hidden="true"> Пользователь</i></th>
+                                    <th><i class="fa fa-database" aria-hidden="true"> Категория</i></th>
+                                    <th><i class="fa fa-calendar" aria-hidden="true"> Дата создания</i></th>
+                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"> Статус</i></th>
+                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"> Индекс</i></th>
                                     <th><input type="checkbox" id='checkbox_all' name='items_chb'/></th>
                                 </tr>			  
                             </thead>
@@ -187,7 +194,7 @@
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>        
         <script type="text/javascript" src="../../static/js/crud.js"></script>                        
-        <script  type="text/javascript" src="../../static/js/proact_search_main.js"></script>		        
+        <script type="text/javascript" src="../../static/js/proact_search_main.js"></script>
     </body>
 </html>
 

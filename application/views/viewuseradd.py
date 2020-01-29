@@ -37,11 +37,10 @@ def useradd():
     utils = Utils()
     author = g.user
 
-    import pdb; pdb.set_trace()
-
     if (request.method == 'POST' and author is not None
             and form.user_submit.data
             and form.validate_on_submit()):
+
         rows = sql.session.query(Users).count()
         if type(rows) == int:
             id = rows + 1
@@ -56,9 +55,11 @@ def useradd():
             sql.session.add(userdata)
             sql.session.commit()
             flash("User {} is added".format(login), 'info')
+            return redirect(url_for('show_dashboard_users'))
         else:
             flash("User {} is not added. {}".format(form.login.data, form.errors), 'error')
-        return redirect(url_for('show_dashboard_users'))
+            return redirect(url_for('show_dashboard_users'))
+
     return render_template('adminboard/adminboard_users.html',
                            form=form
                            )

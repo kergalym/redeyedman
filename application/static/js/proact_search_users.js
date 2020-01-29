@@ -36,7 +36,6 @@ $(document).ready(function() {
                 data: $('#formsearch').serialize(),
                 type: 'POST',
                 success: function (data) {
-                    console.log($(location).attr("href"));
                     $('.table.table-striped').css({
                         "display": "none"
                     });
@@ -45,18 +44,16 @@ $(document).ready(function() {
                     });
                     
                     if (typeof data === "object") {
-                        
                         for (var i = 0; i < 1; ++i) {
                            var inputvarID = data.id;
                            var inputvarUser = data.login;
                            var inputvarEmail = data.email;
-                           var inputvarDate = data.date;                                   
+                           var inputvarDate = data.regdate;
                            var divs = "".concat(
                                 '<tr>',
                                     '<td>', inputvarID, '</a></td>',
-                                    "<td><a href='/adminboard/editpage_id_users/", inputvarID, "' title='Редактировать пользователя'>", inputvarTitle, "</a></td>",
-                                    '<td>', inputvarAuthor, '</a></td>',
-                                    '<td>', inputvarCategory, '</a></td>',
+                                    "<td><a href='/adminboard/editpage_id_users/", inputvarID, "' title='Редактировать пользователя'>", inputvarUser, "</a></td>",
+                                    '<td>', inputvarEmail, '</a></td>',
                                     '<td>', inputvarDate, '</a></td>',
                                     "<td><input type='text' id='delid_", inputvarID,
                                         "' name='delid_", inputvarID, "' value='", inputvarID, "' size='1' ></td>",

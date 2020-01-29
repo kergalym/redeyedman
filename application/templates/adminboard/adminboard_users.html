@@ -117,10 +117,10 @@
                             <thead>
                                 <tr>
                                     <th><i class="fa fa-list-ol" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-user" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-envelope" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-calendar" aria-hidden="true"></i></th>
-                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> </th>
+                                    <th><i class="fa fa-user" aria-hidden="true"> Пользователь</i></th>
+                                    <th><i class="fa fa-envelope" aria-hidden="true"> E-mail</i></th>
+                                    <th><i class="fa fa-calendar" aria-hidden="true"> Дата создания</i></th>
+                                    <th><i class="fa fa-sort-numeric-asc" aria-hidden="true"> Индекс</i></th>
                                     <th><input type="checkbox" id='checkbox_all' name='items_chb'/></th>
                                 </tr>	
                             </thead>
@@ -140,7 +140,8 @@
                             </form>
                             </tbody>
                         </table>
-<div id="search">
+
+                        <div id="search">
                         <form id="formsearch" name="formsearch" method="POST" action="{{ request.path }}">
                         {{ form.csrf_token }}    
                             <div class="search">
@@ -186,7 +187,7 @@
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>
         <script type="text/javascript" src="../../static/js/crud.js"></script>
-        <script  type="text/javascript" src="../../static/js/proact_search_users.js"></script>
+        <script type="text/javascript" src="../../static/js/proact_search_users.js"></script>
     </body>
 </html>
 

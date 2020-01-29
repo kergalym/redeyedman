@@ -64,7 +64,8 @@
                             <p> <i class="fa fa-users" aria-hidden="true" style="padding-right: 15px;"></i> {{ users }} </p>
                         </div>
 
-                        <a  href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();">Бэкап сайта</a>	
+                        <a  href="{{ url_for('do_backup') }}" id="backup" class="progress-button" onclick="startProgress();"> Бэкап сайта</div>
+                        </a>
 
                     {% endblock %}
                 </div>
@@ -80,7 +81,6 @@
                             <div><a title="Пользователи" href="adminboard_users"><i class="fa fa-users fa-5x" aria-hidden="true"></i>Пользователи</p></a></div>
                             <div><a title=Категории href="adminboard_category"><i class="fa fa-database fa-5x" aria-hidden="true"></i>Категории</p></a></div>
                             <div><a title="Файлы" href="adminboard_media"><i class="fa fa-files-o fa-5x" aria-hidden="true"></i>Файлы</p></a></div>
-                            <div><a title="Системные настройки" href="adminboard_settings"><i class="fa fa-cogs fa-5x" aria-hidden="true"></i>Системные настройки</p></a></div>
                         </div>
                     </div>
                 </div>

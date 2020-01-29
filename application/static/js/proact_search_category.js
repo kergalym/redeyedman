@@ -47,6 +47,7 @@ $(document).ready(function() {
                         
                         for (var i = 0; i < 1; ++i) {
                            var inputvarID = data.id;
+                           var inputvarAuthor = data.author;
                            var inputvarTitle = data.title;
                            var inputvarDate = data.date;                                   
                            var divs = "".concat(
@@ -54,7 +55,6 @@ $(document).ready(function() {
                                     '<td>', inputvarID, '</a></td>',
                                     "<td><a href='/adminboard/editpage_id_category/", inputvarID, "' title='Редактировать категорию'>", inputvarTitle, "</a></td>",
                                     '<td>', inputvarAuthor, '</a></td>',
-                                    '<td>', inputvarCategory, '</a></td>',
                                     '<td>', inputvarDate, '</a></td>',
                                     "<td><input type='text' id='delid_", inputvarID,
                                         "' name='delid_", inputvarID, "' value='", inputvarID, "' size='1' ></td>",

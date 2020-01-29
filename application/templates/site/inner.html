@@ -10,6 +10,7 @@
         <link href="../static/css/bootstrap-theme.css" rel="stylesheet" type="text/css">
         <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css">
         <link href="../static/css/main.css" rel="stylesheet" type="text/css">
+        <link href="../static/css/main_tiny.css" rel="stylesheet" type="text/css">
         <link href="../static/css/carousel.css" rel="stylesheet" type="text/css">
         <link href="../static/css/player/mediaelementplayer.css"  rel="stylesheet" type="text/css"/>
         <link href="../static/css/player/mejs-skins.css"  rel="stylesheet" type="text/css"/>
@@ -36,8 +37,8 @@
                                 <li><a class="nav_item1" href="/index">ГЛАВНАЯ</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="nav_item2" data-toggle="dropdown" role="button" aria-expanded="false">СТАТЬИ<span class="caret"></span></a>
-                                <li><a class="nav_item3" href="#content_bottom_b">BLENDER GALLERY</a></li>
-                                <li><a class="nav_item4" href="#content_bottom_c">VIDEO GALLERY</a></li>
+                                <li><a class="nav_item3" href="#">BLENDER GALLERY</a></li>
+                                <li><a class="nav_item4" href="#">VIDEO GALLERY</a></li>
                             </ul>
                             <!-- socialbar begin -->
                             <div class="socialbar">
@@ -89,21 +90,36 @@
                                 {% block content_block_inner %}
                                 <div id="content_inner">
                                     <div id="article-container">
-                                        <h2 class="line">{{ articles.article_title }}</h2>
+                                        {% if articles.published == 1 %}
 
-                                        <p>Дата публикации: {{ articles.article_date }}</p>
+                                            <h2 class="line">{{ articles.article_title }}</h2>
 
-                                        {{ articles.article_text | safe }}
+                                            <p style="font-size: small;"><i class="fa fa-user" aria-hidden="true" >  Автор: {{ articles.article_author }}</i></p>
+
+                                            <p style="font-size: small;"><i class="fa fa-database" aria-hidden="true" >  Категория: {{ articles.article_category }}</i></p>
+
+                                            <p style="font-size: small;"><i class="fa fa-calendar" aria-hidden="true" >  Дата публикации: {{ articles.article_date }}</i></p>
+
+                                            <p style="font-size: small;"><i class="fa fa-calendar" aria-hidden="true" >  Дата изменения: {{ articles.article_mod_date }}</i></p>
+
+                                            <p style="margin-top: 2%;">{{ articles.article_text | safe }}</p>
+
+                                        {% else %}
+
+                                            <img src="/static/images/korlan/404.jpg"
+                                                 style="margin-top: 10%; width:100% !important; height: 100% !important"/>
+
+                                        {% endif %}
 
                                     </div>
                                     <div id="content_bottom_a">
                                          <div id="menu">
                                             {% for menu in menus %}
-                                            <a href="inner/{{ menu.id }}"><h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2></a>
+                                                <a href="/inner/{{ menu.id }}"><h2 class="line" style="text-align: center;">{{ menu.article_title }}</h2></a>
 
-                                            {{ menu.article_text | ctxt | safe }}
+                                                {{ menu.article_text | ctxt | safe }}
 
-                                            <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                <a class="readmore-button" href="/inner/{{ menu.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
 
                                             {% endfor %}
                                          </div>
@@ -124,25 +140,36 @@
 
                                         {% for content in contents %}
 
-                                        <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
+                                            {% if content.published == 1 %}
 
-                                            <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
+                                                 <video width="100%" max-width="640" height="360" id="video" style="width: 80%">
 
-                                        </video>
+                                                     <source type="video/youtube" src="{{ content.content_text | safe | striptags }}" />
 
-                                        <span id="player1-mode"></span>
+                                                 </video>
+
+                                                 <span id="player1-mode"></span>
+
+                                            {% endif %}
+
                                         {%endfor%}
-                                        {% endblock %}
+
                                     </div>
+                                {% endblock %}
 
                                     <div id="content-container">
 
                                         {% for article in articles_loop %}
-                                        <h2 class="line" style="text-align: left;">{{ article.article_title }}</h2>
 
-                                        {{ article.article_text | safe }}
+                                            {% if article.published == 1 %}
 
-                                        <a class="readmore-button" href="/imenu/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+                                                <a href="/inner/{{ article.id }}"><h2 class="line" style="text-align: left;">{{ article.article_title }}</h2></a>
+
+                                                {{ article.article_text | safe }}
+
+                                                <a class="readmore-button" href="/imenu/{{ article.id }}"><i class="fa fa-2x fa-arrow-right" aria-hidden="true"></i></a>
+
+                                            {% endif %}
 
                                         {% endfor %}	
 

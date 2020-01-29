@@ -31,8 +31,25 @@
 
     <body>
 
+					<div class="msg_block" align="center">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        {% if category == 'info' %}
+                        <div class="warn_msg" role="alert">
+                            {% else %}
+                            <div class="err_msg alert-{{ category }}" role="alert">
+                                {% endif %}
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+					</div>
+
         <div align="right" id="articleparam-container"> 
-            <label>Сведения начальной категории: </label>
+            <label>Данные категории: </label>
             <tr>
                 <td><label>ID:<select name="id"><option value="ID:">{{ editpage_output_loop.id }}</option></select></label></td>
             </tr>
@@ -71,7 +88,8 @@
         <div align="center" id="text-container" class="container">
 
             <div class="text-fields">
-
+				<label style="text-align: left; width: 80%;"><i class="fa fa-list-ol fa-2x" aria-hidden="true"></i> Номер:</label>
+				<input type="text" name="id" style="width: 80%;" id="id" class="form-control" value="" placeholder="Введите номер" required autofocus>
                 <label style="text-align: left; width: 80%;"><i class="fa fa-user fa-2x" aria-hidden="true"></i> Автор:</label>
                 <select name="category_author" id="auth_selector"><option> {{ author }} </option></select>
                 <label style="text-align: left; width: 80%;"><i class="fa fa-calendar fa-2x" aria-hidden="true"></i> Дата:</label>

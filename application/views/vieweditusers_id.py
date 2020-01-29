@@ -18,7 +18,9 @@
 
 from application.core.datalogics import Utils
 from application import app
+from application import engine
 from application import sql
+from sqlalchemy import update
 from application.core.dbmodel import Users
 from application.core.dbmodel import Categories
 from application.core.datalogics import SysInfo
@@ -32,9 +34,7 @@ from flask import request
 from flask import url_for
 from flask import jsonify
 from flask import g
-#
-#   ARTICLES EDITPAGE ADD
-#
+from sqlalchemy import exc
 
 
 @app.route('/adminboard/editpage_id_users/<int:id>', methods=['GET', 'POST'])
@@ -44,19 +44,22 @@ def show_userspageid(id):
     editpage_output_loop = Users.query.filter_by(id=id).first()
     categories_loop = Categories.query.all()
     instance = SysInfo()
-    atime = instance.altertime() 
+    atime = instance.altertime()
     author = g.user
-    
-    if editpage_output_loop and categories_loop \
-        and atime and author is not None:
+
+    if (editpage_output_loop
+            and categories_loop
+            and atime
+            and author is not None):
         return render_template(
-                                'adminboard/editpage_id_users.html', 
-                                atime=atime, 
-                                editpage_output_loop=editpage_output_loop,
-                                form=form)
+            'adminboard/editpage_id_users.html',
+            atime=atime,
+            editpage_output_loop=editpage_output_loop,
+            form=form)
     else:
         return redirect(url_for('show_login'))
-    
+
+
 @app.route('/adminboard/editpage_id_users/', methods=['GET', 'POST'])
 @login_required
 def update_userspageid():
@@ -64,34 +67,39 @@ def update_userspageid():
     form_genpass = genpassform.DashboardGenPassForm()
     utils = Utils()
     author = g.user
-    num=form.id.data
 
-    if author is not None \
-        and request.method == 'POST' \
-        and request.form.get('save', None) \
-        and form.validate_on_submit():
-        id = request.form['id']                
-        login = request.form['login']                
-        password = utils.hash_password(request.form['password'])
-        email = request.form['email']
-        regdate = request.form['regdate']
-        usr_level = request.form['usr_level']
-        usersdata = Users(id, login, password, email, 
-        regdate, usr_level)
-        sql.session.add(usersdata)
-        sql.session.commit()
+    if (author is not None
+            and request.method == 'POST'
+            and request.form.get('save', None)
+            and form.validate_on_submit()):
+
+        conn = engine.connect()
+        stmt = update(Users).where(
+            Users.id == form.id.data).values(
+            id=form.id.data,
+            login=form.login.data,
+            password=form.password.data,
+            email=form.email.data,
+            regdate=form.regdate.data,
+            usr_level=form.usr_level.data,
+        )
+
+        try:
+            conn.execute(stmt)
+            flash("User's data is changed", 'info')
+        except exc.IntegrityError:
+            flash("Identical user's data is exist", 'error')
         flash("User's data is changed", 'info')
-        return redirect(url_for('show_userspageid', 
+        return redirect(url_for('show_userspageid',
                                 id=form.id.data))
-    elif author is not None \
-        and request.method == 'POST' \
-        and form_genpass.validate_on_submit():
+    elif (author is not None
+            and request.method == 'POST'
+            and form_genpass.validate_on_submit()):
         passwordphrase = utils.randomstr(int(request.form['passlength']))
         return jsonify(passwordphrase=passwordphrase)
     else:
         flash("User's data is not changed", 'error')
-        return redirect(url_for('show_userspageid', 
-                                    id=form.id.data))
+        return redirect(url_for('show_userspageid',
+                                id=form.id.data))
     return render_template('adminboard/editpage_id_users.html',
-                            form=form) 
-   
+                           form=form)

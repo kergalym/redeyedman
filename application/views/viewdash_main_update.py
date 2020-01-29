@@ -72,6 +72,7 @@ def update_dashboard_main():
                         )
                         try:
                             conn.execute(stmt)
+                            conn.close()
                             flash("Item {} is changed to {}".format(x,
                                                                     form.delid.data), 'info')
                         except exc.IntegrityError:
@@ -108,6 +109,7 @@ def update_dashboard_main():
                         stmt = delete(Articles).where(
                             Articles.id == x)
                         conn.execute(stmt)
+                        conn.close()
                         flash("Item {} is deleted!".format(x), 'info')
                     elif x == n:
                         flash("Item {} is exists".format(x), 'error')
@@ -124,16 +126,20 @@ def update_dashboard_main():
         elif form_next.validate_on_submit():
             data = []
             data_array = sql.session.query(Articles).filter(
-                Articles.article_title.match(form.query.data)).all()
-            for x in data_array:
-                data = x
+                Articles.article_title.match(form_next.query.data)).all()
+            if data_array:
+                for x in data_array:
+                    data = x
 
-            return jsonify(id=str(data.id),
-                           title=data.article_title,
-                           author=data.article_author,
-                           category=data.article_category,
-                           date=data.article_date
-                           )
+                return jsonify(id=str(data.id),
+                               title=data.article_title,
+                               author=data.article_author,
+                               category=data.article_category,
+                               date=data.article_date,
+                               published=data.published
+                               )
+            else:
+                return redirect(url_for('show_dashboard_main'))
 
     return render_template('adminboard/adminboard_main.html',
                            form=form

@@ -31,62 +31,69 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
+from sqlalchemy import exc
 
 
-class ViewEdit:
-    #
-    #   ARTICLES EDITPAGE ADD
-    #
-
-    @app.route('/adminboard/editpage_id/<int:id>', methods=['GET', 'POST'])
-    @login_required
-    def show_editpageid(id):
-        form = editpage_idform.EditpageidForm()
-        editpage_output_loop = sql.session.query(Articles).filter_by(id=id).first()
-        categories_loop = sql.session.query(Categories).all()
-        instance = SysInfo()
-        atime = instance.altertime() 
-        author = g.user
-        if editpage_output_loop and categories_loop \
-            and atime and author is not None:
-            return render_template(
-                                    'adminboard/editpage_id.html', 
-                                    editpage_output_loop=editpage_output_loop,
-                                    categories_loop=categories_loop,
-                                    form=form)
-        else:
-            return redirect(url_for('show_login'))
+@app.route('/adminboard/editpage_id/<int:id>', methods=['GET', 'POST'])
+@login_required
+def show_editpageid(id):
+    form = editpage_idform.EditpageidForm()
+    editpage_output_loop = sql.session.query(Articles).filter_by(id=id).first()
+    categories_loop = sql.session.query(Categories).all()
+    instance = SysInfo()
+    atime = instance.altertime()
+    author = g.user
+    if (editpage_output_loop
+            and categories_loop
+            and atime
+            and author is not None):
+        return render_template(
+            'adminboard/editpage_id.html',
+            editpage_output_loop=editpage_output_loop,
+            categories_loop=categories_loop,
+            form=form)
+    else:
+        return redirect(url_for('show_login'))
 
 
-    @app.route('/adminboard/editpage_id/', methods=['GET', 'POST'])
-    @login_required
-    def update_editpageid():
-        error = None
-        form = editpage_idform.EditpageidForm()
-        instance = SysInfo()
-        atime = instance.altertime()
-        author = g.user
-        if request.method == 'POST' and author is not None \
-            and request.form['save']:
-            if form.validate_on_submit():
-                conn = engine.connect()
-                stmt = update(Articles).where(
-                Articles.id==form.id.data).values(
+@app.route('/adminboard/editpage_id/', methods=['GET', 'POST'])
+@login_required
+def update_editpageid():
+    error = None
+    form = editpage_idform.EditpageidForm()
+    instance = SysInfo()
+    author = g.user
+
+    if (request.method == 'POST' and author is not None
+            and request.form['save']):
+        if form.validate_on_submit():
+
+            # we assign record time to this form element
+            # as unicode string to be consistent with other form elements here
+            form.article_mod_date.data = unicode(instance.altertime())
+
+            conn = engine.connect()
+            stmt = update(Articles).where(
+                Articles.id == form.id.data).values(
                 id=form.id.data,
                 article_title=form.article_title.data,
                 article_author=form.article_author.data,
                 article_category=form.article_category.data,
-                article_date=atime,
+                article_date=form.article_date.data,
+                article_mod_date=form.article_mod_date.data,
                 article_text=form.article_text.data
-                )
+            )
+
+            try:
                 conn.execute(stmt)
-                error = "Article is changed"
-                return redirect(url_for('show_editpageid', 
-                                        id=form.id.data))
-        else:
-            error = "Article is not changed"
-            return redirect(url_for('show_dashboard_main'))
-        return render_template('adminboard/editpage_id.html',
-                                form=form, error=error
-                                ) 
-                       
+                flash("Article is changed", 'info')
+            except exc.IntegrityError:
+                flash("Article with same name is exist", 'error')
+            return redirect(url_for('show_editpageid',
+                                    id=form.id.data))
+    else:
+        flash("Article is not changed", 'error')
+        return redirect(url_for('show_dashboard_main'))
+    return render_template('adminboard/editpage_id.html',
+                           form=form, error=error
+                           )

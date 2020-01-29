@@ -30,31 +30,41 @@ class Articles(sql.Model):
     article_author = sql.Column(String, nullable=False)
     article_category = sql.Column(String, nullable=False)
     article_date = sql.Column(String, nullable=False)
+    article_mod_date = sql.Column(String, nullable=False)
     article_text = sql.Column(String, nullable=False)
+    published = sql.Column(Integer, nullable=False)
 
     def __init__(
                 self, id, article_title, 
                 article_author, article_category, 
-                article_date, article_text):
+                article_date, article_mod_date,
+                article_text, published):
         self.id = id                    
         self.article_title = article_title
         self.article_author = article_author
         self.article_category = article_category
         self.article_date = article_date
+        self.article_mod_date = article_mod_date
         self.article_text = article_text
+        self.published = published
 
     def __repr__(self):
-        return '<Article(id={id}, article_title="{article_title}", \
+        return '<Article(id={id}, \
+            article_title="{article_title}", \
             article_author="{article_author}", \
             article_category="{article_category}", \
-            article_date="{article_date}, \
-            article_text="{article_text}")>'.format(
+            article_date="{article_date}", \
+            article_mod_date="{article_mod_date}", \
+            article_text="{article_text}", \
+            published="{published}")>'.format(
             id=self.id,
             article_title=self.article_title,
             article_author=self.article_author,
             article_category=self.article_category,
             article_date=self.article_date,
-            article_text=self.article_text
+            article_mod_date=self.article_mod_date,
+            article_text=self.article_text,
+            published=self.published
             )
 
 
@@ -67,29 +77,34 @@ class Content(sql.Model):
     content_category = sql.Column(String, nullable=False)
     content_date = sql.Column(String, nullable=False)
     content_text = sql.Column(String, nullable=False)
+    published = sql.Column(Integer, nullable=False)
 
     def __init__(
-                self, id, content_title, content_author, content_category, 
-                content_date, content_text):
+                self, id, content_title, content_author, content_category,
+                content_date, content_text, published):
         self.id = id                     
         self.content_title = content_title
         self.content_author = content_author
         self.content_category = content_category
         self.content_date = content_date
         self.content_text = content_text
+        self.published = published
 
     def __repr__(self):
-        return '<Content(id={id}, content_title="{content_title}", \
+        return '<Content(id={id}, \
+                content_title="{content_title}", \
                 content_author="{content_author}", \
                 content_category="{content_category}", \
-                content_date="{content_date}, \
-                content_text="{content_text}")>'.format(
+                content_date="{content_date}", \
+                content_text="{content_text}", \
+                published="{published}")>'.format(
             id=self.id,
             content_title=self.content_title,
             content_author=self.content_author,
             content_category=self.content_category,
             content_date=self.content_date,
-            content_text=self.content_text
+            content_text=self.content_text,
+            published=self.published
             )
 
 
@@ -111,9 +126,10 @@ class Categories(sql.Model):
         self.category_desc = category_desc
 
     def __repr__(self):
-        return '<Categories(id={id}, category_title="{category_title}", \
+        return '<Categories(id={id}, \
+                category_title="{category_title}", \
                 category_author="{category_author}", \
-                category_date="{category_date}, \
+                category_date="{category_date}", \
                 category_desc="{category_desc}")>'.format(
             id=self.id,
             category_title=self.category_title,
@@ -141,9 +157,13 @@ class Users(UserMixin, sql.Model):
         self.usr_level = usr_level
 
     def __repr__(self):
-        return '<Users(id={id}, login="{login}", password="{password}", \
-                email="{email}", regdate="{regdate}"), \
+        return '<Users(id={id}, \
+                login="{login}", \
+                password="{password}", \
+                email="{email}", \
+                regdate="{regdate}"), \
                 usr_level="{usr_level}")>'.format(
+            id=self.id,
             login=self.login,
             password=self.password, 
             email=self.email,

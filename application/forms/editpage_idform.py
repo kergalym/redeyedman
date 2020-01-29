@@ -16,7 +16,6 @@
 
 from flask_wtf import Form
 from wtforms import TextField
-from wtforms import SelectField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 
@@ -27,4 +26,5 @@ class EditpageidForm(Form):
     article_author = TextField('article_author', validators=[DataRequired()])
     article_category = TextField('article_category', validators=[DataRequired()])
     article_date = TextField('article_date', validators=[DataRequired()])
+    article_mod_date = TextField('article_mod_date')
     article_text = TextAreaField('article_text', validators=[DataRequired()])

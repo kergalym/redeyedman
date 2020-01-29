@@ -10,11 +10,12 @@ function startProgress()
 {
     // change button to backup button, and add backup bar
     $('#backup').addClass('progress-button').html('<span id="backup"></span>');
+    $('#backup').addClass('progress-bar');
 
     // update progress bar
     setInterval(function () {
-        $('#backup').width(progress);
         progress++;
-    }, 5);
+        $('.progress-bar').html("Backup in progress: " + progress);
+    }, 10);
 }
 

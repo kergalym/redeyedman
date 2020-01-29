@@ -18,31 +18,43 @@
 
 import os
 import tarfile
+from os import chdir
+
 from application import app
 from application.core.datalogics import SysInfo
 
 
 class Backup:
 
-    def db_backup(self):
-        backup_path = app.root_path
-        mysql_export_path = "{}/backup/{}.sql".format(app.root_path, app.config['DBNAME'])
-        site_path = os.path.split(backup_path)
-        instance = SysInfo()
+    def __init__(self):
+        self.backup_path = app.config['BACKUP_PATH']
+        self.mysql_export_path = "{}/{}.sql".format(self.backup_path,
+                                                    app.config['DBNAME'])
+        self.site_path = os.path.split(self.backup_path)
+        self.site_parent_path = app.root_path.strip('application')
+        self.instance = SysInfo()
+        self.file_output = "{}-{}.tar.gz".format(app.config['DBNAME'],
+                                                 str(self.instance.altertime()))
 
-        if (os.path.isdir('{}/backup'.format(backup_path))
-                and os.access('{}/backup'.format(backup_path), os.W_OK)):
+    def db_backup(self):
+        if (os.path.isdir(self.backup_path)
+                and os.access(self.backup_path, os.W_OK)
+                and os.path.isdir(self.site_parent_path)):
             command = 'mysqldump --opt -h {} -u {} -p{} {} > {}'.format(
                 app.config['DBHOST'], app.config['DBUSERNAME'],
                 app.config['DBPASSWORD'], app.config['DBNAME'],
-                mysql_export_path)
+                self.mysql_export_path)
 
             os.system(command)
 
-            with tarfile.open(app.config['DBNAME'] + '-'
-                              + str(instance.altertime()) + '.tar.gz', "w:gz") as tar:
-                tar.add(site_path[-2],
-                        arcname=os.path.basename(backup_path))
+            with tarfile.open("{}{}".format(self.backup_path, self.file_output),
+                              "w:gz") as tar:
+                tar.add(self.site_parent_path)
+            return "Backup is created: {}".format(self.file_output)
         else:
-            return "No tool for export the database or destination isn't exist. " \
-                   "Please, contact to administrator".format()
+            msg = "No correct data for export the database or destination/site parent path isn't exist.\n" \
+                  "Backup Path: {}\n" \
+                  "Backup Path Access: {}\n" \
+                  "Please, contact to administrator \n".format(self.backup_path,
+                                                               os.access(self.backup_path, os.W_OK))
+            return msg

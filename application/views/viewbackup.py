@@ -26,11 +26,6 @@ from flask import g
 import os
 
 
-#
-#   BACKUP
-#
-
-
 @app.route('/adminboard/backup')
 @login_required
 def do_backup():
@@ -41,9 +36,10 @@ def do_backup():
     if (os.path.isfile(mysqldump_bin)
             and backup.db_backup() != "IOEror"
             and author is not None):
-        backup.db_backup()
-        flash(u"Резервная копия создана! Сведения...", 'info')
+        msg = backup.db_backup()
+        flash(msg, 'info')
         return redirect(url_for('show_dashboard_main'))
     else:
-        flash(u"Резервная копия не создана! Сведения...", 'error')
+        flash("No tool for export the database or destination isn't exist. "
+              "Please, contact to administrator", 'error')
         return redirect(url_for('show_dashboard_main'))

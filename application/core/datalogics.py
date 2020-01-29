@@ -26,12 +26,11 @@ from datetime import datetime
 
 from PilLite import Image
 
-from application import app
+from application import app, bcrypt
 from application.core.dbmodel import Users
 from application import login_manager
 from flask_login import login_required
 from flask_paginate import Pagination
-from passlib.hash import pbkdf2_sha256
 from flask import request
 
 
@@ -82,7 +81,7 @@ class Dlogics(Base):
 
             if len(rawtext) >= self.maxlength:
                 # Replace with a part of unicode string
-                text = rawtext[0:self.maxlength] + " ... "
+                text = rawtext[0:self.maxlength] + "..."
                 prepared = "{}{}{}".format(btag, text, etag)
                 content += unicode(prepared)
                 return content
@@ -102,13 +101,27 @@ class Paginator(Base):
         self.pages = None
         self.per_page = None
 
-    def paginate(self, class_name, pages, per_page):
+    def paginate_queries(self, class_name, pages, per_page):
         self.class_name = class_name
         self.pages = pages
         self.per_page = per_page
+
         if hasattr(self.class_name, 'query') is True:
             totalrecords = len(self.class_name.query.all())
-        elif isinstance(self.class_name, list):
+        else:
+            return "{} is not a list".format(self.class_name)
+        pagination = Pagination(page=self.pages, total=totalrecords,
+                                per_page=self.per_page,
+                                alignment="center",
+                                css_framework='bootstrap')
+        return pagination
+
+    def paginate_files(self, class_name, pages, per_page):
+        self.class_name = class_name
+        self.pages = pages
+        self.per_page = per_page
+
+        if isinstance(self.class_name, list):
             totalrecords = len(self.class_name)
         else:
             return "{} is not a list".format(self.class_name)
@@ -122,15 +135,12 @@ class Utils(Base):
     def __init__(self):
         self.passlength = None
 
-    @login_required
     def hash_password(self, password):
-        return pbkdf2_sha256.encrypt(password, rounds=25600)
+        return bcrypt.generate_password_hash(password)
 
-    @login_required
     def verify_password(self, password, hash):
-        return pbkdf2_sha256.verify(password, hash)
+        return bcrypt.check_password_hash(hash, password)
 
-    @login_required
     def randomstr(self, passlength):
         self.passlength = passlength
         keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -147,6 +157,16 @@ class Utils(Base):
 
         return pwstring
 
+    def abc_randomizer(self):
+        abc = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e",
+               5: "f", 6: "g", 7: "h", 8: "i", 9: "j",
+               10: "k", 11: "l", 12: "m", 13: "n",
+               14: "o", 15: "p", 16: "q", 17: "r",
+               18: "s", 19: "t", 20: "u", 21: "v",
+               22: "w", 23: "x", 24: "y", 25: "z"
+               }
+        return abc
+
     @login_required
     def conv_image(self, data):
         if isinstance(data, dict):
@@ -156,7 +176,7 @@ class Utils(Base):
             new_width = data['width']
             new_height = data['height']
             size = new_width, new_height
-            outfile = "{}{}{}".format(img_path, str(img_file[:len(img_file)-3]), str(new_format.lower()))
+            outfile = "{}{}{}".format(img_path, str(img_file[:len(img_file) - 3]), str(new_format.lower()))
             origfile = "{}{}".format(img_path, str(img_file))
 
             if (isinstance(data, dict)
@@ -182,7 +202,7 @@ class Utils(Base):
             img_path = data['path']
             if (exists("{}{}".format(img_path, img_file))
                     and isfile("{}{}".format(img_path, img_file))):
-                if img_file[len(img_file)-3:] == 'png' or 'jpg' or 'jpeg':
+                if img_file[len(img_file) - 3:] == 'png' or 'jpg' or 'jpeg':
                     try:
                         img = Image.open("{}{}".format(img_path, img_file))
                         size = img.size
@@ -201,7 +221,7 @@ class Utils(Base):
                                 }
                 else:
                     return {'status': "ERROR",
-                            'message': "Original file is not supported: {}".format(img_file[len(img_file)-3:])
+                            'message': "Original file is not supported: {}".format(img_file[len(img_file) - 3:])
                             }
 
 

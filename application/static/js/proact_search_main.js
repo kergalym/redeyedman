@@ -36,7 +36,6 @@ $(document).ready(function() {
                 data: $('#formsearch').serialize(),
                 type: 'POST',
                 success: function (data) {
-                    console.log($(location).attr("href"));
                     $('.table.table-striped').css({
                         "display": "none"
                     });
@@ -51,7 +50,15 @@ $(document).ready(function() {
                            var inputvarTitle = data.title;
                            var inputvarAuthor = data.author;
                            var inputvarCategory = data.category;
-                           var inputvarDate = data.date;                                   
+                           var inputvarDate = data.date;
+                           var published = data.published;
+
+                           if (published === 1) {
+                                published = "Опубликовано"
+                           } else if (published === 0) {
+                                published = "Не опубликовано"
+                           }
+
                            var divs = "".concat(
                                 '<tr>',
                                     '<td>', inputvarID, '</a></td>',
@@ -59,6 +66,7 @@ $(document).ready(function() {
                                     '<td>', inputvarAuthor, '</a></td>',
                                     '<td>', inputvarCategory, '</a></td>',
                                     '<td>', inputvarDate, '</a></td>',
+                                    '<td>', published,  '</a></td>',
                                     "<td><input type='text' id='delid_", inputvarID,
                                         "' name='delid_", inputvarID, "' value='", inputvarID, "' size='1' ></td>",
                                     "<td><input type='checkbox' id='checkbox' name='item_chb' value='",

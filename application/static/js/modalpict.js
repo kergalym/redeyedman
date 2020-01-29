@@ -20,91 +20,148 @@ $(document).ready(function() {
     $('a[href]').has('img').click(function(event) {
         event.preventDefault();
         var imgurl = $(this).attr("href");
+        var pattern = /.png|.jpg|.jpe|.jpe|.gif|.svg|.json|.ico/;
+        if (pattern.test(imgurl) == true) {
+    		// Change these vars only!!
+    		var body_item = 'body';
+    		var z_int = '3';
+    		var center_img = "margin-left: auto; margin-right: auto";
+    		// Change these vars only!!
 
-        console.log(imgurl);
+    		/*  Predefined div strings */
+    		var imgovr_div = "<div id='img-ovr' class='img-ovr' align='center'> </div>";
+    		var imgshow_div = "".concat("<div id='imgshow' class='imgshow'>",
+    		    "<div id='layer' class='layer'>",
+    		    "<div id='img-plus'> | + | </div><div id='img-minus'> | - | ",
+                "</div><div id='img-close'> | X | </div>", "</div>",
+                "</div>");
+    		var reconst_imgurl = "".concat("<img src=", imgurl, " style='border-style:",
+    		    "solid; border-width:5px;margin:5px;", center_img, ";'>");
 
-        /*  Predefined div strings
-        Yes, I Know, very ugly approach, I need concat */
-        var imgovr_div = "<div id='img-ovr' class='img-ovr'> </div>";
-        var imgshow_div = "<div id='imgshow' class='imgshow'> \n\
-            <div id='img-plus'> | + | </div><div id='img-minus'> | - | </div><div id='img-close'> | X | </div></div>";
-        var reconst_imgurl = "<img src=" + imgurl + " style='border-style:\n\
-            solid; border-width:5px; margin:5px;'>";
-                
-        // Add an image overlay at the end of the block 
-        $('body').prepend(imgovr_div);
-        $('.img-ovr').css({"background-color": "black", "width": "100%", 
-            "height": "100%", "z-index": "3", "position": "fixed", 
-            "opacity": "1.0"})
-                       .animate({opacity: 1.0, top: '0%'}, 200);
-        
-        // Append an image overlay first
-        $('#img-ovr').append(imgshow_div);
-	
-    	// Define an image properties
-        $('.imgshow').css({"background": "black", "width": "95%", 
-            "height": "100%", "z-index": "5", "margin-left": "1%", 
-            "margin-top": "10%"})
-                       .animate({opacity: 1, top: '50%'}, 200);
+    		// Add an image overlay at the end of the block
+    		$(body_item).prepend(imgovr_div);
+            $('.img-ovr').css({"background-color": "black", "width": "100%",
+                "height": "100%", "z-index": z_int, "position": "fixed",
+                "opacity": "1.0"})
+                           .animate({opacity: 1.0, top: '0%'}, 200);
 
-        // Define the close button properties
-        $('#img-close').css({"color": "white", "width": "40px", 
-            "height": "40px", "cursor": "pointer", "margin-left": "94%"});
+            // Append an image overlay first
+            $('#img-ovr').append(imgshow_div);
 
-        // Define the close button properties
-        $('#img-plus').css({"color": "white", "width": "40px",
-            "height": "40px", "cursor": "pointer", "margin-left": "90%"});
-        
-        // Define the close button properties
-        $('#img-minus').css({"color": "white", "width": "40px",
-            "height": "40px", "cursor": "pointer", "margin-left": "92%"});
+        	// Define an image properties
+            $('.imgshow').css({"background": "black", "width": "95%",
+                "height": "100%", "z-index": "5", "margin-left": "1%",
+                "margin-top": "10%"})
+                           .animate({opacity: 1, top: '50%'}, 200);
 
-        // Append an image 
-        $('#imgshow').append(reconst_imgurl);
-    	$('#img-ovr').css({"overflow": "scroll"})
-    	$('#img-ovr').scroll();
+    		// Define the layer properties
+    		$('#layer').css({"display": "flex", "width": "10%"});
 
-        // Get an image dimensions
-        var p = 10;
-        var width = 95;
-        var low = 30;
-        var more = 95;
-    
-        // Minimize an image
-        $('#img-minus').click(function() {
-            if ( width <= low) {
-                 $('#img-minus').css({"color": "gray"});
-                 return false;
-             } else {
-            	 width -= p;		     
-                 $('#img-plus').css({"color": "white"}); 
-            	 $('#imgshow img').attr({'width': width + '%'});   		     
-             } 
-        });
-        
-        // Maximize an image            
-        $('#img-plus').click(function() {
-            if (width >= more) {
-                 $('#img-plus').css({"color": "gray"});
-                 $('#imgshow img').attr({'width': '95%'});
-                 return false;
-             } else {
-            	 width += p;		     
-                 $('#img-minus').css({"color": "white"}); 
-                 $('#imgshow img').attr({'width': width + '%'});		     
-             }   
-        });
-        
-        // Disable an image overlay by click
-        $('#img-close').click(function() {
-            $('#img-ovr').css('background-color', 'black')
-               .animate({opacity: 0, top: '45%'}, 200,
-               function() {
-                $(this).css('display', 'none');
-                $('#img-ovr').fadeOut(400);
-                $('#content_bottom_b').removeClass('.imgshow');
-               }              
-            );  
-        });
+       		// Define the close button properties
+       		$('#img-close').css({"color": "white", "width": "40px",
+       		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+       		// Define the plus button properties
+       		$('#img-plus').css({"color": "white", "width": "40px",
+       		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+       		// Define the minus button properties
+       		$('#img-minus').css({"color": "white", "width": "40px",
+       		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+            if(window.matchMedia('(max-width: 544px) and (orientation: portrait)').matches){
+        		// Define an image properties
+        		$('.imgshow').css({"background": "black", "width": "95%",
+        		    "height": "100%", "z-index": "5", "margin-left": "1%",
+        		    "margin-top": "30%"})
+        			       .animate({opacity: 1, top: '50%'}, 200);
+
+    		    // Define the layer properties
+    		    $('#layer').css({"display": "flex", "width": "90%" });
+
+          		// Define the close button properties
+          		$('#img-close').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+          		// Define the plus button properties
+          		$('#img-plus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+          		// Define the minus button properties
+          		$('#img-minus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+            }
+
+            if(window.matchMedia('(max-width: 768px) and (orientation: landscape)').matches){
+        		// Define an image properties
+        		$('.imgshow').css({"background": "black", "width": "95%",
+        		    "height": "100%", "z-index": "5", "margin-left": "1%",
+        		    "margin-top": "30%"})
+        			       .animate({opacity: 1, top: '50%'}, 200);
+
+    		    // Define the layer properties
+    		    $('#layer').css({"display": "flex", "width": "50%" });
+
+          		// Define the close button properties
+          		$('#img-close').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+          		// Define the plus button properties
+          		$('#img-plus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+
+          		// Define the minus button properties
+          		$('#img-minus').css({"color": "white", "width": "40px",
+          		    "height": "40px", "cursor": "pointer", "margin": "auto"});
+            }
+            // Append an image
+            $('#imgshow').append(reconst_imgurl);
+        	$('#img-ovr').css({"overflow": "scroll"})
+        	$('#img-ovr').scroll();
+
+            // Get an image dimensions
+            var p = 10;
+            var width = 95;
+            var low = 30;
+            var more = 95;
+
+            // Minimize an image
+            $('#img-minus').click(function() {
+                if ( width <= low) {
+                     $('#img-minus').css({"color": "gray"});
+                     return false;
+                 } else {
+                	 width -= p;
+                     $('#img-plus').css({"color": "white"});
+                	 $('#imgshow img').attr({'width': width + '%'});
+                 }
+            });
+
+            // Maximize an image
+            $('#img-plus').click(function() {
+                if (width >= more) {
+                     $('#img-plus').css({"color": "gray"});
+                     $('#imgshow img').attr({'width': '95%'});
+                     return false;
+                 } else {
+                	 width += p;
+                     $('#img-minus').css({"color": "white"});
+                     $('#imgshow img').attr({'width': width + '%'});
+                 }
+            });
+
+            // Disable an image overlay by click
+            $('#img-close').click(function() {
+                $('#img-ovr').css('background-color', 'black')
+                   .animate({opacity: 0, top: '45%'}, 200,
+                   function() {
+                    $(this).css('display', 'none');
+                    $('#img-ovr').fadeOut(400);
+                    $('#content_bottom_b').removeClass('.imgshow');
+                   }
+                );
+            });
+
+        }
     });
 });
