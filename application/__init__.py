@@ -32,8 +32,8 @@ sys.setdefaultencoding('utf-8')
 
 # Define the app object and load the config from the file
 app = Flask(__name__)
-app.secret_key = 'unique_GtwAhENew8ghtsgWK'
 app.config.from_object('configuration')
+app.secret_key = app.config['SECRET_KEY']
 app.debug = False
 
 # Read database settings from the configuration file
