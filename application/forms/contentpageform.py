@@ -15,15 +15,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import StringField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 
 
 class ContentpageAddForm(Form):
-    id = TextField('id', validators=[DataRequired()])
-    content_title = TextField('content_title', validators=[DataRequired()])
-    content_author = TextField('content_author', validators=[DataRequired()])
-    content_category = TextField('content_category', validators=[DataRequired()])
-    content_date = TextField('content_date', validators=[DataRequired()])
+    id = StringField('id', validators=[DataRequired()])
+    content_title = StringField('content_title', validators=[DataRequired()])
+    content_author = StringField('content_author', validators=[DataRequired()])
+    content_category = StringField('content_category', validators=[DataRequired()])
+    content_date = StringField('content_date', validators=[DataRequired()])
     content_text = TextAreaField('content_text', validators=[DataRequired()])    

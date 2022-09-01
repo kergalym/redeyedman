@@ -15,11 +15,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from application.forms.secureredirectforms import RedirectForm
-from wtforms import TextField, BooleanField, RadioField
+from wtforms import StringField, BooleanField, RadioField
 from wtforms.validators import DataRequired
 
 
 class PubSwitchForm(RedirectForm):
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    published = TextField('published', validators=[DataRequired()])
+    published = StringField('published', validators=[DataRequired()])
 

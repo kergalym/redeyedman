@@ -15,14 +15,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import StringField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 
 
 class CategorypageidForm(Form):
-    id = TextField('id', validators=[DataRequired()])
-    category_title = TextField('category_title', validators=[DataRequired()])
-    category_author = TextField('category_author')
-    category_date = TextField('category_date', validators=[DataRequired()])
+    id = StringField('id', validators=[DataRequired()])
+    category_title = StringField('category_title', validators=[DataRequired()])
+    category_author = StringField('category_author')
+    category_date = StringField('category_date', validators=[DataRequired()])
     category_desc = TextAreaField('category_desc')

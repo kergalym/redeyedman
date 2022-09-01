@@ -17,9 +17,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import StringField
 from wtforms.validators import DataRequired
 
 
 class DashboardGenPassForm(Form):
-    passlength = TextField('passlength', validators=[DataRequired()])
+    passlength = StringField('passlength', validators=[DataRequired()])

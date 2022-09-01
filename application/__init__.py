@@ -24,11 +24,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask_bcrypt import Bcrypt
-import sys
+#from importlib import reload
+#import sys
 
 # Set encoding to UTF-8 hack
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 # Define the app object and load the config from the file
 app = Flask(__name__)

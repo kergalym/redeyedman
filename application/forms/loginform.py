@@ -15,15 +15,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from application.forms.secureredirectforms import RedirectForm
-from wtforms import TextField, BooleanField, PasswordField
+from wtforms import StringField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(RedirectForm):
-    login = TextField('login', validators=[DataRequired()])
+    login = StringField('login', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
     remember_me = BooleanField('remember_me', default=False)
 
 
 class ForgotForm(RedirectForm):
-    email = TextField('email', validators=[Length(min=4, max=16)])
+    email = StringField('email', validators=[Length(min=4, max=16)])

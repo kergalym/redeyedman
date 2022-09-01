@@ -1,0 +1,12 @@
+flask
+flask_debug
+flask_debugtoolbar
+flask_login
+flask_sqlalchemy
+flask_bcrypt
+flask_paginate
+flask_wtf
+Flask-WTF
+Pil-Lite
+pymysql
+PyMySQL[rsa]
