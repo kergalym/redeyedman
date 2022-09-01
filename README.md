@@ -3,6 +3,12 @@
 
 redeyedman blog source repo
 
+# Features
+* CRUD 
+* Assigning posts to category
+* Basic User access management
+* File management (includes graphic image converter)
+
 # Screenshoots
 ## front:
 <img src="https://i.imgur.com/YcqxqK9.png" />
@@ -17,12 +23,6 @@ redeyedman blog source repo
 <img src="https://i.imgur.com/sEzNwUG.png" />
 <img src="https://i.imgur.com/ZUNl5HS.png" />
 <img src="https://i.imgur.com/QJQqVpm.png" />
-
-# Features
-* CRUD 
-* Assigning posts to category
-* Basic User access management
-* File management (includes graphic image converter)
 
 # Working Apache virtualhost configuration file for Gentoo
 
