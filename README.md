@@ -1,7 +1,5 @@
-# My blog
+# My Flask-powered blog :(
 ## Achtung! Pet project! Use it at own risk!
-
-redeyedman blog source repo
 
 # Features
 * CRUD 
