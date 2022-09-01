@@ -16,9 +16,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from urlparse import urlparse, urljoin
+from urllib.parse import urlparse
+from urllib.parse import urljoin
 from flask import request, url_for, redirect
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import HiddenField
 
 
@@ -37,11 +38,11 @@ def get_redirect_target():
             return target
 
 
-class RedirectForm(Form):
+class RedirectForm(FlaskForm):
     next = HiddenField()
 
     def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
+        FlaskForm.__init__(self, *args, **kwargs)
         if not self.next.data:
             self.next.data = get_redirect_target() or ''
 

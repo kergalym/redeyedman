@@ -15,11 +15,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from application.forms.secureredirectforms import RedirectForm
-from wtforms import TextField
+from flask_wtf import FlaskForm
+from wtforms import StringField
 from wtforms.validators import DataRequired
 
 
 class SearchForm(RedirectForm):
-    query = TextField('query', validators=[DataRequired()])
+    query = StringField('query', validators=[DataRequired()])
 
 

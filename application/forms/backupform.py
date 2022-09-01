@@ -17,12 +17,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField, BooleanField, SubmitField
+from wtforms import StringField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 
 class BackupForm(Form):
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    delid = TextField()
+    delid = StringField()
     rename = SubmitField('rename')
     delete = SubmitField('delete')

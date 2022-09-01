@@ -15,16 +15,16 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField
+from wtforms import StringField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired
 
 
 class EditpageidForm(Form):
-    id = TextField('id', validators=[DataRequired()])
-    article_title = TextField('article_title', validators=[DataRequired()])
-    article_author = TextField('article_author', validators=[DataRequired()])
-    article_category = TextField('article_category', validators=[DataRequired()])
-    article_date = TextField('article_date', validators=[DataRequired()])
-    article_mod_date = TextField('article_mod_date')
+    id = StringField('id', validators=[DataRequired()])
+    article_title = StringField('article_title', validators=[DataRequired()])
+    article_author = StringField('article_author', validators=[DataRequired()])
+    article_category = StringField('article_category', validators=[DataRequired()])
+    article_date = StringField('article_date', validators=[DataRequired()])
+    article_mod_date = StringField('article_mod_date')
     article_text = TextAreaField('article_text', validators=[DataRequired()])

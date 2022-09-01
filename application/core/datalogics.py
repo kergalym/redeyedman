@@ -68,7 +68,7 @@ class Dlogics(Base):
         # Do handling: strip from tags in etag
         rawtext_pattern = r'(<.*?>)|(<\/.*?>)(\\r\\n\\r\\n)|(<\/.*?>\\r\\n)|<\/h.*?>'
 
-        if isinstance(self.row, unicode) and isinstance(self.maxlength, int):
+        if isinstance(self.row, str) and isinstance(self.maxlength, int):
             # Find the beginning tag
             btag = re.match(btag_pattern, self.row).group(0)
             # Find end tag
@@ -77,13 +77,13 @@ class Dlogics(Base):
             # slicing to the remaining part of the string
             # and replacing pattern by empty space
 
-            rawtext = unicode(re.sub(rawtext_pattern, '', self.row[len(btag):]))
+            rawtext = re.sub(rawtext_pattern, '', self.row[len(btag):])
 
             if len(rawtext) >= self.maxlength:
                 # Replace with a part of unicode string
                 text = rawtext[0:self.maxlength] + "..."
                 prepared = "{}{}{}".format(btag, text, etag)
-                content += unicode(prepared)
+                content += prepared
                 return content
             else:
                 # Get the first part of the row

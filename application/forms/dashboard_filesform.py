@@ -17,45 +17,45 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from flask_wtf import Form
-from wtforms import TextField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms import BooleanField
 from wtforms.validators import DataRequired
 
 
 class DashboardMkdirForm(Form):
-    addressbar = TextField('addressbar', validators=[DataRequired()])
-    newdirname = TextField('newdirname', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
+    newdirname = StringField('newdirname', validators=[DataRequired()])
 
     mkdir = SubmitField('mkdir')
 
 
 class DashboardCddirForm(Form):
-    addressbar = TextField('addressbar', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
 
     cddir = SubmitField('cddir')
 
 
 class DashboardUploadForm(Form):
-    addressbar = TextField('addressbar', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
     f_upload = BooleanField('f_upload')
 
 
 class DashboardFilesForm(Form):
     f_upload = BooleanField('f_upload')
-    addressbar = TextField('addressbar', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
-    delid = TextField('delid', validators=[DataRequired()])
+    delid = StringField('delid', validators=[DataRequired()])
 
     f_rename = SubmitField('f_rename')
     f_delete = SubmitField('f_delete')
 
 
 class GfxConvForm(Form):
-    addressbar = TextField('addressbar', validators=[DataRequired()])
-    width = TextField('width', validators=[DataRequired()])
-    height = TextField('height', validators=[DataRequired()])
-    fileformat = TextField('fileformat', validators=[DataRequired()])
-    qrange = TextField('qrange', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
+    width = StringField('width', validators=[DataRequired()])
+    height = StringField('height', validators=[DataRequired()])
+    fileformat = StringField('fileformat', validators=[DataRequired()])
+    qrange = StringField('qrange', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
 
     conv_submit = SubmitField('conv_submit')
@@ -63,5 +63,5 @@ class GfxConvForm(Form):
 
 
 class GetSelectedFileForm(Form):
-    addressbar = TextField('addressbar', validators=[DataRequired()])
+    addressbar = StringField('addressbar', validators=[DataRequired()])
     item_chb = BooleanField('item_chb', validators=[DataRequired()])
